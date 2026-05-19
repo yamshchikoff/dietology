@@ -1,0 +1,71 @@
+# Extract essential nutrients from USDA Foundation Foods JSON
+# Source: USDA FoodData Central, CC0 (Public Domain)
+# Run: python3 extract-usda.py
+
+import json
+import zipfile
+import os
+
+ESSENTIAL_NUTRIENTS = [
+    "Energy",
+    "Protein",
+    "Total lipid (fat)",
+    "Fatty acids, total saturated",
+    "Fatty acids, total trans",
+    "Carbohydrate, by difference",
+    "Fiber, total dietary",
+    "Sugars, total including NLEA",
+    "Calcium, Ca",
+    "Iron, Fe",
+    "Magnesium, Mg",
+    "Phosphorus, P",
+    "Potassium, K",
+    "Sodium, Na",
+    "Zinc, Zn",
+    "Vitamin A, IU",
+    "Vitamin C, total ascorbic acid",
+    "Vitamin D (D2 + D3), International Units",
+    "Vitamin E (alpha-tocopherol)",
+    "Vitamin K (phylloquinone)",
+    "Thiamin",
+    "Riboflavin",
+    "Niacin",
+    "Vitamin B-6",
+    "Vitamin B-12",
+    "Folate, total",
+    "Cholesterol",
+]
+
+SRC = "external/usda-foundation-foods-2026-04.zip"
+DST = "usda-foundation-foods-essential.json"
+
+with zipfile.ZipFile(SRC) as zf:
+    name = zf.namelist()[0]
+    raw = json.loads(zf.read(name))
+
+foods = raw["FoundationFoods"]
+out = []
+
+for food in foods:
+    if not isinstance(food, dict):
+        continue
+    item = {
+        "name": food.get("description", ""),
+        "category": (food.get("foodCategory") or {}).get("description", ""),
+        "fdcId": food.get("fdcId"),
+        "nutrients": {},
+    }
+    for n in food.get("foodNutrients", []):
+        name = n["nutrient"]["name"]
+        if name in ESSENTIAL_NUTRIENTS:
+            item["nutrients"][name] = {
+                "amount": n.get("amount"),
+                "unit": n["nutrient"].get("unitName", ""),
+            }
+    if item["nutrients"]:
+        out.append(item)
+
+with open(DST, "w") as f:
+    json.dump(out, f, ensure_ascii=False, indent=2)
+
+print(f"Extracted {len(out)} foods to {DST} ({os.path.getsize(DST)} bytes)")
