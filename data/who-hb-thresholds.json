@@ -1,0 +1,195 @@
+{
+  "_meta": {
+    "source_id": "who-2024-hb",
+    "extraction_date": "2026-05-20T00:00:00Z",
+    "extraction_script": "data/extract-who-hb.py",
+    "extracted_by": "agent",
+    "source_claims": {
+      "presumed_date": "2024",
+      "presumed_author": "World Health Organization, Geneva"
+    },
+    "license_note": "Source document: CC BY-NC-SA 3.0 IGO. Numeric threshold values are facts, not copyrightable expression. Direct table reproduction would violate NC clause. Extracted facts with attribution to WHO 2024 guideline.",
+    "source_urls": [
+      "https://www.who.int/publications/i/item/9789240088542",
+      "https://iris.who.int/handle/10665/376196"
+    ],
+    "citation": "WHO. Guideline on haemoglobin cutoffs to define anaemia in individuals and populations. Geneva: World Health Organization; 2024. ISBN 9789240088542.",
+    "method_note": "Venous blood preferred. Capillary blood may overestimate Hb. Altitude and smoking adjustments apply."
+  },
+  "diagnostic_thresholds": [
+    {
+      "group": "children_6_23_months",
+      "sex": "any",
+      "pregnant": false,
+      "hb_cutoff_g_per_l": 105,
+      "hb_cutoff_g_per_dl": 10.5,
+      "note": "Lowered from 110 g/L in 2024 guideline"
+    },
+    {
+      "group": "children_24_59_months",
+      "sex": "any",
+      "pregnant": false,
+      "hb_cutoff_g_per_l": 110,
+      "hb_cutoff_g_per_dl": 11.0
+    },
+    {
+      "group": "children_5_11_years",
+      "sex": "any",
+      "pregnant": false,
+      "hb_cutoff_g_per_l": 115,
+      "hb_cutoff_g_per_dl": 11.5
+    },
+    {
+      "group": "children_12_14_years",
+      "sex": "any",
+      "pregnant": false,
+      "hb_cutoff_g_per_l": 120,
+      "hb_cutoff_g_per_dl": 12.0
+    },
+    {
+      "group": "non_pregnant_women_15_plus",
+      "sex": "female",
+      "pregnant": false,
+      "hb_cutoff_g_per_l": 120,
+      "hb_cutoff_g_per_dl": 12.0
+    },
+    {
+      "group": "pregnant_first_trimester",
+      "sex": "female",
+      "pregnant": true,
+      "trimester": 1,
+      "hb_cutoff_g_per_l": 110,
+      "hb_cutoff_g_per_dl": 11.0
+    },
+    {
+      "group": "pregnant_second_trimester",
+      "sex": "female",
+      "pregnant": true,
+      "trimester": 2,
+      "hb_cutoff_g_per_l": 105,
+      "hb_cutoff_g_per_dl": 10.5,
+      "note": "New trimester-specific cutoff in 2024 guideline"
+    },
+    {
+      "group": "pregnant_third_trimester",
+      "sex": "female",
+      "pregnant": true,
+      "trimester": 3,
+      "hb_cutoff_g_per_l": 110,
+      "hb_cutoff_g_per_dl": 11.0
+    },
+    {
+      "group": "men_15_plus",
+      "sex": "male",
+      "pregnant": false,
+      "hb_cutoff_g_per_l": 130,
+      "hb_cutoff_g_per_dl": 13.0
+    }
+  ],
+  "severity_classification": [
+    {
+      "group": "children_6_23_months",
+      "normal_low": 105,
+      "mild_low": 95,
+      "mild_high": 104,
+      "moderate_low": 70,
+      "moderate_high": 94,
+      "severe_below": 70
+    },
+    {
+      "group": "children_24_59_months",
+      "normal_low": 110,
+      "mild_low": 100,
+      "mild_high": 109,
+      "moderate_low": 70,
+      "moderate_high": 99,
+      "severe_below": 70
+    },
+    {
+      "group": "children_5_11_years",
+      "normal_low": 115,
+      "mild_low": 110,
+      "mild_high": 114,
+      "moderate_low": 80,
+      "moderate_high": 109,
+      "severe_below": 80
+    },
+    {
+      "group": "children_12_14_years",
+      "normal_low": 120,
+      "mild_low": 110,
+      "mild_high": 119,
+      "moderate_low": 80,
+      "moderate_high": 109,
+      "severe_below": 80
+    },
+    {
+      "group": "non_pregnant_women_15_65",
+      "normal_low": 120,
+      "mild_low": 110,
+      "mild_high": 119,
+      "moderate_low": 80,
+      "moderate_high": 109,
+      "severe_below": 80
+    },
+    {
+      "group": "men_15_65",
+      "normal_low": 130,
+      "mild_low": 110,
+      "mild_high": 129,
+      "moderate_low": 80,
+      "moderate_high": 109,
+      "severe_below": 80
+    },
+    {
+      "group": "pregnant_first_trimester",
+      "normal_low": 110,
+      "mild_low": 100,
+      "mild_high": 109,
+      "moderate_low": 70,
+      "moderate_high": 99,
+      "severe_below": 70
+    },
+    {
+      "group": "pregnant_second_trimester",
+      "normal_low": 110,
+      "mild_low": 95,
+      "mild_high": 104,
+      "moderate_low": 70,
+      "moderate_high": 94,
+      "severe_below": 70,
+      "note": "Second trimester severity uses diagnostic cutoff of 105 g/L as mild threshold floor"
+    },
+    {
+      "group": "pregnant_third_trimester",
+      "normal_low": 110,
+      "mild_low": 100,
+      "mild_high": 109,
+      "moderate_low": 70,
+      "moderate_high": 99,
+      "severe_below": 70
+    }
+  ],
+  "severe_anaemia_pregnancy_note": "Severe anaemia in pregnancy: <70 g/L. Very severe: <40 g/L (per CDC supplementary note).",
+  "altitude_smoking_note": "Altitude and smoking adjustments recommended. Formulas included in WHO 2024 guideline Appendix.",
+  "legacy_comparison": [
+    {
+      "group": "infants_6_23_months",
+      "pre_2024_g_per_l": 110,
+      "post_2024_g_per_l": 105,
+      "change": "lowered by 5 g/L"
+    },
+    {
+      "group": "pregnant_second_trimester",
+      "pre_2024_g_per_l": 110,
+      "post_2024_g_per_l": 105,
+      "change": "lowered by 5 g/L, new trimester-specific cutoff"
+    },
+    {
+      "group": "all_other_groups",
+      "pre_2024_g_per_l": "unchanged",
+      "post_2024_g_per_l": "unchanged",
+      "change": "no change"
+    }
+  ]
+}
