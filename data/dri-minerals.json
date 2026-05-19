@@ -1,0 +1,325 @@
+{
+  "_meta": {
+    "source_id": "msd-manual-dri",
+    "extraction_date": "2026-05-20T00:00:00Z",
+    "extraction_script": "data/extract-msd-dri.py",
+    "extracted_by": "agent",
+    "source_claims": {
+      "presumed_date": "2024",
+      "presumed_author": "Merck & Co., Inc., based on National Academies of Sciences, Engineering, and Medicine DRI reports"
+    },
+    "note": "Trace minerals data from 'Guidelines for Daily Intake of Trace Minerals' table (MSD Manual Professional). Bold values = Adequate Intakes (AI). Regular type = Recommended Dietary Allowances (RDA). Macromineral data partially from macronutrients table (Ca, P, Mg per kg) and Consumer minerals table (Na, K). UL = Tolerable Upper Intake Level. Chromium essentiality questioned by recent research (Vincent, J Nutr 2017).",
+    "source_urls": [
+      "https://www.msdmanuals.com/professional/nutritional-disorders/mineral-deficiency-and-toxicity/overview-of-minerals",
+      "https://www.msdmanuals.com/professional/multimedia/table/recommended-dietary-reference-intakes-for-some-macronutrients-food-and-nutrition-board-institute-of-medicine-of-the-national-academies"
+    ]
+  },
+  "nutrients": [
+    {
+      "name": "Calcium",
+      "unit": "mg",
+      "category": "macromineral",
+      "ul": 2500,
+      "ul_unit": "mg",
+      "ul_note": "Adults 19–50 yr. UL 2000 mg for adults >50 yr.",
+      "groups": [
+        {"group": "infants_0_6mo", "sex": "any", "age_range": "0–0.5 yr", "value": 200, "type": "AI", "note": "Computed: 66.7 mg/kg × 3 kg"},
+        {"group": "infants_7_12mo", "sex": "any", "age_range": "0.5–1.0 yr", "value": 260, "type": "AI", "note": "Computed: 66.7 mg/kg × 3.9 kg"},
+        {"group": "children_1_3yr", "sex": "any", "age_range": "1–3 yr", "value": 700, "type": "RDA", "note": "Computed: 61.5 mg/kg × 11.4 kg"},
+        {"group": "children_4_8yr", "sex": "any", "age_range": "4–6 yr", "value": 800, "type": "RDA", "note": "Computed: 40 mg/kg × 20 kg"},
+        {"group": "male_9_13yr", "sex": "male", "age_range": "9–13 yr", "value": 1300, "type": "RDA", "note": "Standard DRI value"},
+        {"group": "male_14_18yr", "sex": "male", "age_range": "14–18 yr", "value": 1300, "type": "RDA", "note": "Standard DRI value"},
+        {"group": "male_19_50yr", "sex": "male", "age_range": "19–50 yr", "value": 1000, "type": "RDA", "note": "Standard adult DRI"},
+        {"group": "male_51_70yr", "sex": "male", "age_range": "51–70 yr", "value": 1000, "type": "RDA"},
+        {"group": "male_gt70yr", "sex": "male", "age_range": ">70 yr", "value": 1200, "type": "RDA"},
+        {"group": "female_9_13yr", "sex": "female", "age_range": "9–13 yr", "value": 1300, "type": "RDA", "note": "Standard DRI value"},
+        {"group": "female_14_18yr", "sex": "female", "age_range": "14–18 yr", "value": 1300, "type": "RDA", "note": "Standard DRI value"},
+        {"group": "female_19_50yr", "sex": "female", "age_range": "19–50 yr", "value": 1000, "type": "RDA", "note": "Standard adult DRI"},
+        {"group": "female_gt50yr", "sex": "female", "age_range": ">50 yr", "value": 1200, "type": "RDA"},
+        {"group": "pregnant", "sex": "female", "age_range": "14–50 yr", "value": 1000, "type": "RDA", "note": "AI for pregnant ≤18 yr: 1300 mg"},
+        {"group": "breastfeeding", "sex": "female", "age_range": "14–50 yr", "value": 1000, "type": "RDA", "note": "AI for breastfeeding ≤18 yr: 1300 mg"}
+      ]
+    },
+    {
+      "name": "Phosphorus",
+      "unit": "mg",
+      "category": "macromineral",
+      "ul": 4000,
+      "ul_unit": "mg",
+      "ul_note": "Adults 19–70 yr. UL 3000 mg for adults >70 yr.",
+      "groups": [
+        {"group": "infants_0_6mo", "sex": "any", "age_range": "0–0.5 yr", "value": 100, "type": "AI"},
+        {"group": "infants_7_12mo", "sex": "any", "age_range": "0.5–1.0 yr", "value": 275, "type": "AI"},
+        {"group": "children_1_3yr", "sex": "any", "age_range": "1–3 yr", "value": 460, "type": "RDA"},
+        {"group": "children_4_8yr", "sex": "any", "age_range": "4–8 yr", "value": 500, "type": "RDA"},
+        {"group": "male_9_18yr", "sex": "male", "age_range": "9–18 yr", "value": 1250, "type": "RDA"},
+        {"group": "male_19_70yr", "sex": "male", "age_range": "19–70 yr", "value": 700, "type": "RDA"},
+        {"group": "male_gt70yr", "sex": "male", "age_range": ">70 yr", "value": 700, "type": "RDA"},
+        {"group": "female_9_18yr", "sex": "female", "age_range": "9–18 yr", "value": 1250, "type": "RDA"},
+        {"group": "female_19_70yr", "sex": "female", "age_range": "19–70 yr", "value": 700, "type": "RDA"},
+        {"group": "female_gt70yr", "sex": "female", "age_range": ">70 yr", "value": 700, "type": "RDA"},
+        {"group": "pregnant", "sex": "female", "age_range": "14–50 yr", "value": 700, "type": "RDA", "note": "RDA for pregnant ≤18 yr: 1250 mg"},
+        {"group": "breastfeeding", "sex": "female", "age_range": "14–50 yr", "value": 700, "type": "RDA", "note": "RDA for breastfeeding ≤18 yr: 1250 mg"}
+      ]
+    },
+    {
+      "name": "Magnesium",
+      "unit": "mg",
+      "category": "macromineral",
+      "ul": 350,
+      "ul_unit": "mg",
+      "ul_note": "UL applies to supplemental magnesium only, not food sources",
+      "groups": [
+        {"group": "infants_0_6mo", "sex": "any", "age_range": "0–0.5 yr", "value": 30, "type": "AI"},
+        {"group": "infants_7_12mo", "sex": "any", "age_range": "0.5–1.0 yr", "value": 75, "type": "AI"},
+        {"group": "children_1_3yr", "sex": "any", "age_range": "1–3 yr", "value": 80, "type": "RDA"},
+        {"group": "children_4_8yr", "sex": "any", "age_range": "4–8 yr", "value": 130, "type": "RDA"},
+        {"group": "male_9_13yr", "sex": "male", "age_range": "9–13 yr", "value": 240, "type": "RDA"},
+        {"group": "male_14_18yr", "sex": "male", "age_range": "14–18 yr", "value": 410, "type": "RDA"},
+        {"group": "male_19_30yr", "sex": "male", "age_range": "19–30 yr", "value": 400, "type": "RDA"},
+        {"group": "male_31_50yr", "sex": "male", "age_range": "31–50 yr", "value": 420, "type": "RDA"},
+        {"group": "male_gt50yr", "sex": "male", "age_range": ">50 yr", "value": 420, "type": "RDA"},
+        {"group": "female_9_13yr", "sex": "female", "age_range": "9–13 yr", "value": 240, "type": "RDA"},
+        {"group": "female_14_18yr", "sex": "female", "age_range": "14–18 yr", "value": 360, "type": "RDA"},
+        {"group": "female_19_30yr", "sex": "female", "age_range": "19–30 yr", "value": 310, "type": "RDA"},
+        {"group": "female_31_50yr", "sex": "female", "age_range": "31–50 yr", "value": 320, "type": "RDA"},
+        {"group": "female_gt50yr", "sex": "female", "age_range": ">50 yr", "value": 320, "type": "RDA"},
+        {"group": "pregnant", "sex": "female", "age_range": "14–50 yr", "value": 350, "type": "RDA", "note": "RDA for pregnant ≤18 yr: 400 mg"},
+        {"group": "breastfeeding", "sex": "female", "age_range": "14–50 yr", "value": 310, "type": "RDA", "note": "RDA for breastfeeding ≤18 yr: 360 mg"}
+      ]
+    },
+    {
+      "name": "Sodium",
+      "unit": "mg",
+      "category": "macromineral",
+      "ul": 2300,
+      "ul_unit": "mg",
+      "ul_note": "Chronic Disease Risk Reduction (CDRR) intake. UL not defined.",
+      "groups": [
+        {"group": "adult_male", "sex": "male", "age_range": "19–70 yr", "value": 1500, "type": "AI"},
+        {"group": "adult_female", "sex": "female", "age_range": "19–70 yr", "value": 1500, "type": "AI"}
+      ],
+      "note": "AI from MSD Manual Consumer table. Age-specific AI values: infants 0–6 mo 110 mg, 7–12 mo 370 mg, children 1–3 yr 800 mg, 4–8 yr 1000 mg, 9–13 yr 1200 mg, 14+ yr 1500 mg."
+    },
+    {
+      "name": "Potassium",
+      "unit": "mg",
+      "category": "macromineral",
+      "ul": null,
+      "ul_note": "No UL established from food sources",
+      "groups": [
+        {"group": "adult_male", "sex": "male", "age_range": "19–70 yr", "value": 3400, "type": "AI"},
+        {"group": "adult_female", "sex": "female", "age_range": "19–70 yr", "value": 2600, "type": "AI"}
+      ],
+      "note": "AI from National Academies DRI (2019). Age-specific AI values: infants 0–6 mo 400 mg, 7–12 mo 700 mg, children 1–3 yr 3000 mg, 4–8 yr 3800 mg, males 9–13 yr 4500 mg, 14–18 yr 4700 mg, 19+ yr 3400 mg. Females 9–13 yr 4500 mg, 14–18 yr 4700 mg, 19+ yr 2600 mg."
+    },
+    {
+      "name": "Iron",
+      "unit": "mg",
+      "category": "trace_mineral",
+      "ul": 45,
+      "ul_unit": "mg",
+      "groups": [
+        {"group": "infants_0_6mo", "sex": "any", "age_range": "0–6 mo", "value": 0.27, "type": "AI"},
+        {"group": "infants_7_12mo", "sex": "any", "age_range": "7 mo–1 yr", "value": 11, "type": "RDA"},
+        {"group": "children_1_3yr", "sex": "any", "age_range": "1–3 yr", "value": 7, "type": "RDA"},
+        {"group": "children_4_8yr", "sex": "any", "age_range": "4–8 yr", "value": 10, "type": "RDA"},
+        {"group": "male_9_13yr", "sex": "male", "age_range": "9–13 yr", "value": 8, "type": "RDA"},
+        {"group": "male_14_18yr", "sex": "male", "age_range": "14–18 yr", "value": 11, "type": "RDA"},
+        {"group": "male_19_50yr", "sex": "male", "age_range": "19–50 yr", "value": 8, "type": "RDA"},
+        {"group": "male_gt50yr", "sex": "male", "age_range": "51+ yr", "value": 8, "type": "RDA"},
+        {"group": "female_9_13yr", "sex": "female", "age_range": "9–13 yr", "value": 8, "type": "RDA"},
+        {"group": "female_14_18yr", "sex": "female", "age_range": "14–18 yr", "value": 15, "type": "RDA"},
+        {"group": "female_19_50yr", "sex": "female", "age_range": "19–50 yr", "value": 18, "type": "RDA"},
+        {"group": "female_gt50yr", "sex": "female", "age_range": "51+ yr", "value": 8, "type": "RDA"},
+        {"group": "pregnant_14_18yr", "sex": "female", "age_range": "14–18 yr", "value": 27, "type": "RDA"},
+        {"group": "pregnant_19_50yr", "sex": "female", "age_range": "19–50 yr", "value": 27, "type": "RDA"},
+        {"group": "breastfeeding_14_18yr", "sex": "female", "age_range": "14–18 yr", "value": 10, "type": "RDA"},
+        {"group": "breastfeeding_19_50yr", "sex": "female", "age_range": "19–50 yr", "value": 9, "type": "RDA"}
+      ]
+    },
+    {
+      "name": "Zinc",
+      "unit": "mg",
+      "category": "trace_mineral",
+      "ul": 40,
+      "ul_unit": "mg",
+      "groups": [
+        {"group": "infants_0_6mo", "sex": "any", "age_range": "0–6 mo", "value": 2, "type": "AI"},
+        {"group": "infants_7_12mo", "sex": "any", "age_range": "7 mo–1 yr", "value": 3, "type": "AI"},
+        {"group": "children_1_3yr", "sex": "any", "age_range": "1–3 yr", "value": 3, "type": "RDA"},
+        {"group": "children_4_8yr", "sex": "any", "age_range": "4–8 yr", "value": 5, "type": "RDA"},
+        {"group": "male_9_13yr", "sex": "male", "age_range": "9–13 yr", "value": 8, "type": "RDA"},
+        {"group": "male_14_18yr", "sex": "male", "age_range": "14–18 yr", "value": 11, "type": "RDA"},
+        {"group": "male_19_50yr", "sex": "male", "age_range": "19–50 yr", "value": 11, "type": "RDA"},
+        {"group": "male_gt50yr", "sex": "male", "age_range": "51+ yr", "value": 11, "type": "RDA"},
+        {"group": "female_9_13yr", "sex": "female", "age_range": "9–13 yr", "value": 8, "type": "RDA"},
+        {"group": "female_14_18yr", "sex": "female", "age_range": "14–18 yr", "value": 9, "type": "RDA"},
+        {"group": "female_19_50yr", "sex": "female", "age_range": "19–50 yr", "value": 8, "type": "RDA"},
+        {"group": "female_gt50yr", "sex": "female", "age_range": "51+ yr", "value": 8, "type": "RDA"},
+        {"group": "pregnant_14_18yr", "sex": "female", "age_range": "14–18 yr", "value": 12, "type": "RDA"},
+        {"group": "pregnant_19_50yr", "sex": "female", "age_range": "19–50 yr", "value": 11, "type": "RDA"},
+        {"group": "breastfeeding_14_18yr", "sex": "female", "age_range": "14–18 yr", "value": 13, "type": "RDA"},
+        {"group": "breastfeeding_19_50yr", "sex": "female", "age_range": "19–50 yr", "value": 12, "type": "RDA"}
+      ]
+    },
+    {
+      "name": "Copper",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "ul": 10000,
+      "ul_unit": "mcg",
+      "groups": [
+        {"group": "infants_0_6mo", "sex": "any", "age_range": "0–6 mo", "value": 200, "type": "AI"},
+        {"group": "infants_7_12mo", "sex": "any", "age_range": "7 mo–1 yr", "value": 220, "type": "AI"},
+        {"group": "children_1_3yr", "sex": "any", "age_range": "1–3 yr", "value": 340, "type": "RDA"},
+        {"group": "children_4_8yr", "sex": "any", "age_range": "4–8 yr", "value": 440, "type": "RDA"},
+        {"group": "male_9_13yr", "sex": "male", "age_range": "9–13 yr", "value": 700, "type": "RDA"},
+        {"group": "male_14_18yr", "sex": "male", "age_range": "14–18 yr", "value": 890, "type": "RDA"},
+        {"group": "male_19_50yr", "sex": "male", "age_range": "19–50 yr", "value": 900, "type": "RDA"},
+        {"group": "male_gt50yr", "sex": "male", "age_range": "51+ yr", "value": 900, "type": "RDA"},
+        {"group": "female_9_13yr", "sex": "female", "age_range": "9–13 yr", "value": 700, "type": "RDA"},
+        {"group": "female_14_18yr", "sex": "female", "age_range": "14–18 yr", "value": 890, "type": "RDA"},
+        {"group": "female_19_50yr", "sex": "female", "age_range": "19–50 yr", "value": 900, "type": "RDA"},
+        {"group": "female_gt50yr", "sex": "female", "age_range": "51+ yr", "value": 900, "type": "RDA"},
+        {"group": "pregnant", "sex": "female", "age_range": "14–50 yr", "value": 1000, "type": "RDA"},
+        {"group": "breastfeeding", "sex": "female", "age_range": "14–50 yr", "value": 1300, "type": "RDA"}
+      ]
+    },
+    {
+      "name": "Iodine",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "ul": 1100,
+      "ul_unit": "mcg",
+      "groups": [
+        {"group": "infants_0_6mo", "sex": "any", "age_range": "0–6 mo", "value": 110, "type": "AI"},
+        {"group": "infants_7_12mo", "sex": "any", "age_range": "7 mo–1 yr", "value": 130, "type": "AI"},
+        {"group": "children_1_3yr", "sex": "any", "age_range": "1–3 yr", "value": 90, "type": "RDA"},
+        {"group": "children_4_8yr", "sex": "any", "age_range": "4–8 yr", "value": 90, "type": "RDA"},
+        {"group": "male_9_13yr", "sex": "male", "age_range": "9–13 yr", "value": 120, "type": "RDA"},
+        {"group": "male_14_50yr", "sex": "male", "age_range": "14–50 yr", "value": 150, "type": "RDA"},
+        {"group": "male_gt50yr", "sex": "male", "age_range": "51+ yr", "value": 150, "type": "RDA"},
+        {"group": "female_9_13yr", "sex": "female", "age_range": "9–13 yr", "value": 120, "type": "RDA"},
+        {"group": "female_14_50yr", "sex": "female", "age_range": "14–50 yr", "value": 150, "type": "RDA"},
+        {"group": "female_gt50yr", "sex": "female", "age_range": "51+ yr", "value": 150, "type": "RDA"},
+        {"group": "pregnant", "sex": "female", "age_range": "14–50 yr", "value": 220, "type": "RDA"},
+        {"group": "breastfeeding", "sex": "female", "age_range": "14–50 yr", "value": 290, "type": "RDA"}
+      ]
+    },
+    {
+      "name": "Selenium",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "ul": 400,
+      "ul_unit": "mcg",
+      "groups": [
+        {"group": "infants_0_6mo", "sex": "any", "age_range": "0–6 mo", "value": 15, "type": "AI"},
+        {"group": "infants_7_12mo", "sex": "any", "age_range": "7 mo–1 yr", "value": 20, "type": "AI"},
+        {"group": "children_1_3yr", "sex": "any", "age_range": "1–3 yr", "value": 20, "type": "RDA"},
+        {"group": "children_4_8yr", "sex": "any", "age_range": "4–8 yr", "value": 30, "type": "RDA"},
+        {"group": "male_9_13yr", "sex": "male", "age_range": "9–13 yr", "value": 40, "type": "RDA"},
+        {"group": "male_14_50yr", "sex": "male", "age_range": "14–50 yr", "value": 55, "type": "RDA"},
+        {"group": "male_gt50yr", "sex": "male", "age_range": "51+ yr", "value": 55, "type": "RDA"},
+        {"group": "female_9_13yr", "sex": "female", "age_range": "9–13 yr", "value": 40, "type": "RDA"},
+        {"group": "female_14_50yr", "sex": "female", "age_range": "14–50 yr", "value": 55, "type": "RDA"},
+        {"group": "female_gt50yr", "sex": "female", "age_range": "51+ yr", "value": 55, "type": "RDA"},
+        {"group": "pregnant", "sex": "female", "age_range": "14–50 yr", "value": 60, "type": "RDA"},
+        {"group": "breastfeeding", "sex": "female", "age_range": "14–50 yr", "value": 70, "type": "RDA"}
+      ]
+    },
+    {
+      "name": "Manganese",
+      "unit": "mg",
+      "category": "trace_mineral",
+      "ul": 11,
+      "ul_unit": "mg",
+      "groups": [
+        {"group": "infants_0_6mo", "sex": "any", "age_range": "0–6 mo", "value": 0.003, "type": "AI"},
+        {"group": "infants_7_12mo", "sex": "any", "age_range": "7 mo–1 yr", "value": 0.6, "type": "AI"},
+        {"group": "children_1_3yr", "sex": "any", "age_range": "1–3 yr", "value": 1.2, "type": "AI"},
+        {"group": "children_4_8yr", "sex": "any", "age_range": "4–8 yr", "value": 1.5, "type": "AI"},
+        {"group": "male_9_13yr", "sex": "male", "age_range": "9–13 yr", "value": 1.9, "type": "AI"},
+        {"group": "male_14_18yr", "sex": "male", "age_range": "14–18 yr", "value": 2.2, "type": "AI"},
+        {"group": "male_19_50yr", "sex": "male", "age_range": "19–50 yr", "value": 2.3, "type": "AI"},
+        {"group": "male_gt50yr", "sex": "male", "age_range": "51+ yr", "value": 2.3, "type": "AI"},
+        {"group": "female_9_13yr", "sex": "female", "age_range": "9–13 yr", "value": 1.6, "type": "AI"},
+        {"group": "female_14_18yr", "sex": "female", "age_range": "14–18 yr", "value": 1.6, "type": "AI"},
+        {"group": "female_19_50yr", "sex": "female", "age_range": "19–50 yr", "value": 1.8, "type": "AI"},
+        {"group": "female_gt50yr", "sex": "female", "age_range": "51+ yr", "value": 1.8, "type": "AI"},
+        {"group": "pregnant", "sex": "female", "age_range": "14–50 yr", "value": 2.0, "type": "AI"},
+        {"group": "breastfeeding", "sex": "female", "age_range": "14–50 yr", "value": 2.6, "type": "AI"}
+      ]
+    },
+    {
+      "name": "Chromium",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "ul": null,
+      "ul_note": "No UL established",
+      "note": "Essentiality questioned by recent research (Vincent, J Nutr 2017). Values are AI.",
+      "groups": [
+        {"group": "infants_0_6mo", "sex": "any", "age_range": "0–6 mo", "value": 0.2, "type": "AI"},
+        {"group": "infants_7_12mo", "sex": "any", "age_range": "7 mo–1 yr", "value": 5.5, "type": "AI"},
+        {"group": "children_1_3yr", "sex": "any", "age_range": "1–3 yr", "value": 11, "type": "AI"},
+        {"group": "children_4_8yr", "sex": "any", "age_range": "4–8 yr", "value": 15, "type": "AI"},
+        {"group": "male_9_13yr", "sex": "male", "age_range": "9–13 yr", "value": 25, "type": "AI"},
+        {"group": "male_14_50yr", "sex": "male", "age_range": "14–50 yr", "value": 35, "type": "AI"},
+        {"group": "male_gt50yr", "sex": "male", "age_range": "51+ yr", "value": 30, "type": "AI"},
+        {"group": "female_9_13yr", "sex": "female", "age_range": "9–13 yr", "value": 21, "type": "AI"},
+        {"group": "female_14_18yr", "sex": "female", "age_range": "14–18 yr", "value": 24, "type": "AI"},
+        {"group": "female_19_50yr", "sex": "female", "age_range": "19–50 yr", "value": 25, "type": "AI"},
+        {"group": "female_gt50yr", "sex": "female", "age_range": "51+ yr", "value": 20, "type": "AI"},
+        {"group": "pregnant_14_18yr", "sex": "female", "age_range": "14–18 yr", "value": 29, "type": "AI"},
+        {"group": "pregnant_19_50yr", "sex": "female", "age_range": "19–50 yr", "value": 30, "type": "AI"},
+        {"group": "breastfeeding_14_18yr", "sex": "female", "age_range": "14–18 yr", "value": 44, "type": "AI"},
+        {"group": "breastfeeding_19_50yr", "sex": "female", "age_range": "19–50 yr", "value": 45, "type": "AI"}
+      ]
+    },
+    {
+      "name": "Molybdenum",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "ul": 2000,
+      "ul_unit": "mcg",
+      "groups": [
+        {"group": "infants_0_6mo", "sex": "any", "age_range": "0–6 mo", "value": 2, "type": "AI"},
+        {"group": "infants_7_12mo", "sex": "any", "age_range": "7 mo–1 yr", "value": 3, "type": "AI"},
+        {"group": "children_1_3yr", "sex": "any", "age_range": "1–3 yr", "value": 17, "type": "RDA"},
+        {"group": "children_4_8yr", "sex": "any", "age_range": "4–8 yr", "value": 22, "type": "RDA"},
+        {"group": "male_9_13yr", "sex": "male", "age_range": "9–13 yr", "value": 34, "type": "RDA"},
+        {"group": "male_14_18yr", "sex": "male", "age_range": "14–18 yr", "value": 43, "type": "RDA"},
+        {"group": "male_19_50yr", "sex": "male", "age_range": "19–50 yr", "value": 45, "type": "RDA"},
+        {"group": "male_gt50yr", "sex": "male", "age_range": "51+ yr", "value": 45, "type": "RDA"},
+        {"group": "female_9_13yr", "sex": "female", "age_range": "9–13 yr", "value": 34, "type": "RDA"},
+        {"group": "female_14_18yr", "sex": "female", "age_range": "14–18 yr", "value": 43, "type": "RDA"},
+        {"group": "female_19_50yr", "sex": "female", "age_range": "19–50 yr", "value": 45, "type": "RDA"},
+        {"group": "female_gt50yr", "sex": "female", "age_range": "51+ yr", "value": 45, "type": "RDA"},
+        {"group": "pregnant", "sex": "female", "age_range": "14–50 yr", "value": 50, "type": "RDA"},
+        {"group": "breastfeeding", "sex": "female", "age_range": "14–50 yr", "value": 50, "type": "RDA"}
+      ]
+    },
+    {
+      "name": "Fluoride",
+      "unit": "mg",
+      "category": "trace_mineral",
+      "ul": 10,
+      "ul_unit": "mg",
+      "groups": [
+        {"group": "infants_0_6mo", "sex": "any", "age_range": "0–6 mo", "value": 0.01, "type": "AI"},
+        {"group": "infants_7_12mo", "sex": "any", "age_range": "7 mo–1 yr", "value": 0.5, "type": "AI"},
+        {"group": "children_1_3yr", "sex": "any", "age_range": "1–3 yr", "value": 0.7, "type": "AI"},
+        {"group": "children_4_8yr", "sex": "any", "age_range": "4–8 yr", "value": 1.0, "type": "AI"},
+        {"group": "male_9_13yr", "sex": "male", "age_range": "9–13 yr", "value": 2.0, "type": "AI"},
+        {"group": "male_14_18yr", "sex": "male", "age_range": "14–18 yr", "value": 3.0, "type": "AI"},
+        {"group": "male_19_50yr", "sex": "male", "age_range": "19–50 yr", "value": 4.0, "type": "AI"},
+        {"group": "male_gt50yr", "sex": "male", "age_range": "51+ yr", "value": 4.0, "type": "AI"},
+        {"group": "female_9_13yr", "sex": "female", "age_range": "9–13 yr", "value": 2.0, "type": "AI"},
+        {"group": "female_14_50yr", "sex": "female", "age_range": "14–50 yr", "value": 3.0, "type": "AI"},
+        {"group": "female_gt50yr", "sex": "female", "age_range": "51+ yr", "value": 3.0, "type": "AI"},
+        {"group": "pregnant", "sex": "female", "age_range": "14–50 yr", "value": 3.0, "type": "AI"},
+        {"group": "breastfeeding", "sex": "female", "age_range": "14–50 yr", "value": 3.0, "type": "AI"}
+      ]
+    }
+  ]
+}
