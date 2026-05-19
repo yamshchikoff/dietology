@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> Харнесс: Claude Code (claude.ai/code). Модель: DeepSeek.
+> Ведение проекта: каждая завершённая задача — отдельный коммит с push в оба remote.
+> Исправления — отдельным коммитом. Соавторство: Co-Authored-By: DeepSeek <noreply@deepseek.com>.
+
 ## Project
 
 Персональный ассистент по питанию (dietology). Стек уточняется.
@@ -23,3 +27,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - Любая завершённая работа коммитится сразу
 - Исправления идут отдельным коммитом (не амендить рабочий коммит)
+- После каждого коммита — обязательный push в оба remote (github + gitflic)
+
+## Заголовки файлов документации
+
+Каждый файл документации (.md) должен содержать следующий header без сокращений:
+
+```markdown
+# <Project> — Dietology
+
+> Харнесс: Claude Code (claude.ai/code). Модель: DeepSeek.
+> Ведение проекта: каждая завершённая задача — отдельный коммит с push в оба remote.
+> Исправления — отдельным коммитом. Соавторство: Co-Authored-By: DeepSeek <noreply@deepseek.com>.
+```
