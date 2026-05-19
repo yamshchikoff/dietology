@@ -5,6 +5,7 @@
 import json
 import zipfile
 import os
+from datetime import datetime, timezone
 
 ESSENTIAL_NUTRIENTS = [
     "Energy",
@@ -65,7 +66,21 @@ for food in foods:
     if item["nutrients"]:
         out.append(item)
 
+wrapped = {
+    "_meta": {
+        "source_id": "usda-fdc-2026-04",
+        "extraction_date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "extraction_script": "data/extract-usda.py",
+        "extracted_by": "agent",
+        "source_claims": {
+            "presumed_date": "2026-04",
+            "presumed_author": "USDA FoodData Central, Agricultural Research Service"
+        }
+    },
+    "foods": out
+}
+
 with open(DST, "w") as f:
-    json.dump(out, f, ensure_ascii=False, indent=2)
+    json.dump(wrapped, f, ensure_ascii=False, indent=2)
 
 print(f"Extracted {len(out)} foods to {DST} ({os.path.getsize(DST)} bytes)")
