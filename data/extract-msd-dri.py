@@ -22,6 +22,7 @@ HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; dietology-data-bot/1.0)"}
 
 VITAMINS_OUT = os.path.join(SCRIPT_DIR, "dri-vitamins.json")
 MINERALS_OUT = os.path.join(SCRIPT_DIR, "dri-minerals.json")
+MACRO_PKG_OUT = os.path.join(SCRIPT_DIR, "dri-macronutrients-per-kg.json")
 
 
 def fetch_html(url):
@@ -86,13 +87,21 @@ def main():
     print()
 
     # Check that data files exist
-    for fname in [VITAMINS_OUT, MINERALS_OUT]:
+    for fname in [VITAMINS_OUT, MINERALS_OUT, MACRO_PKG_OUT]:
         if os.path.exists(fname):
             with open(fname) as f:
                 data = json.load(f)
             nutrients = data.get("nutrients", [])
             groups_total = sum(len(n.get("groups", [])) for n in nutrients)
-            print(f"{fname}: {len(nutrients)} nutrients, {groups_total} group entries — OK")
+            # Per-kg file: verify all values in mg/kg
+            if "per-kg" in fname:
+                all_pkg = all(
+                    n.get("unit") == "mg/kg" for n in nutrients
+                )
+                status = "mg/kg verified" if all_pkg else "WARNING: non-mg/kg units found"
+                print(f"{fname}: {len(nutrients)} nutrients, {groups_total} group entries, {status} — OK")
+            else:
+                print(f"{fname}: {len(nutrients)} nutrients, {groups_total} group entries — OK")
         else:
             print(f"{fname}: MISSING — extraction required")
             sys.exit(1)

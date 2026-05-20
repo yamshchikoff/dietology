@@ -20,6 +20,7 @@ data/
 ├── extract-msd-dri.py                     # Скрипт: MSD Manual DRI → JSON
 ├── dri-vitamins.json                      # Tier B | 11 vitamins, 154 age/sex entries
 ├── dri-minerals.json                      # Tier B | 14 minerals, 173 age/sex entries
+├── dri-macronutrients-per-kg.json         # Tier B | Ca/P/Mg в mg/kg, 3×17 age/sex групп
 ├── extract-who-hb.py                      # Скрипт: WHO Hb thresholds → JSON
 ├── who-hb-thresholds.json                 # Tier B | 9 diagnostic groups, severity
 ├── extract-wiki-lab-ranges.py             # Скрипт: Wikipedia lab ranges → JSON
@@ -54,18 +55,22 @@ data/
 
 **Данные хранятся в том виде, в каком их даёт источник.** Пересчёт (например, умножение mg/kg на референсный вес) **запрещён** — вес индивида вариативен, модель должна использовать фактический вес человека.
 
-- Если источник даёт значения в mg/kg — в JSON сохраняется `"unit": "mg/kg"` на уровне группы (опциональное поле, переопределяет nutrient-level unit).
-- Если источник даёт абсолютные значения — используется nutrient-level `unit` (например, `"mg"`, `"mcg"`).
-- Модель обязана проверять `unit` на уровне группы перед интерпретацией значения.
+- **mg/kg данные вынесены в отдельный файл** `dri-macronutrients-per-kg.json`. Модель умножает per-kg значение на фактическую массу тела индивида.
+- Файлы с абсолютными значениями (`dri-minerals.json`, `dri-vitamins.json`) используют единую единицу на уровне нутриента (`unit`).
+- Смешение источников в одном файле **не допускается**: один файл = один source_id.
 
-Пример (кальций для младенцев — AI в mg/kg):
+Пример (per-kg, отдельный файл):
 ```json
-{"group": "infants_0_6mo", "value": 66.7, "unit": "mg/kg", "type": "AI"}
+{"name": "Calcium", "unit": "mg/kg", "groups": [
+  {"group": "infants_0_0.5yr", "value": 66.7, "type": "AI"}
+]}
 ```
 
-Пример (кальций для взрослых — RDA в mg):
+Пример (абсолютные значения, отдельный файл):
 ```json
-{"group": "male_19_50yr", "value": 1000, "type": "RDA"}
+{"name": "Calcium", "unit": "mg", "groups": [
+  {"group": "infants_0_6mo", "value": 200, "type": "AI"}
+]}
 ```
 
 ## Источники
@@ -76,6 +81,7 @@ data/
 | `who-NUTRITION_*.json` и др. | WHO GHO via OData API | A | CC BY 4.0 |
 | `dri-vitamins.json` | MSD Manual Professional | B | Merck © — numeric facts |
 | `dri-minerals.json` | MSD Manual Professional | B | Merck © — numeric facts |
+| `dri-macronutrients-per-kg.json` | MSD Manual / IOM 1997 | B | Merck © — numeric facts |
 | `who-hb-thresholds.json` | WHO 2024 Hb Guideline | B | CC BY-NC-SA 3.0 IGO |
 | `lab-reference-ranges.json` | Wikipedia | C | CC BY-SA 3.0 |
 
