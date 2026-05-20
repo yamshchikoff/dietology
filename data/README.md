@@ -14,7 +14,12 @@ data/
 │   ├── usda-foundation-foods-2026-04.zip   # USDA FoodData Central, CC0
 │   ├── who-NUTRITION_ANAEMIA_NONPREGNANT_PREV.json  # WHO GHO, CC BY 4.0
 │   ├── who-NCD_BMI_25A.json               # WHO GHO, CC BY 4.0
-│   └── who-NCD_DIABETES_PREVALENCE_AGESTD.json      # WHO GHO, CC BY 4.0
+│   ├── who-NCD_DIABETES_PREVALENCE_AGESTD.json      # WHO GHO, CC BY 4.0
+│   ├── msd-manual-vitamins-2026-05.html   # MSD Manual DRI Vitamins (source HTML)
+│   ├── msd-manual-trace-minerals-2026-05.html  # MSD Manual DRI Minerals (source HTML)
+│   ├── msd-manual-macronutrients-2026-05.html  # MSD Manual Macronutrients per-kg (source HTML)
+│   ├── wikipedia-lab-ranges-2026-05.html  # Wikipedia API response (source HTML)
+│   └── who-2024-hb-guideline.pdf          # WHO 2024 Hb Guideline (manual download)
 ├── extract-usda.py                        # Скрипт: USDA → foods JSON (+ _meta)
 ├── usda-foundation-foods-essential.json   # Tier A | 363 продукта, 27 nutrients
 ├── extract-msd-dri.py                     # Скрипт: MSD Manual DRI → JSON
@@ -40,6 +45,7 @@ data/
     "extraction_date": "...",   # когда извлечено (системная дата)
     "extraction_script": "...",   # скрипт, создавший файл
     "extracted_by": "agent",    # внутрисистемное авторство
+    "source_file": "data/external/...",  # локальная копия исходного документа
     "source_claims": {
       "presumed_date": "...",   # предполагаемая дата источника
       "presumed_author": "..."  # предполагаемый автор источника

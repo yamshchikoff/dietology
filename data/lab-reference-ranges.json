@@ -1,7 +1,8 @@
 {
   "_meta": {
     "source_id": "wikipedia-lab-ranges",
-    "extraction_date": "2026-05-19T23:02:22Z",
+    "source_file": "data/external/wikipedia-lab-ranges-2026-05.html",
+    "extraction_date": "2026-05-20T19:08:49Z",
     "extraction_script": "data/extract-wiki-lab-ranges.py",
     "extracted_by": "agent",
     "source_claims": {

@@ -7,7 +7,8 @@
     "source_claims": {
       "presumed_date": "2026-04",
       "presumed_author": "USDA FoodData Central, Agricultural Research Service"
-    }
+    },
+    "source_file": "data/external/usda-foundation-foods-2026-04.zip"
   },
   "foods": [
     {

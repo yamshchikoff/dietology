@@ -14,7 +14,9 @@
       "https://iris.who.int/handle/10665/376196"
     ],
     "citation": "WHO. Guideline on haemoglobin cutoffs to define anaemia in individuals and populations. Geneva: World Health Organization; 2024. ISBN 9789240088542.",
-    "method_note": "Venous blood preferred. Capillary blood may overestimate Hb. Altitude and smoking adjustments apply."
+    "method_note": "Venous blood preferred. Capillary blood may overestimate Hb. Altitude and smoking adjustments apply.",
+    "source_file": "data/external/who-2024-hb-guideline.pdf",
+    "source_file_note": "PDF requires manual download from https://www.who.int/publications/i/item/9789240088542 (WHO IRIS uses JS SPA)"
   },
   "diagnostic_thresholds": [
     {

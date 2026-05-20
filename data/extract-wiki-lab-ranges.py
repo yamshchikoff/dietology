@@ -14,7 +14,9 @@ from html.parser import HTMLParser
 from urllib.request import urlopen, Request
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+EXTERNAL_DIR = os.path.join(SCRIPT_DIR, "external")
 OUTPUT = os.path.join(SCRIPT_DIR, "lab-reference-ranges.json")
+SOURCE_CACHE = os.path.join(EXTERNAL_DIR, "wikipedia-lab-ranges-2026-05.html")
 HEADERS = {"User-Agent": "dietology-data-bot/1.0 (contact: me@yamshchikov.ru)"}
 
 API_URL = "https://en.wikipedia.org/w/api.php?action=parse&page=Reference_ranges_for_blood_tests&prop=text&format=json"
@@ -95,11 +97,23 @@ class TableExtractor(HTMLParser):
 
 
 def fetch_html():
-    """Fetch parsed HTML from Wikipedia API."""
+    """Fetch parsed HTML from Wikipedia API. Cache to external/, load from cache if present."""
+    if os.path.exists(SOURCE_CACHE):
+        print(f"  Using cached: {os.path.basename(SOURCE_CACHE)} ({os.path.getsize(SOURCE_CACHE):,} bytes)")
+        with open(SOURCE_CACHE, encoding="utf-8") as f:
+            return f.read()
+
+    print("  Fetching from Wikipedia API...")
     req = Request(API_URL, headers=HEADERS)
     with urlopen(req, timeout=30) as resp:
         data = json.loads(resp.read())
-    return data["parse"]["text"]["*"]
+    html = data["parse"]["text"]["*"]
+
+    os.makedirs(EXTERNAL_DIR, exist_ok=True)
+    with open(SOURCE_CACHE, "w", encoding="utf-8") as f:
+        f.write(html)
+    print(f"  Saved to: {os.path.basename(SOURCE_CACHE)} ({os.path.getsize(SOURCE_CACHE):,} bytes)")
+    return html
 
 
 def clean_cell(text):
@@ -308,6 +322,7 @@ def main():
     output = {
         "_meta": {
             "source_id": "wikipedia-lab-ranges",
+            "source_file": "data/external/wikipedia-lab-ranges-2026-05.html",
             "extraction_date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "extraction_script": "data/extract-wiki-lab-ranges.py",
             "extracted_by": "agent",
