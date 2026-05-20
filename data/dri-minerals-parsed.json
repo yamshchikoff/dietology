@@ -1,0 +1,1110 @@
+{
+  "_meta": {
+    "source_id": "msd-manual-dri",
+    "source_file": "data/external/msd-manual-trace-minerals-2026-05.html",
+    "extraction_date": "2026-05-20T19:26:31Z",
+    "extraction_script": "data/extract-msd-dri-parser.py",
+    "extraction_method": "html-parser",
+    "extracted_by": "agent",
+    "source_claims": {
+      "presumed_date": "2024",
+      "presumed_author": "Merck & Co., Inc., based on National Academies of Sciences, Engineering, and Medicine DRI reports"
+    },
+    "source_urls": [
+      "file:///home/agent/dietology/data/external/msd-manual-trace-minerals-2026-05.html"
+    ]
+  },
+  "_meta_note": "Trace minerals extracted from 'Guidelines for Daily Intake of Trace Minerals' table. Bold = AI, Regular = RDA. This file contains ONLY trace minerals — Ca/P/Mg/Na/K are in dri-minerals.json (absolute) and dri-macronutrients-per-kg.json (per-kg).",
+  "nutrients": [
+    {
+      "name": "Chromium",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "ul": null,
+      "ul_unit": "mcg",
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 5.5,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 15.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 35.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 35.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 35.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 30.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 24.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 25.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 25.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 20.0,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 29.0,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 30.0,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 30.0,
+          "type": "AI"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 44.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 45.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 45.0,
+          "type": "RDA"
+        }
+      ],
+      "ul_note": "No UL established"
+    },
+    {
+      "name": "Copper",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "ul": 10000,
+      "ul_unit": "mcg",
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 220.0,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 440.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 890.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 900.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 900.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 900.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 890.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 900.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 900.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 900.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 1000.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 1000.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 1000.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 1300.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 1300.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 1300.0,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Fluoride",
+      "unit": "mg",
+      "category": "trace_mineral",
+      "ul": 10,
+      "ul_unit": "mg",
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 0.5,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 1.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 3.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 4.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 4.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 4.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 3.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 3.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 3.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 3.0,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 3.0,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 3.0,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 3.0,
+          "type": "AI"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 3.0,
+          "type": "AI"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 3.0,
+          "type": "AI"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 3.0,
+          "type": "AI"
+        }
+      ]
+    },
+    {
+      "name": "Iodine",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "ul": 1100,
+      "ul_unit": "mcg",
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 130.0,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 90.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 150.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 150.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 150.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 150.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 150.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 150.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 150.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 150.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 220.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 220.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 220.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 290.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 290.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 290.0,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Iron",
+      "unit": "mg",
+      "category": "trace_mineral",
+      "ul": 45,
+      "ul_unit": "mg",
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 11.0,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 10.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 11.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 8.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 8.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 8.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 15.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 18.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 18.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 8.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 27.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 27.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 27.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 10.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 9.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 9.0,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Manganese",
+      "unit": "mg",
+      "category": "trace_mineral",
+      "ul": 11,
+      "ul_unit": "mg",
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 0.6,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 1.5,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 2.2,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 2.3,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 2.3,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 2.3,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 1.6,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 1.8,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 1.8,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 1.8,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 2.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 2.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 2.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 2.6,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 2.6,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 2.6,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Molybdenum",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "ul": 2000,
+      "ul_unit": "mcg",
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 3.0,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 22.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 43.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 45.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 45.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 45.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 43.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 45.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 45.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 45.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 50.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 50.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 50.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 50.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 50.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 50.0,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Selenium",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "ul": 400,
+      "ul_unit": "mcg",
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 20.0,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 30.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 55.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 55.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 55.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 55.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 55.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 55.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 55.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 55.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 60.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 60.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 60.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 70.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 70.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 70.0,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Zinc",
+      "unit": "mg",
+      "category": "trace_mineral",
+      "ul": 40,
+      "ul_unit": "mg",
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 3.0,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 5.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 11.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 11.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 11.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 11.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 9.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 8.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 8.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 8.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 12.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 11.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 11.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 13.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 12.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 12.0,
+          "type": "RDA"
+        }
+      ]
+    }
+  ]
+}

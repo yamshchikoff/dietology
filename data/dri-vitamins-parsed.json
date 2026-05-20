@@ -1,0 +1,1185 @@
+{
+  "_meta": {
+    "source_id": "msd-manual-dri",
+    "source_file": "data/external/msd-manual-vitamins-2026-05.html",
+    "extraction_date": "2026-05-20T19:26:31Z",
+    "extraction_script": "data/extract-msd-dri-parser.py",
+    "extraction_method": "html-parser",
+    "extracted_by": "agent",
+    "source_claims": {
+      "presumed_date": "2024",
+      "presumed_author": "Merck & Co., Inc., based on National Academies of Sciences, Engineering, and Medicine DRI reports"
+    },
+    "source_urls": [
+      "file:///home/agent/dietology/data/external/msd-manual-vitamins-2026-05.html"
+    ]
+  },
+  "nutrients": [
+    {
+      "name": "Folate",
+      "unit": "mcg DFE",
+      "ul": 1000,
+      "ul_unit": "mcg DFE",
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 65.0,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 80.0,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 150.0,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 200.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 years",
+          "value": 300.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
+          "value": 400.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_70yr",
+          "sex": "male",
+          "age_range": "19–70 years",
+          "value": 400.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": "> 70 years",
+          "value": 400.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 years",
+          "value": 300.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 400.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_70yr",
+          "sex": "female",
+          "age_range": "19–70 years",
+          "value": 400.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": "> 70 years",
+          "value": 400.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 600.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 500.0,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Niacin",
+      "unit": "mg NE",
+      "ul": 35,
+      "ul_unit": "mg NE",
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 2.0,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 4.0,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 6.0,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 8.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 years",
+          "value": 12.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
+          "value": 16.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_70yr",
+          "sex": "male",
+          "age_range": "19–70 years",
+          "value": 16.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": "> 70 years",
+          "value": 16.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 years",
+          "value": 12.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 14.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_70yr",
+          "sex": "female",
+          "age_range": "19–70 years",
+          "value": 14.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": "> 70 years",
+          "value": 14.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 18.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 17.0,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Riboflavin",
+      "unit": "mg",
+      "ul": null,
+      "ul_unit": "mg",
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 0.3,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 0.4,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 0.5,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 0.6,
+          "type": "RDA"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 years",
+          "value": 0.9,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
+          "value": 1.3,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_70yr",
+          "sex": "male",
+          "age_range": "19–70 years",
+          "value": 1.3,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": "> 70 years",
+          "value": 1.3,
+          "type": "RDA"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 years",
+          "value": 0.9,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 1.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_70yr",
+          "sex": "female",
+          "age_range": "19–70 years",
+          "value": 1.1,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": "> 70 years",
+          "value": 1.1,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 1.4,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 1.6,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Thiamin",
+      "unit": "mg",
+      "ul": null,
+      "ul_unit": "mg",
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 0.2,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 0.3,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 0.5,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 0.6,
+          "type": "RDA"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 years",
+          "value": 0.9,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
+          "value": 1.2,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_70yr",
+          "sex": "male",
+          "age_range": "19–70 years",
+          "value": 1.2,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": "> 70 years",
+          "value": 1.2,
+          "type": "RDA"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 years",
+          "value": 0.9,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 1.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_70yr",
+          "sex": "female",
+          "age_range": "19–70 years",
+          "value": 1.1,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": "> 70 years",
+          "value": 1.1,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 1.4,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 1.4,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Vitamin A",
+      "unit": "mcg RAE",
+      "ul": 3000,
+      "ul_unit": "mcg RAE",
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 400.0,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 500.0,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 300.0,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 400.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 years",
+          "value": 600.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
+          "value": 900.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_70yr",
+          "sex": "male",
+          "age_range": "19–70 years",
+          "value": 900.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": "> 70 years",
+          "value": 900.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 years",
+          "value": 600.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 700.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_70yr",
+          "sex": "female",
+          "age_range": "19–70 years",
+          "value": 700.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": "> 70 years",
+          "value": 700.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 770.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 1300.0,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Vitamin B6",
+      "unit": "mg",
+      "ul": 100,
+      "ul_unit": "mg",
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 0.1,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 0.3,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 0.5,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 0.6,
+          "type": "RDA"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 years",
+          "value": 1.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
+          "value": 1.3,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_70yr",
+          "sex": "male",
+          "age_range": "19–70 years",
+          "value": 1.3,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": "> 70 years",
+          "value": 1.7,
+          "type": "RDA"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 years",
+          "value": 1.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 1.2,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_70yr",
+          "sex": "female",
+          "age_range": "19–70 years",
+          "value": 1.3,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": "> 70 years",
+          "value": 1.5,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 1.9,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 2.0,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Vitamin B12",
+      "unit": "mcg",
+      "ul": null,
+      "ul_unit": "mcg",
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 0.4,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 0.5,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 0.9,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 1.2,
+          "type": "RDA"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 years",
+          "value": 1.8,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
+          "value": 2.4,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_70yr",
+          "sex": "male",
+          "age_range": "19–70 years",
+          "value": 2.4,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": "> 70 years",
+          "value": 2.4,
+          "type": "RDA"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 years",
+          "value": 1.8,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 2.4,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_70yr",
+          "sex": "female",
+          "age_range": "19–70 years",
+          "value": 2.4,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": "> 70 years",
+          "value": 2.4,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 2.6,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 2.8,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Vitamin C",
+      "unit": "mg",
+      "ul": 2000,
+      "ul_unit": "mg",
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 40.0,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 50.0,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 15.0,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 25.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 years",
+          "value": 45.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
+          "value": 75.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_70yr",
+          "sex": "male",
+          "age_range": "19–70 years",
+          "value": 90.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": "> 70 years",
+          "value": 90.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 years",
+          "value": 45.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 65.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_70yr",
+          "sex": "female",
+          "age_range": "19–70 years",
+          "value": 75.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": "> 70 years",
+          "value": 75.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 85.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 120.0,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Vitamin D",
+      "unit": "IU",
+      "ul": 4000,
+      "ul_unit": "IU",
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 400.0,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 400.0,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 600.0,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 600.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 years",
+          "value": 600.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
+          "value": 600.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_19_70yr",
+          "sex": "male",
+          "age_range": "19–70 years",
+          "value": 600.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": "> 70 years",
+          "value": 800.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 years",
+          "value": 600.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 600.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_19_70yr",
+          "sex": "female",
+          "age_range": "19–70 years",
+          "value": 600.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": "> 70 years",
+          "value": 800.0,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 600.0,
+          "type": "AI"
+        },
+        {
+          "group": "breastfeeding_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 600.0,
+          "type": "AI"
+        }
+      ]
+    },
+    {
+      "name": "Vitamin E",
+      "unit": "mg",
+      "ul": 1000,
+      "ul_unit": "mg",
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 4.0,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 5.0,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 6.0,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 7.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 years",
+          "value": 11.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
+          "value": 15.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_70yr",
+          "sex": "male",
+          "age_range": "19–70 years",
+          "value": 15.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": "> 70 years",
+          "value": 15.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 years",
+          "value": 11.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 15.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_70yr",
+          "sex": "female",
+          "age_range": "19–70 years",
+          "value": 15.0,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": "> 70 years",
+          "value": 15.0,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 15.0,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 19.0,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Vitamin K",
+      "unit": "mcg",
+      "ul": null,
+      "ul_unit": "mcg",
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 2.0,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 2.5,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 30.0,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 55.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 years",
+          "value": 60.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
+          "value": 75.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_19_70yr",
+          "sex": "male",
+          "age_range": "19–70 years",
+          "value": 120.0,
+          "type": "AI"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": "> 70 years",
+          "value": 120.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 years",
+          "value": 60.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 75.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_19_70yr",
+          "sex": "female",
+          "age_range": "19–70 years",
+          "value": 90.0,
+          "type": "AI"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": "> 70 years",
+          "value": 90.0,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 90.0,
+          "type": "AI"
+        },
+        {
+          "group": "breastfeeding_19_50yr",
+          "sex": "female",
+          "age_range": "19–50 years",
+          "value": 90.0,
+          "type": "AI"
+        }
+      ]
+    }
+  ]
+}

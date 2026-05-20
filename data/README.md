@@ -22,9 +22,12 @@ data/
 │   └── who-2024-hb-guideline.pdf          # WHO 2024 Hb Guideline (manual download)
 ├── extract-usda.py                        # Скрипт: USDA → foods JSON (+ _meta)
 ├── usda-foundation-foods-essential.json   # Tier A | 363 продукта, 27 nutrients
-├── extract-msd-dri.py                     # Скрипт: MSD Manual DRI → JSON
+├── extract-msd-dri.py                     # Скрипт: MSD Manual DRI → проверка JSON
+├── extract-msd-dri-parser.py              # Скрипт: парсинг MSD HTML → JSON
 ├── dri-vitamins.json                      # Tier B | 11 vitamins, 154 age/sex entries
+├── dri-vitamins-parsed.json               # Tier B | 11 vitamins из HTML-парсера (154 groups)
 ├── dri-minerals.json                      # Tier B | 14 minerals, 173 age/sex entries
+├── dri-minerals-parsed.json               # Tier B | 9 trace minerals из HTML-парсера (144 groups)
 ├── dri-macronutrients-per-kg.json         # Tier B | Ca/P/Mg в mg/kg, 3×17 age/sex групп
 ├── extract-who-hb.py                      # Скрипт: WHO Hb thresholds → JSON
 ├── who-hb-thresholds.json                 # Tier B | 9 diagnostic groups, severity
