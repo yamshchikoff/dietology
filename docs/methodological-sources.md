@@ -82,14 +82,66 @@
 | **Формат** | HTML-таблицы (структурированные, извлекаемые программно) |
 | **Качество** | Авторитетный вторичный источник. Таблицы основаны на National Academies DRI reports. |
 
-MSD Manual — профессиональное медицинское руководство. Таблицы DRI содержат: макронутриенты (белок, энергия, кальций, фосфор, магний) на кг массы тела по возрастным группам; витамины (A, C, D, E, K, B1-B12, фолат) с RDA/AI/UL; минералы (Ca, Fe, Mg, P, K, Na, Zn, Cu, I, Se, Mn, Cr, Mo) с RDA/AI/UL. HTML-таблицы извлекаются программно без ошибок распознавания.
+MSD Manual — профессиональное медицинское руководство. Таблицы DRI содержат: макронутриенты (белок, энергия, кальций, фосфор, магний) на кг массы тела по возрастным группам; витамины (A, C, D, E, K, B1-B12, фолат) с RDA/AI/UL; trace minerals (Fe, Zn, Cu, I, Se, Mn, Cr, Mo, F) с RDA/AI/UL. HTML-таблицы извлекаются программно без ошибок распознавания.
 
 **Конкретные URL таблиц:**
 - Макронутриенты: `https://www.msdmanuals.com/professional/multimedia/table/recommended-dietary-reference-intakes-for-some-macronutrients-food-and-nutrition-board-institute-of-medicine-of-the-national-academies`
-- Витамины: `https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins` (проверить точный URL)
-- Минералы: `https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-minerals` (проверить точный URL)
+- Витамины: `https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins`
+- Trace minerals: `https://www.msdmanuals.com/professional/multimedia/table/guidelines-for-daily-intake-of-trace-minerals`
 
-### National Academies DRI — The Essential Guide — Tier B
+### IOM DRI — Calcium and Vitamin D (2011) — Tier A
+
+| | |
+|---|---|
+| **URL** | https://nap.nationalacademies.org/catalog/13050/ |
+| **Язык** | EN |
+| **Лицензия** | Бесплатный PDF. **Числовые факты не являются объектом авторского права.** |
+| **MIT-совместимо** | Да (числовые значения DRI — факты) |
+| **Формат** | PDF с текстовым слоем (born-digital, 2011). Парсер: `extract-iom-dri.py` (pdfplumber). |
+| **Качество** | Первичный авторитетный источник. Текущий стандарт DRI для Calcium. |
+
+22 возрастные группы включая teen/adult pregnancy/breastfeeding subgroups. RDA/AI + UL. Парсер извлекает таблицы из Summary Tables (pp. 499–542).
+
+### IOM DRI — Ca, P, Mg, Vitamin D, Fluoride (1997) — Tier A
+
+| | |
+|---|---|
+| **URL** | https://nap.nationalacademies.org/catalog/5776/ |
+| **Язык** | EN |
+| **Лицензия** | Бесплатный PDF. **Числовые факты не являются объектом авторского права.** |
+| **MIT-совместимо** | Да (числовые значения DRI — факты) |
+| **Формат** | PDF (scrambled text, непарсим для UL). RDA/AI значения извлечены через NCBI Bookshelf HTML-рендеринг того же отчёта. UL — через LPI (см. ниже). |
+| **Качество** | Первичный авторитетный источник. Оригинальный DRI-отчёт для P и Mg. |
+
+RDA/AI для Phosphorus и Magnesium извлечены из NCBI Bookshelf (`ttt00057_1` table) — машиночитаемого HTML-рендеринга IOM 1997. 22 группы для каждого нутриента. Кросс-верификация: 24/28 полное совпадение, 4 PARTIAL_MATCH (разная гранулярность pregnancy/breastfeeding).
+
+### NASEM DRI — Sodium and Potassium (2019) — Tier A
+
+| | |
+|---|---|
+| **URL** | https://nap.nationalacademies.org/catalog/25353 |
+| **Язык** | EN |
+| **Лицензия** | Бесплатный PDF. **Числовые факты не являются объектом авторского права.** |
+| **MIT-совместимо** | Да (числовые значения DRI — факты) |
+| **Формат** | PDF с текстовым слоем (born-digital, 2019). 4-page Highlights summary. Парсер: `extract-nas-dri-2019.py` (pdfplumber). |
+| **Качество** | Первичный авторитетный источник. Текущий стандарт DRI для Sodium и Potassium в US/Canada. |
+
+22 возрастные группы для Sodium и Potassium: infants, children, males/females (6 age brackets), pregnant (3 age brackets), breastfeeding (3 age brackets). Sodium: AI + CDRR (Chronic Disease Risk Reduction Intake). Potassium: AI. UL = ND для обоих.
+
+### Linus Pauling Institute — Micronutrient Information Center (Minerals) — Tier B
+
+| | |
+|---|---|
+| **URL** | https://lpi.oregonstate.edu/mic/minerals/phosphorus, https://lpi.oregonstate.edu/mic/minerals/magnesium |
+| **Язык** | EN |
+| **Лицензия** | Copyright Oregon State University. **Числовые факты не являются объектом авторского права.** |
+| **MIT-совместимо** | Да (числовые значения UL — факты) |
+| **Формат** | HTML-таблицы (структурированные, извлекаемые программно). Парсер: `extract-lpi-ul.py`. |
+| **Качество** | Авторитетный вторичный академический источник. Точно воспроизводит IOM 1997 UL-значения. |
+
+Tolerable Upper Intake Levels (UL) для Phosphorus (9 возрастных групп) и Magnesium (6 возрастных групп). Magnesium UL применяется только к supplemental magnesium, не к пищевым источникам. Phosphorus UL: 4000 mg (19-70 yr), 3000 mg (>70 yr).
+
+### National Academies DRI — The Essential Guide — Tier B (deferred)
 
 | | |
 |---|---|
@@ -100,7 +152,7 @@ MSD Manual — профессиональное медицинское руко�
 | **Формат** | PDF с текстовым слоем (born-digital, 2006). Summary Tables: pp. 529–542 |
 | **Качество** | Первичный авторитетный источник. Золотой стандарт DRI для США и Канады. |
 
-Полный свод DRI (RDA, EAR, AI, UL) по всем нутриентам для всех возрастных групп. Текстовый слой извлекаем, таблицы парсимы. Требуется программная экстракция + ручная валидация извлечённых значений. Обновления по отдельным нутриентам выходили в 2019 (Na, K) и 2023 (Energy).
+Полный свод DRI (RDA, EAR, AI, UL) по всем нутриентам для всех возрастных групп. Deferred — требуется бесплатный аккаунт для скачивания PDF. Покрыто per-nutrient источниками (MSD, IOM 2011, NAS 2019, NCBI, LPI) с большей гранулярностью.
 
 ### WHO 2024 Haemoglobin Guideline — Tier B
 
@@ -194,7 +246,7 @@ MSD Manual — профессиональное медицинское руко�
 | | Брендированные продукты (штрихкоды) | Open Food Facts | B | 🔜 context-only (ODbL, 3.7M продуктов) |
 | **Суточные нормы (RDA/UL)** | Витамины | MSD Manual DRI Tables | A | ✅ готово (overlay: 11 vitamins, 154 groups) |
 | | Витамины (первичный источник) | National Academies DRI Guide | B | 🔧 экстракция PDF pp. 529–542 |
-| | Минералы | MSD Manual DRI Tables + IOM 2011 + IOM 1997 | A | ✅ готово (overlay: 14 minerals, 214 groups) |
+| | Минералы | MSD Manual + IOM 2011 + IOM 1997 (NCBI) + NAS 2019 + LPI | A | ✅ готово (overlay: 14 minerals, 254 groups, 0 manual_transcription) |
 | | Минералы (первичный источник) | National Academies DRI Guide | B | 🔧 экстракция PDF pp. 529–542 |
 | | Макронутриенты | MSD Manual DRI Tables | A | ✅ готово (overlay: 3 per-kg, 51 groups) |
 | | Альтернатива (EU) | EFSA DRV Finder | B | ⛔ заблокирован (JS-only). Мониторинг. |
@@ -231,11 +283,17 @@ MSD Manual — профессиональное медицинское руко�
 | **WHO Publications — нарративные PDF** | CC BY-NC-SA + не machine-readable |
 | **ESPEN Guidelines** | Нарративный PDF, требует NLP-экстракции → риск ошибок |
 | **NIH ODS Fact Sheets** | Cloudflare-блокировка (403). US government public domain, но недоступны программно. Возврат при снятии блокировки. |
+| **Health Canada DRI Tables** | JS-only рендеринг — таблицы не присутствуют в исходном HTML. Программно недоступны. |
+| **IOM 1997 PDF (прямая экстракция UL)** | Scrambled текст в PDF — `extract-iom-dri.py` подтвердил невозможность надёжного pdfplumber-извлечения UL-таблиц. RDA/AI получены через NCBI Bookshelf. UL — через LPI. |
 | **MIMIC-IV / hospital-specific ranges** | Tier D — исключён по решению maintainer |
 
 ### TODO
 
-- [x] Скрипт экстракции DRI таблиц из MSD Manual (HTML) — витамины, минералы, макронутриенты
+- [x] Скрипт экстракции DRI таблиц из MSD Manual (HTML) — витамины, trace minerals, макронутриенты
+- [x] Скрипт экстракции Calcium DRI из IOM 2011 PDF
+- [x] Скрипт экстракции Na/K DRI из NAS 2019 PDF
+- [x] Скрипт экстракции P/Mg UL из Linus Pauling Institute HTML
+- [x] Кросс-верификация P/Mg RDA/AI через NCBI Bookshelf (IOM 1997 machine-readable)
 - [ ] Скрипт экстракции DRI Summary Tables из National Academies PDF (pp. 529–542)
 - [x] Скрипт экстракции WHO 2024 Haemoglobin thresholds
 - [x] Курирование JSON референсных диапазонов из Wikipedia (с валидацией по первичным источникам)
