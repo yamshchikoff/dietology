@@ -1,0 +1,296 @@
+{
+  "_meta": {
+    "source_id": "iom-dri-2011",
+    "source_file": "data/external/iom-dri-calcium-vitamin-d-2011.pdf",
+    "source_urls": [
+      "https://nap.nationalacademies.org/catalog/13050/"
+    ],
+    "extraction_date": "2026-05-21T14:52:05Z",
+    "extraction_script": "data/extract-iom-dri.py",
+    "extraction_method": "pdfplumber-text-strategy",
+    "extracted_by": "agent",
+    "source_claims": {
+      "presumed_date": "2011",
+      "presumed_author": "Institute of Medicine, National Academies Press"
+    },
+    "note": "Calcium DRI values extracted from IOM 2011 PDF Table S-1 (page 23). This is the current authoritative source for Calcium, superseding IOM 1997. Infants: AI. All other groups: RDA. UL values included per age group."
+  },
+  "nutrients": [
+    {
+      "name": "Calcium",
+      "unit": "mg",
+      "category": "macromineral",
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0 to 6mo",
+          "value": 200,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "6 to 12mo",
+          "value": 260,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3y",
+          "value": 700,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13y",
+          "value": 1300,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18y",
+          "value": 1300,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "male_51_70yr",
+          "sex": "male",
+          "age_range": "51–70y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": "> 70y",
+          "value": 1200,
+          "type": "RDA"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13y",
+          "value": 1300,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18y",
+          "value": 1300,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "female_51_70yr",
+          "sex": "female",
+          "age_range": "51–70y",
+          "value": 1200,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": "> 70y",
+          "value": 1200,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18y",
+          "value": 1300,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18y",
+          "value": 1300,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50y",
+          "value": 1000,
+          "type": "RDA"
+        }
+      ],
+      "ul_groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "value": 1000
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "value": 1500
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "value": 2500
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "value": 2500
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "value": 3000
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "value": 3000
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "value": 2500
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "value": 2500
+        },
+        {
+          "group": "male_51_70yr",
+          "sex": "male",
+          "value": 2000
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "value": 2000
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "value": 3000
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "value": 3000
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "value": 2500
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "value": 2500
+        },
+        {
+          "group": "female_51_70yr",
+          "sex": "female",
+          "value": 2000
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "value": 2000
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "value": 3000
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "value": 2500
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "value": 2500
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "value": 3000
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "value": 2500
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "value": 2500
+        }
+      ],
+      "ul": 2500,
+      "ul_unit": "mg",
+      "ul_note": "Adults 19–50 yr. UL 2000 mg for adults >50 yr."
+    }
+  ]
+}
