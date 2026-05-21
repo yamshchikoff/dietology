@@ -1,0 +1,1853 @@
+{
+  "_meta": {
+    "schema": "dri-minerals-overlay-v1",
+    "description": "Merged DRI values for 14 minerals: machine-parsed values from IOM/NCBI/MSD sources at finest available granularity, combined with metadata (UL notes, per-group caveats) from manual transcription.",
+    "build_script": "data/build-minerals-overlay.py",
+    "build_date": "2026-05-21T19:34:59Z",
+    "sources": [
+      "iom-dri-1997",
+      "iom-dri-2011",
+      "msd-consumer-minerals",
+      "msd-manual-dri"
+    ],
+    "input_files": [
+      "data/dri-minerals.json (metadata)",
+      "data/dri-minerals-parsed.json (trace mineral values)",
+      "data/dri-calcium-iom-2011-parsed.json (Ca values + ul_groups)",
+      "data/dri-macrominerals-absolute-parsed.json (Na/K values)",
+      "data/dri-p-mg-ncbi-crosscheck.json (P/Mg values via NCBI cross-verification)"
+    ],
+    "stats": {
+      "nutrients": 14,
+      "total_groups": 214,
+      "granularity": "finest available per source: Ca 22 groups (IOM 2011), P/Mg 22 groups each (IOM 1997 via NCBI), trace minerals 16 groups each (MSD Professional), Na/K 2 adult groups (MSD Consumer)",
+      "pregnancy_breastfeeding": "split into teen (14-18yr), adult 19-30yr, adult 31-50yr subgroups — matching IOM source granularity"
+    }
+  },
+  "nutrients": [
+    {
+      "name": "Chromium",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/guidelines-for-daily-intake-of-trace-minerals"
+      ],
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 5.5,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 15,
+          "type": "AI"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 35,
+          "type": "AI"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 35,
+          "type": "AI"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 35,
+          "type": "AI"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 30,
+          "type": "AI"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 24,
+          "type": "AI"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 25,
+          "type": "AI"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 25,
+          "type": "AI"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 20,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 29,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 30,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 30,
+          "type": "AI"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 44,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 45,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 45,
+          "type": "RDA"
+        }
+      ],
+      "ul": null,
+      "ul_unit": "mcg",
+      "ul_note": "No UL established",
+      "note": "Essentiality questioned by recent research (Vincent, J Nutr 2017). Values are AI."
+    },
+    {
+      "name": "Copper",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/guidelines-for-daily-intake-of-trace-minerals"
+      ],
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 220,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 440,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 890,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 900,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 900,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 900,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 890,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 900,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 900,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 900,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 1300,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 1300,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 1300,
+          "type": "RDA"
+        }
+      ],
+      "ul": 10000,
+      "ul_unit": "mcg"
+    },
+    {
+      "name": "Fluoride",
+      "unit": "mg",
+      "category": "trace_mineral",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/guidelines-for-daily-intake-of-trace-minerals"
+      ],
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 0.5,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 1,
+          "type": "AI"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 3,
+          "type": "AI"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 4,
+          "type": "AI"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 4,
+          "type": "AI"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 4,
+          "type": "AI"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 3,
+          "type": "AI"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 3,
+          "type": "AI"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 3,
+          "type": "AI"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 3,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 3,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 3,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 3,
+          "type": "AI"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 3,
+          "type": "AI"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 3,
+          "type": "AI"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 3,
+          "type": "AI"
+        }
+      ],
+      "ul": 10,
+      "ul_unit": "mg"
+    },
+    {
+      "name": "Iodine",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/guidelines-for-daily-intake-of-trace-minerals"
+      ],
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 130,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 90,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 150,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 150,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 150,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 150,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 150,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 150,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 150,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 150,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 220,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 220,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 220,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 290,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 290,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 290,
+          "type": "RDA"
+        }
+      ],
+      "ul": 1100,
+      "ul_unit": "mcg"
+    },
+    {
+      "name": "Iron",
+      "unit": "mg",
+      "category": "trace_mineral",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/guidelines-for-daily-intake-of-trace-minerals"
+      ],
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 11,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 10,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 11,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 8,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 8,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 8,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 15,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 18,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 18,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 8,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 27,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 27,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 27,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 10,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 9,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 9,
+          "type": "RDA"
+        }
+      ],
+      "ul": 45,
+      "ul_unit": "mg"
+    },
+    {
+      "name": "Manganese",
+      "unit": "mg",
+      "category": "trace_mineral",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/guidelines-for-daily-intake-of-trace-minerals"
+      ],
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 0.6,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 1.5,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 2.2,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 2.3,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 2.3,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 2.3,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 1.6,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 1.8,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 1.8,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 1.8,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 2,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 2,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 2,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 2.6,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 2.6,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 2.6,
+          "type": "RDA"
+        }
+      ],
+      "ul": 11,
+      "ul_unit": "mg"
+    },
+    {
+      "name": "Molybdenum",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/guidelines-for-daily-intake-of-trace-minerals"
+      ],
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 3,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 22,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 43,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 45,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 45,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 45,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 43,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 45,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 45,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 45,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 50,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 50,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 50,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 50,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 50,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 50,
+          "type": "RDA"
+        }
+      ],
+      "ul": 2000,
+      "ul_unit": "mcg"
+    },
+    {
+      "name": "Selenium",
+      "unit": "mcg",
+      "category": "trace_mineral",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/guidelines-for-daily-intake-of-trace-minerals"
+      ],
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 20,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 30,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 55,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 55,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 55,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 55,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 55,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 55,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 55,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 55,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 60,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 60,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 60,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 70,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 70,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 70,
+          "type": "RDA"
+        }
+      ],
+      "ul": 400,
+      "ul_unit": "mcg"
+    },
+    {
+      "name": "Zinc",
+      "unit": "mg",
+      "category": "trace_mineral",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/guidelines-for-daily-intake-of-trace-minerals"
+      ],
+      "groups": [
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7 mo–1 yr",
+          "value": 3,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8",
+          "value": 5,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18",
+          "value": 11,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30",
+          "value": 11,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50",
+          "value": 11,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt50yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 11,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 9,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 8,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 8,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt50yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 8,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 12,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 11,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 11,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18",
+          "value": 13,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30",
+          "value": 12,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50",
+          "value": 12,
+          "type": "RDA"
+        }
+      ],
+      "ul": 40,
+      "ul_unit": "mg"
+    },
+    {
+      "name": "Calcium",
+      "unit": "mg",
+      "category": "macromineral",
+      "source_id": "iom-dri-2011",
+      "source_urls": [
+        "https://nap.nationalacademies.org/catalog/13050/"
+      ],
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0 to 6mo",
+          "value": 200,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "6 to 12mo",
+          "value": 260,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3y",
+          "value": 700,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13y",
+          "value": 1300,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18y",
+          "value": 1300,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "male_51_70yr",
+          "sex": "male",
+          "age_range": "51–70y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": "> 70y",
+          "value": 1200,
+          "type": "RDA"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13y",
+          "value": 1300,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18y",
+          "value": 1300,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50y",
+          "value": 1000,
+          "type": "RDA"
+        },
+        {
+          "group": "female_51_70yr",
+          "sex": "female",
+          "age_range": "51–70y",
+          "value": 1200,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": "> 70y",
+          "value": 1200,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18y",
+          "value": 1300,
+          "type": "RDA",
+          "note": "AI for pregnant ≤18 yr: 1300 mg"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30y",
+          "value": 1000,
+          "type": "RDA",
+          "note": "AI for pregnant ≤18 yr: 1300 mg"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50y",
+          "value": 1000,
+          "type": "RDA",
+          "note": "AI for pregnant ≤18 yr: 1300 mg"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18y",
+          "value": 1300,
+          "type": "RDA",
+          "note": "AI for breastfeeding ≤18 yr: 1300 mg"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30y",
+          "value": 1000,
+          "type": "RDA",
+          "note": "AI for breastfeeding ≤18 yr: 1300 mg"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50y",
+          "value": 1000,
+          "type": "RDA",
+          "note": "AI for breastfeeding ≤18 yr: 1300 mg"
+        }
+      ],
+      "ul": 2500,
+      "ul_unit": "mg",
+      "ul_note": "Adults 19–50 yr. UL 2000 mg for adults >50 yr.",
+      "ul_groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "value": 1000
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "value": 1500
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "value": 2500
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "value": 2500
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "value": 3000
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "value": 3000
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "value": 2500
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "value": 2500
+        },
+        {
+          "group": "male_51_70yr",
+          "sex": "male",
+          "value": 2000
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "value": 2000
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "value": 3000
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "value": 3000
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "value": 2500
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "value": 2500
+        },
+        {
+          "group": "female_51_70yr",
+          "sex": "female",
+          "value": 2000
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "value": 2000
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "value": 3000
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "value": 2500
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "value": 2500
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "value": 3000
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "value": 2500
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "value": 2500
+        }
+      ]
+    },
+    {
+      "name": "Phosphorus",
+      "unit": "mg",
+      "category": "macromineral",
+      "source_id": "iom-dri-1997",
+      "source_urls": [
+        "https://nap.nationalacademies.org/catalog/5776/",
+        "https://www.ncbi.nlm.nih.gov/books/NBK222881/table/ttt00057_1/"
+      ],
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 mo",
+          "value": 100,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 mo",
+          "value": 275,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 y",
+          "value": 460,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 y",
+          "value": 500,
+          "type": "RDA"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 y",
+          "value": 1250,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 y",
+          "value": 1250,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30 y",
+          "value": 700,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50 y",
+          "value": 700,
+          "type": "RDA"
+        },
+        {
+          "group": "male_51_70yr",
+          "sex": "male",
+          "age_range": "51–70 y",
+          "value": 700,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": ">70 y",
+          "value": 700,
+          "type": "RDA"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 y",
+          "value": 1250,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 y",
+          "value": 1250,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 y",
+          "value": 700,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 y",
+          "value": 700,
+          "type": "RDA"
+        },
+        {
+          "group": "female_51_70yr",
+          "sex": "female",
+          "age_range": "51–70 y",
+          "value": 700,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": ">70 y",
+          "value": 700,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "≤18 y",
+          "value": 1250,
+          "type": "RDA",
+          "note": "RDA for pregnant ≤18 yr: 1250 mg"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 y",
+          "value": 700,
+          "type": "RDA",
+          "note": "RDA for pregnant ≤18 yr: 1250 mg"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 y",
+          "value": 700,
+          "type": "RDA",
+          "note": "RDA for pregnant ≤18 yr: 1250 mg"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "≤18 y",
+          "value": 1250,
+          "type": "RDA",
+          "note": "RDA for breastfeeding ≤18 yr: 1250 mg"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 y",
+          "value": 700,
+          "type": "RDA",
+          "note": "RDA for breastfeeding ≤18 yr: 1250 mg"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 y",
+          "value": 700,
+          "type": "RDA",
+          "note": "RDA for breastfeeding ≤18 yr: 1250 mg"
+        }
+      ],
+      "ul": 4000,
+      "ul_unit": "mg",
+      "ul_note": "Adults 19–70 yr. UL 3000 mg for adults >70 yr.",
+      "metadata_source": "manual_transcription"
+    },
+    {
+      "name": "Magnesium",
+      "unit": "mg",
+      "category": "macromineral",
+      "source_id": "iom-dri-1997",
+      "source_urls": [
+        "https://nap.nationalacademies.org/catalog/5776/",
+        "https://www.ncbi.nlm.nih.gov/books/NBK222881/table/ttt00057_1/"
+      ],
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 mo",
+          "value": 30,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 mo",
+          "value": 75,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 y",
+          "value": 80,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 y",
+          "value": 130,
+          "type": "RDA"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 y",
+          "value": 240,
+          "type": "RDA"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 y",
+          "value": 410,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30 y",
+          "value": 400,
+          "type": "RDA"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50 y",
+          "value": 420,
+          "type": "RDA"
+        },
+        {
+          "group": "male_51_70yr",
+          "sex": "male",
+          "age_range": "51–70 y",
+          "value": 420,
+          "type": "RDA"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": ">70 y",
+          "value": 420,
+          "type": "RDA"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 y",
+          "value": 240,
+          "type": "RDA"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 y",
+          "value": 360,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 y",
+          "value": 310,
+          "type": "RDA"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 y",
+          "value": 320,
+          "type": "RDA"
+        },
+        {
+          "group": "female_51_70yr",
+          "sex": "female",
+          "age_range": "51–70 y",
+          "value": 320,
+          "type": "RDA"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": ">70 y",
+          "value": 320,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "≤18 y",
+          "value": 400,
+          "type": "RDA",
+          "note": "RDA for pregnant ≤18 yr: 400 mg"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 y",
+          "value": 350,
+          "type": "RDA",
+          "note": "RDA for pregnant ≤18 yr: 400 mg"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 y",
+          "value": 360,
+          "type": "RDA",
+          "note": "RDA for pregnant ≤18 yr: 400 mg"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "≤18 y",
+          "value": 360,
+          "type": "RDA",
+          "note": "RDA for breastfeeding ≤18 yr: 360 mg"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 y",
+          "value": 310,
+          "type": "RDA",
+          "note": "RDA for breastfeeding ≤18 yr: 360 mg"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 y",
+          "value": 320,
+          "type": "RDA",
+          "note": "RDA for breastfeeding ≤18 yr: 360 mg"
+        }
+      ],
+      "ul": 350,
+      "ul_unit": "mg",
+      "ul_note": "UL applies to supplemental magnesium only, not food sources",
+      "metadata_source": "manual_transcription"
+    },
+    {
+      "name": "Potassium",
+      "unit": "mg",
+      "category": "macromineral",
+      "source_id": "msd-consumer-minerals",
+      "source_urls": [
+        "https://www.msdmanuals.com/home/disorders-of-nutrition/minerals/overview-of-minerals"
+      ],
+      "groups": [
+        {
+          "group": "adult_male",
+          "sex": "male",
+          "age_range": "adult",
+          "value": 3400,
+          "type": "AI"
+        },
+        {
+          "group": "adult_female",
+          "sex": "female",
+          "age_range": "adult",
+          "value": 2600,
+          "type": "AI"
+        }
+      ],
+      "ul": null,
+      "ul_note": "No UL established from food sources",
+      "note": "AI from National Academies DRI (2019). Age-specific AI values: infants 0–6 mo 400 mg, 7–12 mo 700 mg, children 1–3 yr 3000 mg, 4–8 yr 3800 mg, males 9–13 yr 4500 mg, 14–18 yr 4700 mg, 19+ yr 3400 mg. Females 9–13 yr 4500 mg, 14–18 yr 4700 mg, 19+ yr 2600 mg.",
+      "metadata_source": "manual_transcription"
+    },
+    {
+      "name": "Sodium",
+      "unit": "mg",
+      "category": "macromineral",
+      "source_id": "msd-consumer-minerals",
+      "source_urls": [
+        "https://www.msdmanuals.com/home/disorders-of-nutrition/minerals/overview-of-minerals"
+      ],
+      "groups": [
+        {
+          "group": "adult_male",
+          "sex": "male",
+          "age_range": "adult",
+          "value": 1500,
+          "type": "AI"
+        },
+        {
+          "group": "adult_female",
+          "sex": "female",
+          "age_range": "adult",
+          "value": 1500,
+          "type": "AI"
+        }
+      ],
+      "ul": 2300,
+      "ul_unit": "mg",
+      "ul_note": "Chronic Disease Risk Reduction (CDRR) intake. UL not defined.",
+      "note": "AI from MSD Manual Consumer table. Age-specific AI values: infants 0–6 mo 110 mg, 7–12 mo 370 mg, children 1–3 yr 800 mg, 4–8 yr 1000 mg, 9–13 yr 1200 mg, 14+ yr 1500 mg.",
+      "metadata_source": "manual_transcription"
+    }
+  ]
+}

@@ -30,6 +30,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Исправления идут отдельным коммитом (не амендить рабочий коммит)
 - После каждого коммита — обязательный push в оба remote (github + gitflic)
 
+## Данные и архитектура
+
+Слои данных: [data/README.md](data/README.md) — верхнеуровнево, [docs/data-layers.md](docs/data-layers.md) — детально (5 слоёв от source documents до sources-final.json).
+
+- **Финальные данные для модели (8 файлов):** `sources-final.json` (манифест источников, 15 записей) → `data-index.json` (манифест datasets, 7 записей) → 3 DRI overlay + USDA + WHO Hb + lab ranges
+- **Полная пересборка:** 7 шагов, от парсинга HTML/PDF до `sources-final.json`
+- **Оверлейный принцип:** machine-verified значения + rich metadata без модификации существующих файлов
+- **Каждый нутриент** имеет per-nutrient `source_id` с прослеживанием до исходного документа
+
 ## Данные и лицензирование
 
 **Проект лицензирован под MIT.** Справочные данные извлекаются из публичных источников по модели «numeric facts extraction»:

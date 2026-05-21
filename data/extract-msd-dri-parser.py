@@ -27,6 +27,9 @@ MACRONUTRIENTS_HTML = os.path.join(EXTERNAL_DIR, "msd-manual-macronutrients-2026
 MACROMINERALS_ABSOLUTE_OUT = os.path.join(SCRIPT_DIR, "dri-macrominerals-absolute-parsed.json")
 MACRONUTRIENTS_PER_KG_OUT = os.path.join(SCRIPT_DIR, "dri-macronutrients-per-kg-parsed.json")
 
+NCBI_HTML = os.path.join(EXTERNAL_DIR, "ncbi-iom1997-dri-rda-ai.html")
+NCBI_CROSSCHECK_OUT = os.path.join(SCRIPT_DIR, "dri-p-mg-ncbi-crosscheck.json")
+
 VITAMINS_EXISTING = os.path.join(SCRIPT_DIR, "dri-vitamins.json")
 MINERALS_EXISTING = os.path.join(SCRIPT_DIR, "dri-minerals.json")
 
@@ -723,6 +726,249 @@ def parse_macronutrients_per_kg(rows):
     return nutrients
 
 
+# ── NCBI IOM 1997 Cross-verification ────────────────────────────────
+
+CATEGORIES = {"Infants", "Children", "Males", "Females", "Pregnancy", "Lactation"}
+
+# Map NCBI (category, age_label) → dri-minerals group_id
+# P groups are coarser (male_9_18yr, male_19_70yr, etc.)
+NCBI_TO_DRI_P = {
+    ("Infants", "0–6 mo"): "infants_0_6mo",
+    ("Infants", "7–12 mo"): "infants_7_12mo",
+    ("Children", "1–3 y"): "children_1_3yr",
+    ("Children", "4–8 y"): "children_4_8yr",
+    ("Males", "9–13 y"): "male_9_18yr",
+    ("Males", "14–18 y"): "male_9_18yr",
+    ("Males", "19–30 y"): "male_19_70yr",
+    ("Males", "31–50 y"): "male_19_70yr",
+    ("Males", "51–70 y"): "male_19_70yr",
+    ("Males", ">70 y"): "male_gt70yr",
+    ("Females", "9–13 y"): "female_9_18yr",
+    ("Females", "14–18 y"): "female_9_18yr",
+    ("Females", "19–30 y"): "female_19_70yr",
+    ("Females", "31–50 y"): "female_19_70yr",
+    ("Females", "51–70 y"): "female_19_70yr",
+    ("Females", ">70 y"): "female_gt70yr",
+    ("Pregnancy", "≤18 y"): "pregnant",
+    ("Pregnancy", "19–30 y"): "pregnant",
+    ("Pregnancy", "31–50 y"): "pregnant",
+    ("Lactation", "≤18 y"): "breastfeeding",
+    ("Lactation", "19–30 y"): "breastfeeding",
+    ("Lactation", "31–50 y"): "breastfeeding",
+}
+
+# Mg groups are finer (male_9_13yr, male_14_18yr, male_19_30yr, etc.)
+NCBI_TO_DRI_MG = {
+    ("Infants", "0–6 mo"): "infants_0_6mo",
+    ("Infants", "7–12 mo"): "infants_7_12mo",
+    ("Children", "1–3 y"): "children_1_3yr",
+    ("Children", "4–8 y"): "children_4_8yr",
+    ("Males", "9–13 y"): "male_9_13yr",
+    ("Males", "14–18 y"): "male_14_18yr",
+    ("Males", "19–30 y"): "male_19_30yr",
+    ("Males", "31–50 y"): "male_31_50yr",
+    ("Males", "51–70 y"): "male_gt50yr",
+    ("Males", ">70 y"): "male_gt50yr",
+    ("Females", "9–13 y"): "female_9_13yr",
+    ("Females", "14–18 y"): "female_14_18yr",
+    ("Females", "19–30 y"): "female_19_30yr",
+    ("Females", "31–50 y"): "female_31_50yr",
+    ("Females", "51–70 y"): "female_gt50yr",
+    ("Females", ">70 y"): "female_gt50yr",
+    ("Pregnancy", "≤18 y"): "pregnant",
+    ("Pregnancy", "19–30 y"): "pregnant",
+    ("Pregnancy", "31–50 y"): "pregnant",
+    ("Lactation", "≤18 y"): "breastfeeding",
+    ("Lactation", "19–30 y"): "breastfeeding",
+    ("Lactation", "31–50 y"): "breastfeeding",
+}
+
+
+def parse_ncbi_dri_table(filepath):
+    """Parse NCBI Bookshelf IOM 1997 RDA/AI table for P and Mg cross-verification.
+
+    Returns list of dicts: {nutrient, group_id, age_label, category, value, is_ai, ncbi_raw}
+    """
+    tables = parse_html(filepath)
+    if not tables:
+        raise ValueError("No tables found in NCBI HTML")
+    target = tables[0]
+
+    entries = []
+    current_category = None
+    # P is col index 2 (third column, 0-based), Mg is col index 3
+    for row in target:
+        cells = [c for c, _ in row]
+        if not cells:
+            continue
+
+        first = cells[0].strip()
+
+        # Category row: single cell with category name
+        if len(cells) == 1 and first in CATEGORIES:
+            current_category = first
+            continue
+
+        # Second half header row: "Riboflavin" — stop here
+        if first.startswith("Riboflavin"):
+            break
+
+        # Data row: should have ≥4 cells (Life Stage + Ca + P + Mg + ...)
+        if current_category and len(cells) >= 4:
+            age_label = first
+            # Clean age label: normalize en-dash, unicode chars, collapse spaces
+            age_label = re.sub(r"\s+", " ", age_label).strip()
+            # Remove spaces around special chars: "> 70 y" → ">70 y", "≤ 18 y" → "≤18 y"
+            age_label = re.sub(r"([>≤≥])\s+", r"\1", age_label)
+            p_raw = cells[2].strip() if len(cells) > 2 else ""
+            mg_raw = cells[3].strip() if len(cells) > 3 else ""
+
+            # Check AI marker (*)
+            p_is_ai = p_raw.endswith("*")
+            mg_is_ai = mg_raw.endswith("*")
+            p_val = _parse_ncbi_value(p_raw)
+            mg_val = _parse_ncbi_value(mg_raw)
+
+            # P entry
+            p_key = (current_category, age_label)
+            p_group = NCBI_TO_DRI_P.get(p_key)
+            if p_group and p_val is not None:
+                entries.append({
+                    "nutrient": "Phosphorus",
+                    "group_id": p_group,
+                    "age_label": age_label,
+                    "category": current_category,
+                    "value": p_val,
+                    "is_ai": p_is_ai,
+                    "ncbi_raw": p_raw,
+                })
+
+            # Mg entry
+            mg_key = (current_category, age_label)
+            mg_group = NCBI_TO_DRI_MG.get(mg_key)
+            if mg_group and mg_val is not None:
+                entries.append({
+                    "nutrient": "Magnesium",
+                    "group_id": mg_group,
+                    "age_label": age_label,
+                    "category": current_category,
+                    "value": mg_val,
+                    "is_ai": mg_is_ai,
+                    "ncbi_raw": mg_raw,
+                })
+            elif mg_key not in NCBI_TO_DRI_MG:
+                print(f"  WARNING: unknown NCBI Mg group: {mg_key}")
+
+    return entries
+
+
+def _parse_ncbi_value(raw):
+    """Parse a numeric value from NCBI table cell, stripping * and handling ND.
+
+    Returns int or None (for ND).
+    """
+    if not raw or raw == "ND":
+        return None
+    # Remove * (AI marker), commas, and HTML entity fragments
+    cleaned = raw.replace("*", "").replace(",", "").strip()
+    try:
+        return int(cleaned)
+    except ValueError:
+        # Try float (for values like "0.01" in fluoride, not applicable for P/Mg)
+        try:
+            return float(cleaned)
+        except ValueError:
+            return None
+
+
+def crosscheck_ncbi(ncbi_entries, dri_file):
+    """Cross-verify NCBI-extracted P and Mg values against dri-minerals.json.
+
+    Returns (crosscheck_report, all_match).
+    """
+    with open(dri_file) as f:
+        dri = json.load(f)
+
+    dri_lookup = {}
+    for n in dri["nutrients"]:
+        if n["name"] not in ("Phosphorus", "Magnesium"):
+            continue
+        for g in n.get("groups", []):
+            key = (n["name"], g["group"])
+            dri_lookup[key] = {
+                "value": g["value"],
+                "type": g.get("type", "RDA"),
+                "sex": g.get("sex", "any"),
+                "age_range": g.get("age_range", ""),
+            }
+
+    # Group NCBI entries by (nutrient, group_id)
+    from collections import defaultdict
+    ncbi_by_group = defaultdict(list)
+    for e in ncbi_entries:
+        ncbi_by_group[(e["nutrient"], e["group_id"])].append(e)
+
+    results = []
+    all_match = True
+
+    for (nutrient, group_id), entries in ncbi_by_group.items():
+        dri_entry = dri_lookup.get((nutrient, group_id))
+        if not dri_entry:
+            results.append({
+                "nutrient": nutrient,
+                "group_id": group_id,
+                "status": "UNKNOWN_GROUP",
+                "ncbi_values": [e["value"] for e in entries],
+                "ncbi_details": [f"{e['category']} {e['age_label']}: {e['value']}" for e in entries],
+                "dri_value": None,
+            })
+            all_match = False
+            continue
+
+        dri_val = dri_entry["value"]
+        ncbi_values = [e["value"] for e in entries]
+
+        # Check if all NCBI values for this group equal the DRI value
+        all_equal = all(v == dri_val for v in ncbi_values)
+
+        if all_equal:
+            results.append({
+                "nutrient": nutrient,
+                "group_id": group_id,
+                "status": "MATCH",
+                "ncbi_values": ncbi_values,
+                "ncbi_details": [f"{e['category']} {e['age_label']}: {e['value']}" for e in entries],
+                "dri_value": dri_val,
+            })
+        else:
+            all_match = False
+            # Check if any matches
+            any_match = any(v == dri_val for v in ncbi_values)
+            results.append({
+                "nutrient": nutrient,
+                "group_id": group_id,
+                "status": "PARTIAL_MATCH" if any_match else "MISMATCH",
+                "ncbi_values": ncbi_values,
+                "ncbi_details": [f"{e['category']} {e['age_label']}: {e['value']}" for e in entries],
+                "dri_value": dri_val,
+            })
+
+    # Also check for DRI groups not in NCBI
+    ncbi_group_ids = set((e["nutrient"], e["group_id"]) for e in ncbi_entries)
+    for (nutrient, group_id), dri_entry in dri_lookup.items():
+        if (nutrient, group_id) not in ncbi_group_ids:
+            results.append({
+                "nutrient": nutrient,
+                "group_id": group_id,
+                "status": "NOT_IN_NCBI",
+                "ncbi_values": [],
+                "ncbi_details": [],
+                "dri_value": dri_entry["value"],
+            })
+
+    return results, all_match
+
+
 # ── Comparison ─────────────────────────────────────────────────────
 
 def compare(parsed_file, existing_file, label):
@@ -922,6 +1168,98 @@ def main():
     with open(MACRONUTRIENTS_PER_KG_OUT, "w") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
     print(f"  Written to {MACRONUTRIENTS_PER_KG_OUT}")
+
+    # ── NCBI IOM 1997 Cross-verification (P and Mg) ──
+    print()
+    print("Parsing NCBI Bookshelf IOM 1997 RDA/AI table (cross-verification)...")
+    ncbi_entries = parse_ncbi_dri_table(NCBI_HTML)
+    p_count = sum(1 for e in ncbi_entries if e["nutrient"] == "Phosphorus")
+    mg_count = sum(1 for e in ncbi_entries if e["nutrient"] == "Magnesium")
+    print(f"  Extracted {p_count} P entries, {mg_count} Mg entries from NCBI table")
+
+    print()
+    print("Cross-verifying NCBI values against dri-minerals.json...")
+    ncbi_results, ncbi_all_match = crosscheck_ncbi(ncbi_entries, MINERALS_EXISTING)
+
+    # Build summary
+    match_count = sum(1 for r in ncbi_results if r["status"] == "MATCH")
+    partial_count = sum(1 for r in ncbi_results if r["status"] == "PARTIAL_MATCH")
+    mismatch_count = sum(1 for r in ncbi_results if r["status"] == "MISMATCH")
+    unknown_count = sum(1 for r in ncbi_results if r["status"] == "UNKNOWN_GROUP")
+    not_in_ncbi = sum(1 for r in ncbi_results if r["status"] == "NOT_IN_NCBI")
+
+    print(f"  MATCH: {match_count}")
+    if partial_count:
+        print(f"  PARTIAL_MATCH: {partial_count}")
+        for r in ncbi_results:
+            if r["status"] == "PARTIAL_MATCH":
+                print(f"    {r['nutrient']} / {r['group_id']}:")
+                print(f"      NCBI: {', '.join(r['ncbi_details'])}")
+                print(f"      DRI:  {r['dri_value']}")
+    if mismatch_count:
+        print(f"  MISMATCH: {mismatch_count}")
+        for r in ncbi_results:
+            if r["status"] == "MISMATCH":
+                print(f"    {r['nutrient']} / {r['group_id']}:")
+                print(f"      NCBI: {', '.join(r['ncbi_details'])}")
+                print(f"      DRI:  {r['dri_value']}")
+    if unknown_count:
+        print(f"  UNKNOWN_GROUP: {unknown_count}")
+    if not_in_ncbi:
+        print(f"  NOT_IN_NCBI: {not_in_ncbi} (groups in dri-minerals.json not in NCBI table)")
+        for r in ncbi_results:
+            if r["status"] == "NOT_IN_NCBI":
+                print(f"    {r['nutrient']} / {r['group_id']}: DRI value = {r['dri_value']}")
+
+    # Write crosscheck
+    ncbi_output = {
+        "_meta": {
+            "source_id": "ncbi-iom1997-summary",
+            "source_file": "data/external/ncbi-iom1997-dri-rda-ai.html",
+            "source_urls": [
+                "https://www.ncbi.nlm.nih.gov/books/NBK222881/table/ttt00057_1/"
+            ],
+            "source_note": "Machine-readable HTML version of IOM 1997 DRI summary tables hosted on NCBI Bookshelf. Same Tier A source as IOM 1997 PDF but machine-parseable. Used for cross-verification of manually-transcribed P and Mg values from scrambled PDF.",
+            "extraction_date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "extraction_script": "data/extract-msd-dri-parser.py",
+            "extraction_method": "html-parser (NCBI Bookshelf ?report=objectonly)",
+            "extracted_by": "agent",
+            "source_claims": {
+                "presumed_date": "2000",
+                "presumed_author": "Institute of Medicine, National Academies Press (via NCBI Bookshelf)"
+            },
+        },
+        "crosscheck_summary": {
+            "total_groups": len(ncbi_results),
+            "match": match_count,
+            "partial_match": partial_count,
+            "mismatch": mismatch_count,
+            "unknown_group": unknown_count,
+            "not_in_ncbi": not_in_ncbi,
+            "all_match": ncbi_all_match,
+        },
+        "ncbi_entries": [
+            {
+                "nutrient": e["nutrient"],
+                "group_id": e["group_id"],
+                "age_label": e["age_label"],
+                "category": e["category"],
+                "value": e["value"],
+                "is_ai": e["is_ai"],
+                "ncbi_raw": e["ncbi_raw"],
+            }
+            for e in ncbi_entries
+        ],
+        "crosscheck_results": ncbi_results,
+    }
+    with open(NCBI_CROSSCHECK_OUT, "w") as f:
+        json.dump(ncbi_output, f, ensure_ascii=False, indent=2)
+    print(f"  Written to {NCBI_CROSSCHECK_OUT}")
+
+    if ncbi_all_match:
+        print("  NCBI CROSSCHECK: 100% match — all P and Mg values confirmed.")
+    else:
+        print("  NCBI CROSSCHECK: discrepancies found — review crosscheck_results in output.")
 
     # ── Compare with existing ──
     vitamins_ok = compare(VITAMINS_OUT, VITAMINS_EXISTING, "Vitamins")

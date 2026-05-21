@@ -1,0 +1,636 @@
+{
+  "_meta": {
+    "schema": "sources-final-v1",
+    "description": "Unified source manifest — definitive reference for all dietology data sources. Merges base sources.json with overlay-specific metadata from sources-overlay.json and dataset catalog from data-index.json.",
+    "build_script": "data/build-sources-overlay.py",
+    "build_date": "2026-05-21T19:38:48Z",
+    "input_files": [
+      "data/sources.json (base manifest — all sources)",
+      "data/sources-overlay.json (DRI overlay metadata)",
+      "data/data-index.json (current dataset catalog + stats)"
+    ],
+    "relationship": "This file is the SINGLE authoritative source reference. sources.json and sources-overlay.json are intermediate inputs — model should load ONLY this file."
+  },
+  "schema_version": "1.0",
+  "description": "Source manifest for the dietology knowledge base. Every data file references a source_id from this manifest via its _meta block. The model loads this file first. THIS IS THE DEFINITIVE VERSION — supersedes sources.json. to understand what data is available and the reliability tier of each source.",
+  "sources": {
+    "usda-fdc-2026-04": {
+      "name": "USDA FoodData Central",
+      "tier": "A",
+      "category": "food_composition",
+      "url": "https://fdc.nal.usda.gov/",
+      "license": "CC0 1.0 Universal (Public Domain)",
+      "mit_compatible": true,
+      "format": "JSON via bulk download ZIP",
+      "authority": "primary",
+      "update_frequency": "annual",
+      "description": "Nutrient composition of 7800+ foods per 100g. Macronutrients, micronutrients, amino acid profiles, fatty acids. US government authoritative source.",
+      "data_files": [
+        "usda-foundation-foods-essential.json"
+      ],
+      "extraction_script": "data/extract-usda.py",
+      "extraction_date": "2026-05-19"
+    },
+    "who-gho": {
+      "name": "WHO Global Health Observatory",
+      "tier": "A",
+      "category": "population_norms",
+      "url": "https://www.who.int/data/gho",
+      "license": "CC BY 4.0",
+      "mit_compatible": true,
+      "format": "JSON/CSV via OData API",
+      "authority": "primary",
+      "update_frequency": "live API",
+      "description": "Population-level nutrition indicators for 194 countries. Anaemia prevalence, BMI (overweight/obesity), diabetes prevalence, child growth standards, malnutrition, breastfeeding, micronutrient deficiencies. 1000+ indicators available.",
+      "data_files": [
+        "external/who-NUTRITION_ANAEMIA_NONPREGNANT_PREV.json",
+        "external/who-NCD_BMI_25A.json",
+        "external/who-NCD_DIABETES_PREVALENCE_AGESTD.json"
+      ],
+      "extraction_script": "curl + OData API (manual)",
+      "extraction_date": "2026-05-19"
+    },
+    "msd-manual-dri": {
+      "name": "MSD Manual Professional — DRI Tables",
+      "tier": "A",
+      "category": "dri_values",
+      "url": "https://www.msdmanuals.com/professional",
+      "license": "Copyright Merck & Co. — numeric facts not copyrightable",
+      "mit_compatible": true,
+      "mit_compatible_note": "Numeric DRI values are facts, not creative expression. Attribution: 'Based on National Academies DRI, as reproduced in MSD Manual Professional Edition.'",
+      "format": "HTML tables (structured, parseable). Parser: extract-msd-dri-parser.py",
+      "authority": "secondary",
+      "authority_note": "Reproduces National Academies DRI values in HTML format. Peer-reviewed professional medical reference published since 1899.",
+      "update_frequency": "periodic",
+      "description": "Dietary Reference Intakes (RDA, AI, UL) for 11 vitamins and 9 trace minerals by age and sex. Values extracted via HTML parser, metadata (ul_note, unit_note, proper unit names) from manual transcription.",
+      "data_files": [
+        "dri-vitamins-overlay.json",
+        "dri-minerals-overlay.json"
+      ],
+      "extraction_script": "data/extract-msd-dri-parser.py",
+      "extraction_date": "2026-05-20",
+      "tier_note": "Upgraded from B: all values now machine-verified via extract-msd-dri-parser.py. Original Tier B reflected manual transcription — overlay replaces that with parsed values while preserving metadata.",
+      "build_script": "data/build-vitamins-overlay.py",
+      "overlay_files": [
+        "dri-vitamins-overlay.json",
+        "dri-minerals-overlay.json"
+      ],
+      "overlay_nutrients": {
+        "vitamins": 11,
+        "trace_minerals": 9
+      },
+      "overlay_groups": {
+        "vitamins": 154,
+        "trace_minerals": 144
+      },
+      "source_files": [
+        "data/external/msd-manual-vitamins-2026-05.html",
+        "data/external/msd-manual-trace-minerals-2026-05.html"
+      ]
+    },
+    "msd-macronutrients-per-kg": {
+      "name": "MSD Manual — Macronutrients DRI per kg",
+      "tier": "A",
+      "category": "dri_values",
+      "url": "https://www.msdmanuals.com/professional/multimedia/table/recommended-dietary-reference-intakes-for-some-macronutrients-food-and-nutrition-board-institute-of-medicine-of-the-national-academies",
+      "license": "Copyright Merck & Co. — numeric facts not copyrightable",
+      "mit_compatible": true,
+      "mit_compatible_note": "Numeric DRI values are facts. Source: Institute of Medicine. Dietary Reference Intakes for Calcium, Phosphorus, Magnesium, Vitamin D, and Fluoride. Washington, DC: National Academy Press; 1997.",
+      "format": "HTML table (structured, parseable). All values in mg/kg of body weight.",
+      "authority": "secondary",
+      "authority_note": "Reproduces IOM 1997 per-kg values. These are the PRIMARY form — absolute DRI values are derived by multiplying by reference body weights. Per-kg values are MORE accurate for individual use: multiply by actual body weight, not population reference weight.",
+      "update_frequency": "periodic",
+      "description": "Calcium, Phosphorus, Magnesium DRI in mg/kg for 17 age/sex groups. All values in mg/kg — model MUST multiply by individual body weight. Infants: AI. Children and adults: RDA.",
+      "data_files": [
+        "dri-macronutrients-per-kg-overlay.json"
+      ],
+      "extraction_script": "data/extract-msd-dri-parser.py",
+      "extraction_date": "2026-05-20",
+      "tier_note": "Upgraded from B: values now machine-verified via extract-msd-dri-parser.py. Per-kg values are the primary form from IOM 1997 — more accurate for individual use than absolute DRI.",
+      "build_script": "data/build-macronutrients-per-kg-overlay.py",
+      "overlay_files": [
+        "dri-macronutrients-per-kg-overlay.json"
+      ],
+      "overlay_nutrients": {
+        "Calcium_per_kg": 1,
+        "Phosphorus_per_kg": 1,
+        "Magnesium_per_kg": 1
+      },
+      "overlay_groups": {
+        "Calcium_per_kg": 17,
+        "Phosphorus_per_kg": 17,
+        "Magnesium_per_kg": 17
+      },
+      "source_files": [
+        "data/external/msd-manual-macronutrients-2026-05.html"
+      ],
+      "convention": "All values in mg/kg of body weight. Multiply by individual body weight for absolute daily intake. More accurate for individual use than fixed absolute DRI values."
+    },
+    "msd-consumer-minerals": {
+      "name": "MSD Manual Consumer — Overview of Minerals",
+      "tier": "B",
+      "category": "dri_values",
+      "url": "https://www.msdmanuals.com/home/disorders-of-nutrition/minerals/overview-of-minerals",
+      "license": "Copyright Merck & Co. — numeric facts not copyrightable",
+      "mit_compatible": true,
+      "mit_compatible_note": "Numeric DRI values are facts, not creative expression. Adult RDA/AI values only — no pediatric or adolescent age breakdown.",
+      "format": "HTML table (structured, parseable). Parser: extract-msd-dri-parser.py",
+      "authority": "secondary",
+      "authority_note": "Consumer edition of MSD Manual. Adult RDA/AI values only. Source for Na (1500 mg AI) and K (3400/2600 mg AI) adult values. No pediatric or adolescent breakdown.",
+      "update_frequency": "periodic",
+      "description": "Adult RDA/AI for Na and K. Adult values only — no age-specific breakdown. Overlay adds note flagging this limitation.",
+      "data_files": [
+        "dri-minerals-overlay.json"
+      ],
+      "source_file": "data/external/msd-manual-consumer-minerals-2026-05.html",
+      "extraction_date": "2026-05-21",
+      "tier_note": "Tier B because adult values only — no age-specific breakdown. Na/K adult AI values are the only available machine-readable source.",
+      "extraction_script": "data/extract-msd-dri-parser.py",
+      "build_script": "data/build-minerals-overlay.py",
+      "overlay_files": [
+        "dri-minerals-overlay.json"
+      ],
+      "overlay_nutrients": {
+        "Sodium": 1,
+        "Potassium": 1
+      },
+      "overlay_groups": {
+        "Sodium": 2,
+        "Potassium": 2
+      },
+      "source_files": [
+        "data/external/msd-manual-consumer-minerals-2026-05.html"
+      ],
+      "limitation": "Adult values only. Age-specific breakdown not available in machine-readable form. Requires National Academies DRI 2019 PDF for full age breakdown."
+    },
+    "iom-dri-1997": {
+      "name": "IOM Dietary Reference Intakes — Ca, P, Mg, Vitamin D, Fluoride (1997)",
+      "tier": "A",
+      "category": "dri_values",
+      "url": "https://nap.nationalacademies.org/catalog/5776/",
+      "license": "Free PDF download — numeric facts not copyrightable",
+      "mit_compatible": true,
+      "mit_compatible_note": "Numeric DRI values are facts established by the US/Canadian governments. Full citation: Institute of Medicine. 1997. Dietary Reference Intakes for Calcium, Phosphorus, Magnesium, Vitamin D, and Fluoride. Washington, DC: The National Academies Press.",
+      "format": "PDF with text layer (born-digital, 1997). Cross-verified via NCBI Bookshelf machine-readable HTML.",
+      "authority": "primary",
+      "authority_note": "Original DRI report establishing RDA/AI for P and Mg. Values extracted from NCBI Bookshelf HTML rendering (clean machine-parseable table, same IOM 1997 source) and cross-verified against manual transcription: 24/28 groups 100% match, 4 PARTIAL_MATCH due to pregnancy/breastfeeding granularity difference (teen vs adult).",
+      "update_frequency": "static (historical reference)",
+      "description": "Current DRI for phosphorus and magnesium. Values from NCBI Bookshelf (ttt00057_1 table) — machine-readable rendering of IOM 1997 RDA/AI summary. Cross-verified against manual transcription from original PDF.",
+      "data_files": [
+        "dri-minerals-overlay.json"
+      ],
+      "source_file": "data/external/iom-dri-ca-p-mg-vitd-f-1997.pdf",
+      "extraction_date": "2026-05-21",
+      "extraction_script": "data/extract-msd-dri-parser.py",
+      "build_script": "data/build-minerals-overlay.py",
+      "overlay_files": [
+        "dri-minerals-overlay.json"
+      ],
+      "overlay_nutrients": {
+        "Phosphorus": 1,
+        "Magnesium": 1
+      },
+      "overlay_groups": {
+        "Phosphorus": 22,
+        "Magnesium": 22
+      },
+      "source_files": [
+        "data/external/iom-dri-ca-p-mg-vitd-f-1997.pdf",
+        "data/external/ncbi-iom1997-dri-rda-ai.html"
+      ],
+      "cross_verified_by": "ncbi-iom1997-summary",
+      "cross_verification_results": {
+        "total_groups": 28,
+        "match": 24,
+        "partial_match": 4,
+        "mismatch": 0,
+        "partial_match_note": "4 pregnancy/breastfeeding groups: manual used adult values for consolidated groups, NCBI shows per-subgroup values. Teen values (≤18y) are systematically higher. Overlay uses NCBI per-subgroup values for finest granularity."
+      }
+    },
+    "ncbi-iom1997-summary": {
+      "name": "NCBI Bookshelf — IOM 1997 DRI Summary Tables",
+      "tier": "A",
+      "category": "dri_values",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK222881/table/ttt00057_1/",
+      "license": "Numeric facts not copyrightable — HTML rendering of public government report",
+      "mit_compatible": true,
+      "mit_compatible_note": "Machine-readable HTML version of IOM 1997 DRI summary tables. Same Tier A source as IOM 1997 PDF. Numeric DRI values are facts established by the US/Canadian governments. Full citation: Institute of Medicine. 1997. Dietary Reference Intakes for Calcium, Phosphorus, Magnesium, Vitamin D, and Fluoride. Washington, DC: The National Academies Press.",
+      "format": "HTML table via NCBI Bookshelf ?report=objectonly endpoint (structured, machine-parseable).",
+      "authority": "primary",
+      "authority_note": "Same IOM 1997 DRI report as the original PDF, rendered by NCBI in clean HTML. Used for automated cross-verification of P and Mg values manually transcribed from scrambled PDF. NOT an independent Tier B source — this IS the Tier A IOM 1997 in machine-readable form.",
+      "update_frequency": "static (historical reference, published 2000 on NCBI)",
+      "description": "Machine-readable HTML rendering of IOM 1997 DRI RDA/AI summary table. Columns: Ca, P, Mg, Vitamin D, Fluoride, Thiamin, Riboflavin, Niacin, B6, Folate, B12, Pantothenic Acid, Biotin. Used for cross-verification of manually transcribed phosphorus and magnesium values from the scrambled IOM 1997 PDF.",
+      "data_files": [
+        "dri-p-mg-ncbi-crosscheck.json"
+      ],
+      "source_file": "data/external/ncbi-iom1997-dri-rda-ai.html",
+      "extraction_script": "data/extract-msd-dri-parser.py",
+      "extraction_date": "2026-05-21",
+      "cross_verification_for": [
+        "iom-dri-1997"
+      ],
+      "crosscheck_summary": {
+        "total_groups": 28,
+        "match": 24,
+        "partial_match": 4,
+        "mismatch": 0,
+        "partial_match_note": "4 pregnancy/breastfeeding groups show partial match because dri-minerals.json consolidates teen (≤18y) and adult subgroups into a single group using adult value. NCBI source shows per-subgroup values. Adult values match 100%; teen values differ as expected for consolidated groups."
+      }
+    },
+    "iom-dri-2011": {
+      "name": "IOM Dietary Reference Intakes — Calcium and Vitamin D (2011)",
+      "tier": "A",
+      "category": "dri_values",
+      "url": "https://nap.nationalacademies.org/catalog/13050/",
+      "license": "Free PDF download — numeric facts not copyrightable",
+      "mit_compatible": true,
+      "mit_compatible_note": "Numeric DRI values are facts established by the US/Canadian governments. Full citation: Institute of Medicine. 2011. Dietary Reference Intakes for Calcium and Vitamin D. Washington, DC: The National Academies Press.",
+      "format": "PDF with text layer (born-digital, 2011). Parser: extract-iom-dri.py (pdfplumber).",
+      "authority": "primary",
+      "authority_note": "Current authoritative DRI for Calcium. Supersedes IOM 1997 values for this nutrient. Provides finest granularity: 22 age/sex groups including teen/adult pregnancy/breastfeeding subgroups with separate UL groups.",
+      "update_frequency": "static (current as of 2011)",
+      "description": "Current DRI tables for calcium across all age/sex groups. Extracted from Table S-1 (Summary Tables, pp. 499–542). Calcium RDA/AI + UL groups per age.",
+      "data_files": [
+        "dri-minerals-overlay.json"
+      ],
+      "source_file": "data/external/iom-dri-calcium-vitamin-d-2011.pdf",
+      "extraction_date": "2026-05-21",
+      "extraction_script": "data/extract-iom-dri.py",
+      "build_script": "data/build-minerals-overlay.py",
+      "overlay_files": [
+        "dri-minerals-overlay.json"
+      ],
+      "overlay_nutrients": {
+        "Calcium": 1
+      },
+      "overlay_groups": {
+        "Calcium": 22,
+        "Calcium_ul_groups": 22
+      },
+      "source_files": [
+        "data/external/iom-dri-calcium-vitamin-d-2011.pdf"
+      ]
+    },
+    "nasem-dri-2006": {
+      "name": "National Academies DRI — The Essential Guide to Nutrient Requirements",
+      "tier": "A",
+      "category": "dri_values",
+      "url": "https://www.nationalacademies.org/publications/11537",
+      "license": "Free PDF download — numeric facts not copyrightable",
+      "mit_compatible": true,
+      "mit_compatible_note": "Numeric DRI values are facts established by the US/Canadian governments. Full citation: Institute of Medicine. 2006. Dietary Reference Intakes: The Essential Guide to Nutrient Requirements. Washington, DC: The National Academies Press.",
+      "format": "PDF with text layer (born-digital, 2006). Summary Tables: pp. 529–542",
+      "authority": "primary",
+      "authority_note": "Comprehensive DRI summary for all nutrients. The Food and Nutrition Board of the National Academies is the body that establishes DRI values for the United States and Canada.",
+      "update_frequency": "per-nutrient updates (2019: Na/K, 2023: Energy)",
+      "description": "Complete DRI compendium: RDA, EAR, AI, UL for all nutrients across all age/sex groups. Gold standard primary source. Extraction from PDF tables for cross-validation with MSD Manual values.",
+      "data_files": [],
+      "extraction_script": null,
+      "extraction_date": null,
+      "status": "deferred — PDF download requires free account"
+    },
+    "who-2024-hb": {
+      "name": "WHO 2024 Guideline on Haemoglobin Cutoffs to Define Anaemia",
+      "tier": "B",
+      "category": "deficiency_thresholds",
+      "url": "https://www.who.int/publications/i/item/9789240088542",
+      "license": "CC BY-NC-SA 3.0 IGO",
+      "mit_compatible": false,
+      "mit_compatible_note": "⚠️ NC restriction. Numeric threshold values are facts (not copyrightable). Direct reproduction of WHO tables would violate NC clause. Extracted facts with attribution are defensible. Bundled use in MIT project — legal grey area.",
+      "format": "PDF with text layer (born-digital, 2024). Structured tables.",
+      "authority": "primary",
+      "update_frequency": "per-guideline (2024 is current)",
+      "description": "Updated diagnostic thresholds for anaemia: lowered cutoff for children 6-23 months (105 g/L, previously 110), added trimester-specific pregnancy cutoffs (2nd trimester: 105 g/L). Severity classification (mild/moderate/severe). Altitude and smoking adjustments.",
+      "data_files": [
+        "who-hb-thresholds.json"
+      ],
+      "extraction_script": "data/extract-who-hb.py",
+      "extraction_date": null
+    },
+    "wikipedia-lab-ranges": {
+      "name": "Wikipedia — Reference Ranges for Blood Tests",
+      "tier": "C",
+      "category": "lab_reference_ranges",
+      "url": "https://en.wikipedia.org/wiki/Reference_ranges_for_blood_tests",
+      "license": "CC BY-SA 3.0",
+      "mit_compatible": true,
+      "mit_compatible_note": "CC BY-SA covers wiki text, not numeric facts. Attribution required. Uses data sourced from MedlinePlus (public domain), Uppsala University Hospital, Mayo Clinic, GPnotebook, First Aid for USMLE, and ~200 other cited sources.",
+      "format": "Wikitext via API (structured tables, parseable)",
+      "authority": "tertiary",
+      "authority_note": "Aggregates values from multiple secondary and primary sources. Reference ranges vary between laboratories and assay methods — these are representative values, not universal norms. Suitable for contextualization, not diagnostic recommendations.",
+      "update_frequency": "continuous (wiki edits)",
+      "description": "Most comprehensive public machine-readable compendium of laboratory reference ranges. 300+ tests covering hematology, chemistry, endocrinology, immunology, coagulation, vitamins. All values with citation tracing to primary sources.",
+      "data_files": [
+        "lab-reference-ranges.json"
+      ],
+      "extraction_script": "data/extract-wiki-lab-ranges.py",
+      "extraction_date": null
+    },
+    "open-food-facts": {
+      "name": "Open Food Facts",
+      "tier": "B",
+      "category": "product_catalog",
+      "url": "https://world.openfoodfacts.org/data",
+      "license": "ODbL 1.0 (Open Database License)",
+      "mit_compatible": true,
+      "format": "JSONL daily export, Parquet (Hugging Face), CSV, REST JSON API",
+      "authority": "secondary",
+      "authority_note": "Crowdsourced — quality varies. Largest open food product database (3.7M+ products). Useful for barcode lookup of branded products.",
+      "update_frequency": "daily exports",
+      "description": "Branded food products with barcodes, ingredients, nutrition facts panels. Crowdsourced data — quality is uneven. Included as catalog expansion, not primary nutrient reference.",
+      "data_files": [],
+      "extraction_script": null,
+      "extraction_date": null,
+      "status": "available, not yet integrated (non-MVP)"
+    },
+    "hl7-fhir-nutrition": {
+      "name": "HL7 FHIR Nutrition Resources",
+      "tier": "B",
+      "category": "clinical_guidelines",
+      "url": "http://hl7.org/fhir/R4/nutritionorder.html",
+      "license": "HL7 (open standard, freely implementable)",
+      "mit_compatible": true,
+      "format": "JSON, XML, Turtle — standard schemas, not data",
+      "authority": "primary",
+      "authority_note": "International healthcare data exchange standard. Not a data source — provides reference data models for NutritionOrder, NutritionIntake, NutritionObservation.",
+      "update_frequency": "per HL7 release cycle",
+      "description": "Standard FHIR resources for nutrition data modeling. Reference for designing internal data structures, not a source of clinical knowledge.",
+      "data_files": [],
+      "extraction_script": null,
+      "extraction_date": null,
+      "status": "reference only (models, not data)"
+    },
+    "who-smart-guidelines": {
+      "name": "WHO SMART Guidelines (FHIR R4)",
+      "tier": "B",
+      "category": "clinical_guidelines",
+      "url": "https://github.com/WorldHealthOrganization/smart-base",
+      "license": "Code: BSD-like. Content: CC BY-NC-SA 3.0 IGO",
+      "mit_compatible": false,
+      "mit_compatible_note": "Software artifacts (BSD-like) — MIT-compatible. Clinical content (CC BY-NC-SA) — NC restriction. Currently focused on ANC (pregnancy), limited adult nutrition coverage.",
+      "format": "JSON, XML, CQL, ELM+JSON (FHIR R4)",
+      "authority": "primary",
+      "update_frequency": "periodic",
+      "description": "Machine-readable clinical decision support in FHIR format. ANC Dietary Counselling and related guidelines. Limited scope for general adult nutrition. Content under NC license restricts bundled use.",
+      "data_files": [],
+      "extraction_script": null,
+      "extraction_date": null,
+      "status": "future (when adult nutrition scope expands)"
+    },
+    "dietology-data-index": {
+      "name": "Dietology Data Index — Unified Manifest",
+      "tier": "A",
+      "category": "manifest",
+      "url": null,
+      "license": "MIT (project-generated)",
+      "mit_compatible": true,
+      "format": "JSON — generated by build-data-index.py",
+      "authority": "internal",
+      "authority_note": "Autogenerated manifest of all knowledge base files. Not a data source — an index of sources and datasets.",
+      "update_frequency": "per build",
+      "description": "Unified manifest of all dietology knowledge base files with domains, tiers, sources, and statistics. Generated from 6 production datasets.",
+      "data_files": [
+        "data-index.json"
+      ],
+      "extraction_script": null,
+      "build_script": "data/build-data-index.py",
+      "build_date": "2026-05-21T19:38:48Z"
+    }
+  },
+  "gaps": {
+    "lab_reference_ranges_tier_a_b": {
+      "description": "No authoritative machine-readable (Tier A/B) source of laboratory reference ranges exists. Primary sources (MedlinePlus, clinical guidelines) either lack numeric values on their pages or are narrative PDFs. Wikipedia (Tier C) is the only machine-readable compendium.",
+      "impact": "System can contextualize lab results ('your ferritin is 15, typical range 12-150') but cannot make authoritative diagnostic statements. Reference ranges vary by lab method and population.",
+      "mitigation": "flag lab ranges as Tier C in model context; model must qualify any range-based statement with source tier and recommend clinical verification."
+    },
+    "micronutrient_deficiency_thresholds": {
+      "description": "WHO publishes deficiency thresholds for vitamin A, zinc, iodine, ferritin (iron), and other micronutrients, but only in narrative PDFs — not machine-readable. Haemoglobin is the sole exception (WHO 2024 guideline has structured, extractable tables).",
+      "impact": "Anaemia screening is covered (Hb thresholds). Other micronutrient deficiency screening (vitamin A, zinc, iron stores via ferritin) lacks authoritative machine-readable diagnostic cutoffs.",
+      "mitigation": "monitor WHO for structured data releases. Alternatively: extract numeric facts from WHO PDFs (defensible as facts, but borderline under machine-readable constraint — risk of extraction errors from narrative text vs structured tables)."
+    },
+    "clinical_nutrition_guidelines": {
+      "description": "No machine-readable clinical nutrition support guidelines exist for general adult conditions (ESPEN excluded — narrative PDF). WHO SMART Guidelines cover pregnancy only (ANC) and have NC content restrictions.",
+      "impact": "System cannot provide evidence-based nutrition support recommendations backed by a machine-readable authoritative source for conditions like malnutrition, obesity, post-surgery nutrition, oncology nutrition.",
+      "mitigation": "explicitly document as a system limitation. HL7 FHIR provides data models (not clinical content). Monitor WHO SMART Guidelines for adult nutrition scope expansion."
+    }
+  },
+  "overlay_catalog": {
+    "dri-minerals-overlay.json": {
+      "description": "14 minerals (Ca, P, Mg, Na, K, Fe, Zn, Cu, I, Se, Mn, Cr, Mo, F), 214 groups at finest available granularity",
+      "schema": "dri-minerals-overlay-v1",
+      "sources_merged": [
+        "iom-dri-2011",
+        "iom-dri-1997",
+        "msd-manual-dri",
+        "msd-consumer-minerals"
+      ],
+      "build_script": "data/build-minerals-overlay.py",
+      "input_files": [
+        "data/dri-minerals.json (metadata: ul, ul_note, per-group notes, proper category)",
+        "data/dri-minerals-parsed.json (trace mineral values, 9×16=144 groups)",
+        "data/dri-calcium-iom-2011-parsed.json (Ca values + ul_groups, 22+22)",
+        "data/dri-macrominerals-absolute-parsed.json (Na/K values, 2×2=4 groups)",
+        "data/dri-p-mg-ncbi-crosscheck.json (P/Mg values via NCBI, 2×22=44 groups)"
+      ],
+      "per_nutrient_source_id": true,
+      "pregnancy_breastfeeding_granularity": "split into teen (14-18yr), adult 19-30yr, adult 31-50yr for Ca/P/Mg/trace minerals. Na/K are adult only."
+    },
+    "dri-vitamins-overlay.json": {
+      "description": "11 vitamins, 154 groups. Machine-parsed values + full metadata (unit_note, ul_note, proper unit names) from manual transcription",
+      "schema": "dri-vitamins-overlay-v1",
+      "sources_merged": [
+        "msd-manual-dri"
+      ],
+      "build_script": "data/build-vitamins-overlay.py",
+      "input_files": [
+        "data/dri-vitamins.json (metadata: unit names like mcg DFE/mg NE/mcg RAE/IU, ul_note, unit_note)",
+        "data/dri-vitamins-parsed.json (machine-parsed values, 11×14=154 groups)"
+      ],
+      "per_nutrient_source_id": true,
+      "pregnancy_breastfeeding_granularity": "single group (19-50yr), no teen split. MSD vitamins table does not provide teen/adult breakdown for pregnancy/breastfeeding — source limitation, not extraction error."
+    },
+    "dri-macronutrients-per-kg-overlay.json": {
+      "description": "3 nutrients (Ca/P/Mg in mg/kg), 51 groups. Per-kg values — model must multiply by individual body weight",
+      "schema": "dri-macronutrients-per-kg-overlay-v1",
+      "sources_merged": [
+        "msd-macronutrients-per-kg"
+      ],
+      "build_script": "data/build-macronutrients-per-kg-overlay.py",
+      "input_files": [
+        "data/dri-macronutrients-per-kg.json (metadata: category, note, citation)",
+        "data/dri-macronutrients-per-kg-parsed.json (machine-parsed values, 3×17=51 groups)"
+      ],
+      "per_nutrient_source_id": true,
+      "convention": "All values in mg/kg of body weight. Multiply by individual body weight. Infants: AI. Children and adults: RDA."
+    }
+  },
+  "datasets": {
+    "dri-minerals-overlay.json": {
+      "domain": "dri",
+      "tier": "A",
+      "description": "14 minerals, 214 groups, finest granularity per source",
+      "sources": [
+        "iom-dri-2011",
+        "iom-dri-1997",
+        "msd-manual-dri",
+        "msd-consumer-minerals"
+      ],
+      "build_script": "data/build-minerals-overlay.py",
+      "notes": "Ca: IOM 2011 (22 groups + ul_groups). P/Mg: IOM 1997 via NCBI cross-verification (22 groups each). Trace minerals: MSD Professional (16 groups each). Na/K: MSD Consumer (adult only). Pregnancy/breastfeeding split into teen/adult subgroups.",
+      "file": "data/dri-minerals-overlay.json",
+      "count": 14,
+      "detail": "14 nutrients, 214 groups"
+    },
+    "dri-vitamins-overlay.json": {
+      "domain": "dri",
+      "tier": "A",
+      "description": "11 vitamins, 154 groups, machine-parsed values with full metadata",
+      "sources": [
+        "msd-manual-dri"
+      ],
+      "build_script": "data/build-vitamins-overlay.py",
+      "notes": "Values from MSD Professional HTML parser. Metadata (ul_note, unit_note, proper unit names) from manual transcription. Pregnancy/breastfeeding are single groups without age split — MSD vitamins table does not provide teen/adult breakdown.",
+      "file": "data/dri-vitamins-overlay.json",
+      "count": 11,
+      "detail": "11 nutrients, 154 groups"
+    },
+    "dri-macronutrients-per-kg-overlay.json": {
+      "domain": "dri",
+      "tier": "A",
+      "description": "3 nutrients (Ca/P/Mg), 51 groups (17 each), mg/kg of body weight",
+      "sources": [
+        "msd-macronutrients-per-kg"
+      ],
+      "build_script": "data/build-macronutrients-per-kg-overlay.py",
+      "notes": "Per-kg values — model must multiply by individual body weight. More accurate for individual use than absolute DRI. Infants: AI. Children and adults: RDA. Based on IOM 1997.",
+      "file": "data/dri-macronutrients-per-kg-overlay.json",
+      "count": 3,
+      "detail": "3 nutrients, 51 groups"
+    },
+    "usda-foundation-foods-essential.json": {
+      "domain": "food_composition",
+      "tier": "A",
+      "description": "363 foods with nutrient composition (per 100g), 27 essential nutrients",
+      "sources": [
+        "usda-fdc-2026-04"
+      ],
+      "extraction_script": "data/extract-usda.py",
+      "notes": "Subset of USDA Foundation Foods (CC0). Filtered to foods with complete nutrient profiles for 27 essential nutrients.",
+      "file": "data/usda-foundation-foods-essential.json",
+      "count": 363,
+      "detail": "363 foods"
+    },
+    "lab-reference-ranges.json": {
+      "domain": "lab_ranges",
+      "tier": "C",
+      "description": "254 lab test reference ranges across 16 categories",
+      "sources": [
+        "wikipedia-lab-ranges"
+      ],
+      "extraction_script": "data/extract-wiki-lab-ranges.py",
+      "notes": "Wikipedia-sourced reference ranges. Tier C: useful for context but not authoritative clinical reference. Values are population averages, not individual diagnostic thresholds.",
+      "file": "data/lab-reference-ranges.json",
+      "count": 254,
+      "detail": "254 ranges"
+    },
+    "who-hb-thresholds.json": {
+      "domain": "deficiency_thresholds",
+      "tier": "B",
+      "description": "9 hemoglobin diagnostic thresholds for anemia (WHO 2024)",
+      "sources": [
+        "who-2024-hb"
+      ],
+      "extraction_script": "data/extract-who-hb.py",
+      "notes": "WHO 2024 Guideline on haemoglobin cutoffs. Includes severity classification (mild/moderate/severe), altitude/smoking adjustments, pregnancy-specific thresholds.",
+      "file": "data/who-hb-thresholds.json",
+      "count": 9,
+      "detail": "9 diagnostic thresholds"
+    },
+    "sources-final.json": {
+      "domain": "manifest",
+      "tier": "A",
+      "description": "Unified source manifest — definitive reference for all dietology data sources (15 sources, 5 tier levels)",
+      "sources": [
+        "iom-dri-1997",
+        "iom-dri-2011",
+        "msd-consumer-minerals",
+        "msd-macronutrients-per-kg",
+        "msd-manual-dri",
+        "usda-fdc-2026-04",
+        "who-2024-hb",
+        "wikipedia-lab-ranges"
+      ],
+      "build_script": "data/build-sources-overlay.py",
+      "notes": "Merges sources.json (base) + sources-overlay.json (DRI overlay) + data-index.json (catalog). Single authoritative source reference — model loads ONLY this file. Supersedes sources.json.",
+      "file": "data/sources-final.json",
+      "count": 15,
+      "detail": "15 sources"
+    }
+  },
+  "stats": {
+    "sources_total": 15,
+    "sources_by_tier": {
+      "A": 9,
+      "B": 5,
+      "C": 1
+    },
+    "sources_with_overlay": 5,
+    "sources_direct": 6,
+    "dri_nutrients_total": 28,
+    "dri_groups_total": 419,
+    "total_foods": 363,
+    "total_lab_tests": 254,
+    "total_diagnostic_thresholds": 9,
+    "fabrication": 0,
+    "recalculation": 0
+  },
+  "build_pipeline": {
+    "description": "Full rebuild command — parses source documents, builds overlays, generates index and this manifest.",
+    "command": "python3 data/extract-msd-dri-parser.py && python3 data/extract-iom-dri.py && python3 data/build-minerals-overlay.py && python3 data/build-vitamins-overlay.py && python3 data/build-macronutrients-per-kg-overlay.py && python3 data/build-data-index.py",
+    "final_step": "python3 data/build-sources-overlay.py",
+    "steps": [
+      {
+        "step": 1,
+        "script": "data/extract-msd-dri-parser.py",
+        "inputs": 5,
+        "outputs": "*-parsed.json, ncbi-crosscheck.json"
+      },
+      {
+        "step": 2,
+        "script": "data/extract-iom-dri.py",
+        "inputs": 1,
+        "outputs": "dri-calcium-iom-2011-parsed.json"
+      },
+      {
+        "step": 3,
+        "script": "data/build-minerals-overlay.py",
+        "inputs": 5,
+        "outputs": "dri-minerals-overlay.json"
+      },
+      {
+        "step": 4,
+        "script": "data/build-vitamins-overlay.py",
+        "inputs": 2,
+        "outputs": "dri-vitamins-overlay.json"
+      },
+      {
+        "step": 5,
+        "script": "data/build-macronutrients-per-kg-overlay.py",
+        "inputs": 2,
+        "outputs": "dri-macronutrients-per-kg-overlay.json"
+      },
+      {
+        "step": 6,
+        "script": "data/build-data-index.py",
+        "inputs": 6,
+        "outputs": "data-index.json"
+      },
+      {
+        "step": 7,
+        "script": "data/build-sources-overlay.py",
+        "inputs": 3,
+        "outputs": "sources-final.json"
+      }
+    ]
+  }
+}

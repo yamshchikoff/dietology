@@ -1,240 +1,252 @@
 {
   "_meta": {
-    "source_id": "msd-manual-dri",
-    "source_file": "data/external/msd-manual-vitamins-2026-05.html",
-    "extraction_date": "2026-05-21T15:37:51Z",
-    "extraction_script": "data/extract-msd-dri-parser.py",
-    "extraction_method": "html-parser",
-    "extracted_by": "agent",
-    "source_claims": {
-      "presumed_date": "2024",
-      "presumed_author": "Merck & Co., Inc., based on National Academies of Sciences, Engineering, and Medicine DRI reports"
-    },
-    "source_urls": [
-      "https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins"
-    ]
+    "schema": "dri-vitamins-overlay-v1",
+    "description": "Merged DRI values for 11 vitamins: machine-parsed values from MSD Manual Professional HTML table, combined with metadata (unit_note, ul_note, proper unit names) from manual transcription.",
+    "build_script": "data/build-vitamins-overlay.py",
+    "build_date": "2026-05-21T16:48:11Z",
+    "sources": [
+      "msd-manual-dri"
+    ],
+    "input_files": [
+      "data/dri-vitamins.json (metadata: unit_note, ul_note, proper units)",
+      "data/dri-vitamins-parsed.json (machine-parsed values)"
+    ],
+    "stats": {
+      "nutrients": 11,
+      "total_groups": 154,
+      "granularity": "14 groups each: 2 infants, 2 children, 4 males, 4 females, 1 pregnant, 1 breastfeeding. Pregnancy/breastfeeding are NOT split by age — MSD vitamins table does not provide teen/adult sub-breakdown (unlike mineral tables)."
+    }
   },
-  "_meta_note": "Bold values = AI, regular type = RDA. UL = Tolerable Upper Intake Level. ND = Not Determinable. Source table footnote: NOTE: Recommended dietary allowances (RDAs) are shown in regular type. RDAs are set to meet the needs of 97 to 98% of healthy people. Adequate intakes (AIs) are shown in bold type. When data to calculate the RDA for a nutrient are insufficient, AIs are based on observed or experimentally determined estimates of nutrient intake by healthy people. * 1 niacin equivalent (NE) equals 1 mg niacin or 60 mg dietary tryptophan . equivalent (NE) equals 1 mg niacin or 60 mg dietary tryptophan. † 200 IU of vitamin D equals 5 mcg cholecalciferol. † 200 IU of vitamin D equals 5 mcg cholecalciferol. ‡ 800 IU of vitamin D is recommended for people ‡ 800 IU of vitamin D is recommended for people ≥ 70 years. § UL (tolerable upper intake level) is the largest amount of a nutrient that most adults can ingest daily without risk of adverse effects. The more the UL is exceeded, the greater the risk of adverse effects. IU = international units; ND = not determinable because of lack of data (sources of intake should be limited to foods); RAE = retinol activity equivalents (1 mcg RAE of preformed vitamin A = 3.33 units). retinol activity equivalents (1 mcg RAE of preformed vitamin A = 3.33 units). Data from Institute of Medicine (US) Subcommittee on Interpretation and Uses of Dietary Reference Intakes (DRIs); Institute of Medicine (US) Standing Committee on the Scientific Evaluation of Dietary Reference Intakes : DRI Dietary Reference Intakes: Applications in Dietary Assessment. Washington (DC): National Academies Press (US); 2000. In these topics Overview of Vitamins &gt; About us Disclaimer Permissions Privacy Cookie Preferences Terms of use Partnerships Contact Us Global Medical Knowledge Veterinary Manual Mobile App",
   "nutrients": [
     {
       "name": "Folate",
       "unit": "mcg DFE",
-      "ul": 1000,
-      "ul_unit": "mcg DFE",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins"
+      ],
       "groups": [
         {
           "group": "infants_0_6mo",
           "sex": "any",
           "age_range": "0–6 months",
-          "value": 65.0,
+          "value": 65,
           "type": "AI"
         },
         {
           "group": "infants_7_12mo",
           "sex": "any",
           "age_range": "7–12 months",
-          "value": 80.0,
+          "value": 80,
           "type": "AI"
         },
         {
           "group": "children_1_3yr",
           "sex": "any",
           "age_range": "1–3 years",
-          "value": 150.0,
+          "value": 150,
           "type": "RDA"
         },
         {
           "group": "children_4_8yr",
           "sex": "any",
           "age_range": "4–8 years",
-          "value": 200.0,
+          "value": 200,
           "type": "RDA"
         },
         {
           "group": "male_9_13yr",
           "sex": "male",
           "age_range": "9–13 years",
-          "value": 300.0,
+          "value": 300,
           "type": "RDA"
         },
         {
           "group": "male_14_18yr",
           "sex": "male",
           "age_range": "14–18 years",
-          "value": 400.0,
+          "value": 400,
           "type": "RDA"
         },
         {
           "group": "male_19_70yr",
           "sex": "male",
           "age_range": "19–70 years",
-          "value": 400.0,
+          "value": 400,
           "type": "RDA"
         },
         {
           "group": "male_gt70yr",
           "sex": "male",
           "age_range": "> 70 years",
-          "value": 400.0,
+          "value": 400,
           "type": "RDA"
         },
         {
           "group": "female_9_13yr",
           "sex": "female",
           "age_range": "9–13 years",
-          "value": 300.0,
+          "value": 300,
           "type": "RDA"
         },
         {
           "group": "female_14_18yr",
           "sex": "female",
           "age_range": "14–18 years",
-          "value": 400.0,
+          "value": 400,
           "type": "RDA"
         },
         {
           "group": "female_19_70yr",
           "sex": "female",
           "age_range": "19–70 years",
-          "value": 400.0,
+          "value": 400,
           "type": "RDA"
         },
         {
           "group": "female_gt70yr",
           "sex": "female",
           "age_range": "> 70 years",
-          "value": 400.0,
+          "value": 400,
           "type": "RDA"
         },
         {
           "group": "pregnant_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 600.0,
+          "value": 600,
           "type": "RDA"
         },
         {
           "group": "breastfeeding_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 500.0,
+          "value": 500,
           "type": "RDA"
         }
       ],
+      "ul": 1000,
+      "ul_unit": "mcg",
       "ul_note": "Applies to synthetic folic acid from supplements and fortified foods"
     },
     {
       "name": "Niacin",
       "unit": "mg NE",
-      "ul": 35,
-      "ul_unit": "mg NE",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins"
+      ],
       "groups": [
         {
           "group": "infants_0_6mo",
           "sex": "any",
           "age_range": "0–6 months",
-          "value": 2.0,
+          "value": 2,
           "type": "AI"
         },
         {
           "group": "infants_7_12mo",
           "sex": "any",
           "age_range": "7–12 months",
-          "value": 4.0,
+          "value": 4,
           "type": "AI"
         },
         {
           "group": "children_1_3yr",
           "sex": "any",
           "age_range": "1–3 years",
-          "value": 6.0,
+          "value": 6,
           "type": "RDA"
         },
         {
           "group": "children_4_8yr",
           "sex": "any",
           "age_range": "4–8 years",
-          "value": 8.0,
+          "value": 8,
           "type": "RDA"
         },
         {
           "group": "male_9_13yr",
           "sex": "male",
           "age_range": "9–13 years",
-          "value": 12.0,
+          "value": 12,
           "type": "RDA"
         },
         {
           "group": "male_14_18yr",
           "sex": "male",
           "age_range": "14–18 years",
-          "value": 16.0,
+          "value": 16,
           "type": "RDA"
         },
         {
           "group": "male_19_70yr",
           "sex": "male",
           "age_range": "19–70 years",
-          "value": 16.0,
+          "value": 16,
           "type": "RDA"
         },
         {
           "group": "male_gt70yr",
           "sex": "male",
           "age_range": "> 70 years",
-          "value": 16.0,
+          "value": 16,
           "type": "RDA"
         },
         {
           "group": "female_9_13yr",
           "sex": "female",
           "age_range": "9–13 years",
-          "value": 12.0,
+          "value": 12,
           "type": "RDA"
         },
         {
           "group": "female_14_18yr",
           "sex": "female",
           "age_range": "14–18 years",
-          "value": 14.0,
+          "value": 14,
           "type": "RDA"
         },
         {
           "group": "female_19_70yr",
           "sex": "female",
           "age_range": "19–70 years",
-          "value": 14.0,
+          "value": 14,
           "type": "RDA"
         },
         {
           "group": "female_gt70yr",
           "sex": "female",
           "age_range": "> 70 years",
-          "value": 14.0,
+          "value": 14,
           "type": "RDA"
         },
         {
           "group": "pregnant_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 18.0,
+          "value": 18,
           "type": "RDA"
         },
         {
           "group": "breastfeeding_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 17.0,
+          "value": 17,
           "type": "RDA"
         }
       ],
+      "ul": 35,
+      "ul_unit": "mg",
       "unit_note": "1 NE = 1 mg niacin or 60 mg dietary tryptophan"
     },
     {
       "name": "Riboflavin",
       "unit": "mg",
-      "ul": null,
-      "ul_unit": "mg",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins"
+      ],
       "groups": [
         {
           "group": "infants_0_6mo",
@@ -303,7 +315,7 @@
           "group": "female_14_18yr",
           "sex": "female",
           "age_range": "14–18 years",
-          "value": 1.0,
+          "value": 1,
           "type": "RDA"
         },
         {
@@ -335,13 +347,17 @@
           "type": "RDA"
         }
       ],
+      "ul": null,
+      "ul_unit": null,
       "ul_note": "ND — not determinable"
     },
     {
       "name": "Thiamin",
       "unit": "mg",
-      "ul": null,
-      "ul_unit": "mg",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins"
+      ],
       "groups": [
         {
           "group": "infants_0_6mo",
@@ -410,7 +426,7 @@
           "group": "female_14_18yr",
           "sex": "female",
           "age_range": "14–18 years",
-          "value": 1.0,
+          "value": 1,
           "type": "RDA"
         },
         {
@@ -442,119 +458,127 @@
           "type": "RDA"
         }
       ],
+      "ul": null,
+      "ul_unit": null,
       "ul_note": "ND — not determinable"
     },
     {
       "name": "Vitamin A",
       "unit": "mcg RAE",
-      "ul": 3000,
-      "ul_unit": "mcg RAE",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins"
+      ],
       "groups": [
         {
           "group": "infants_0_6mo",
           "sex": "any",
           "age_range": "0–6 months",
-          "value": 400.0,
+          "value": 400,
           "type": "AI"
         },
         {
           "group": "infants_7_12mo",
           "sex": "any",
           "age_range": "7–12 months",
-          "value": 500.0,
+          "value": 500,
           "type": "AI"
         },
         {
           "group": "children_1_3yr",
           "sex": "any",
           "age_range": "1–3 years",
-          "value": 300.0,
+          "value": 300,
           "type": "RDA"
         },
         {
           "group": "children_4_8yr",
           "sex": "any",
           "age_range": "4–8 years",
-          "value": 400.0,
+          "value": 400,
           "type": "RDA"
         },
         {
           "group": "male_9_13yr",
           "sex": "male",
           "age_range": "9–13 years",
-          "value": 600.0,
+          "value": 600,
           "type": "RDA"
         },
         {
           "group": "male_14_18yr",
           "sex": "male",
           "age_range": "14–18 years",
-          "value": 900.0,
+          "value": 900,
           "type": "RDA"
         },
         {
           "group": "male_19_70yr",
           "sex": "male",
           "age_range": "19–70 years",
-          "value": 900.0,
+          "value": 900,
           "type": "RDA"
         },
         {
           "group": "male_gt70yr",
           "sex": "male",
           "age_range": "> 70 years",
-          "value": 900.0,
+          "value": 900,
           "type": "RDA"
         },
         {
           "group": "female_9_13yr",
           "sex": "female",
           "age_range": "9–13 years",
-          "value": 600.0,
+          "value": 600,
           "type": "RDA"
         },
         {
           "group": "female_14_18yr",
           "sex": "female",
           "age_range": "14–18 years",
-          "value": 700.0,
+          "value": 700,
           "type": "RDA"
         },
         {
           "group": "female_19_70yr",
           "sex": "female",
           "age_range": "19–70 years",
-          "value": 700.0,
+          "value": 700,
           "type": "RDA"
         },
         {
           "group": "female_gt70yr",
           "sex": "female",
           "age_range": "> 70 years",
-          "value": 700.0,
+          "value": 700,
           "type": "RDA"
         },
         {
           "group": "pregnant_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 770.0,
+          "value": 770,
           "type": "RDA"
         },
         {
           "group": "breastfeeding_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 1300.0,
+          "value": 1300,
           "type": "RDA"
         }
-      ]
+      ],
+      "ul": 3000,
+      "ul_unit": "mcg"
     },
     {
       "name": "Vitamin B6",
       "unit": "mg",
-      "ul": 100,
-      "ul_unit": "mg",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins"
+      ],
       "groups": [
         {
           "group": "infants_0_6mo",
@@ -588,7 +612,7 @@
           "group": "male_9_13yr",
           "sex": "male",
           "age_range": "9–13 years",
-          "value": 1.0,
+          "value": 1,
           "type": "RDA"
         },
         {
@@ -616,7 +640,7 @@
           "group": "female_9_13yr",
           "sex": "female",
           "age_range": "9–13 years",
-          "value": 1.0,
+          "value": 1,
           "type": "RDA"
         },
         {
@@ -651,16 +675,20 @@
           "group": "breastfeeding_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 2.0,
+          "value": 2,
           "type": "RDA"
         }
-      ]
+      ],
+      "ul": 100,
+      "ul_unit": "mg"
     },
     {
       "name": "Vitamin B12",
       "unit": "mcg",
-      "ul": null,
-      "ul_unit": "mcg",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins"
+      ],
       "groups": [
         {
           "group": "infants_0_6mo",
@@ -761,338 +789,354 @@
           "type": "RDA"
         }
       ],
+      "ul": null,
+      "ul_unit": null,
       "ul_note": "ND — not determinable"
     },
     {
       "name": "Vitamin C",
       "unit": "mg",
-      "ul": 2000,
-      "ul_unit": "mg",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins"
+      ],
       "groups": [
         {
           "group": "infants_0_6mo",
           "sex": "any",
           "age_range": "0–6 months",
-          "value": 40.0,
+          "value": 40,
           "type": "AI"
         },
         {
           "group": "infants_7_12mo",
           "sex": "any",
           "age_range": "7–12 months",
-          "value": 50.0,
+          "value": 50,
           "type": "AI"
         },
         {
           "group": "children_1_3yr",
           "sex": "any",
           "age_range": "1–3 years",
-          "value": 15.0,
+          "value": 15,
           "type": "RDA"
         },
         {
           "group": "children_4_8yr",
           "sex": "any",
           "age_range": "4–8 years",
-          "value": 25.0,
+          "value": 25,
           "type": "RDA"
         },
         {
           "group": "male_9_13yr",
           "sex": "male",
           "age_range": "9–13 years",
-          "value": 45.0,
+          "value": 45,
           "type": "RDA"
         },
         {
           "group": "male_14_18yr",
           "sex": "male",
           "age_range": "14–18 years",
-          "value": 75.0,
+          "value": 75,
           "type": "RDA"
         },
         {
           "group": "male_19_70yr",
           "sex": "male",
           "age_range": "19–70 years",
-          "value": 90.0,
+          "value": 90,
           "type": "RDA"
         },
         {
           "group": "male_gt70yr",
           "sex": "male",
           "age_range": "> 70 years",
-          "value": 90.0,
+          "value": 90,
           "type": "RDA"
         },
         {
           "group": "female_9_13yr",
           "sex": "female",
           "age_range": "9–13 years",
-          "value": 45.0,
+          "value": 45,
           "type": "RDA"
         },
         {
           "group": "female_14_18yr",
           "sex": "female",
           "age_range": "14–18 years",
-          "value": 65.0,
+          "value": 65,
           "type": "RDA"
         },
         {
           "group": "female_19_70yr",
           "sex": "female",
           "age_range": "19–70 years",
-          "value": 75.0,
+          "value": 75,
           "type": "RDA"
         },
         {
           "group": "female_gt70yr",
           "sex": "female",
           "age_range": "> 70 years",
-          "value": 75.0,
+          "value": 75,
           "type": "RDA"
         },
         {
           "group": "pregnant_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 85.0,
+          "value": 85,
           "type": "RDA"
         },
         {
           "group": "breastfeeding_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 120.0,
+          "value": 120,
           "type": "RDA"
         }
-      ]
+      ],
+      "ul": 2000,
+      "ul_unit": "mg"
     },
     {
       "name": "Vitamin D",
       "unit": "IU",
-      "ul": 4000,
-      "ul_unit": "IU",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins"
+      ],
       "groups": [
         {
           "group": "infants_0_6mo",
           "sex": "any",
           "age_range": "0–6 months",
-          "value": 400.0,
+          "value": 400,
           "type": "AI"
         },
         {
           "group": "infants_7_12mo",
           "sex": "any",
           "age_range": "7–12 months",
-          "value": 400.0,
+          "value": 400,
           "type": "AI"
         },
         {
           "group": "children_1_3yr",
           "sex": "any",
           "age_range": "1–3 years",
-          "value": 600.0,
+          "value": 600,
           "type": "AI"
         },
         {
           "group": "children_4_8yr",
           "sex": "any",
           "age_range": "4–8 years",
-          "value": 600.0,
+          "value": 600,
           "type": "AI"
         },
         {
           "group": "male_9_13yr",
           "sex": "male",
           "age_range": "9–13 years",
-          "value": 600.0,
+          "value": 600,
           "type": "AI"
         },
         {
           "group": "male_14_18yr",
           "sex": "male",
           "age_range": "14–18 years",
-          "value": 600.0,
+          "value": 600,
           "type": "AI"
         },
         {
           "group": "male_19_70yr",
           "sex": "male",
           "age_range": "19–70 years",
-          "value": 600.0,
+          "value": 600,
           "type": "AI"
         },
         {
           "group": "male_gt70yr",
           "sex": "male",
           "age_range": "> 70 years",
-          "value": 800.0,
+          "value": 800,
           "type": "AI"
         },
         {
           "group": "female_9_13yr",
           "sex": "female",
           "age_range": "9–13 years",
-          "value": 600.0,
+          "value": 600,
           "type": "AI"
         },
         {
           "group": "female_14_18yr",
           "sex": "female",
           "age_range": "14–18 years",
-          "value": 600.0,
+          "value": 600,
           "type": "AI"
         },
         {
           "group": "female_19_70yr",
           "sex": "female",
           "age_range": "19–70 years",
-          "value": 600.0,
+          "value": 600,
           "type": "AI"
         },
         {
           "group": "female_gt70yr",
           "sex": "female",
           "age_range": "> 70 years",
-          "value": 800.0,
+          "value": 800,
           "type": "AI"
         },
         {
           "group": "pregnant_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 600.0,
+          "value": 600,
           "type": "AI"
         },
         {
           "group": "breastfeeding_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 600.0,
+          "value": 600,
           "type": "AI"
         }
       ],
+      "ul": 4000,
+      "ul_unit": "IU",
       "unit_note": "200 IU = 5 mcg cholecalciferol"
     },
     {
       "name": "Vitamin E",
       "unit": "mg",
-      "ul": 1000,
-      "ul_unit": "mg",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins"
+      ],
       "groups": [
         {
           "group": "infants_0_6mo",
           "sex": "any",
           "age_range": "0–6 months",
-          "value": 4.0,
+          "value": 4,
           "type": "AI"
         },
         {
           "group": "infants_7_12mo",
           "sex": "any",
           "age_range": "7–12 months",
-          "value": 5.0,
+          "value": 5,
           "type": "AI"
         },
         {
           "group": "children_1_3yr",
           "sex": "any",
           "age_range": "1–3 years",
-          "value": 6.0,
+          "value": 6,
           "type": "RDA"
         },
         {
           "group": "children_4_8yr",
           "sex": "any",
           "age_range": "4–8 years",
-          "value": 7.0,
+          "value": 7,
           "type": "RDA"
         },
         {
           "group": "male_9_13yr",
           "sex": "male",
           "age_range": "9–13 years",
-          "value": 11.0,
+          "value": 11,
           "type": "RDA"
         },
         {
           "group": "male_14_18yr",
           "sex": "male",
           "age_range": "14–18 years",
-          "value": 15.0,
+          "value": 15,
           "type": "RDA"
         },
         {
           "group": "male_19_70yr",
           "sex": "male",
           "age_range": "19–70 years",
-          "value": 15.0,
+          "value": 15,
           "type": "RDA"
         },
         {
           "group": "male_gt70yr",
           "sex": "male",
           "age_range": "> 70 years",
-          "value": 15.0,
+          "value": 15,
           "type": "RDA"
         },
         {
           "group": "female_9_13yr",
           "sex": "female",
           "age_range": "9–13 years",
-          "value": 11.0,
+          "value": 11,
           "type": "RDA"
         },
         {
           "group": "female_14_18yr",
           "sex": "female",
           "age_range": "14–18 years",
-          "value": 15.0,
+          "value": 15,
           "type": "RDA"
         },
         {
           "group": "female_19_70yr",
           "sex": "female",
           "age_range": "19–70 years",
-          "value": 15.0,
+          "value": 15,
           "type": "RDA"
         },
         {
           "group": "female_gt70yr",
           "sex": "female",
           "age_range": "> 70 years",
-          "value": 15.0,
+          "value": 15,
           "type": "RDA"
         },
         {
           "group": "pregnant_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 15.0,
+          "value": 15,
           "type": "RDA"
         },
         {
           "group": "breastfeeding_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 19.0,
+          "value": 19,
           "type": "RDA"
         }
-      ]
+      ],
+      "ul": 1000,
+      "ul_unit": "mg"
     },
     {
       "name": "Vitamin K",
       "unit": "mcg",
-      "ul": null,
-      "ul_unit": "mcg",
+      "source_id": "msd-manual-dri",
+      "source_urls": [
+        "https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins"
+      ],
       "groups": [
         {
           "group": "infants_0_6mo",
           "sex": "any",
           "age_range": "0–6 months",
-          "value": 2.0,
+          "value": 2,
           "type": "AI"
         },
         {
@@ -1106,87 +1150,89 @@
           "group": "children_1_3yr",
           "sex": "any",
           "age_range": "1–3 years",
-          "value": 30.0,
+          "value": 30,
           "type": "AI"
         },
         {
           "group": "children_4_8yr",
           "sex": "any",
           "age_range": "4–8 years",
-          "value": 55.0,
+          "value": 55,
           "type": "AI"
         },
         {
           "group": "male_9_13yr",
           "sex": "male",
           "age_range": "9–13 years",
-          "value": 60.0,
+          "value": 60,
           "type": "AI"
         },
         {
           "group": "male_14_18yr",
           "sex": "male",
           "age_range": "14–18 years",
-          "value": 75.0,
+          "value": 75,
           "type": "AI"
         },
         {
           "group": "male_19_70yr",
           "sex": "male",
           "age_range": "19–70 years",
-          "value": 120.0,
+          "value": 120,
           "type": "AI"
         },
         {
           "group": "male_gt70yr",
           "sex": "male",
           "age_range": "> 70 years",
-          "value": 120.0,
+          "value": 120,
           "type": "AI"
         },
         {
           "group": "female_9_13yr",
           "sex": "female",
           "age_range": "9–13 years",
-          "value": 60.0,
+          "value": 60,
           "type": "AI"
         },
         {
           "group": "female_14_18yr",
           "sex": "female",
           "age_range": "14–18 years",
-          "value": 75.0,
+          "value": 75,
           "type": "AI"
         },
         {
           "group": "female_19_70yr",
           "sex": "female",
           "age_range": "19–70 years",
-          "value": 90.0,
+          "value": 90,
           "type": "AI"
         },
         {
           "group": "female_gt70yr",
           "sex": "female",
           "age_range": "> 70 years",
-          "value": 90.0,
+          "value": 90,
           "type": "AI"
         },
         {
           "group": "pregnant_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 90.0,
+          "value": 90,
           "type": "AI"
         },
         {
           "group": "breastfeeding_19_50yr",
           "sex": "female",
           "age_range": "19–50 years",
-          "value": 90.0,
+          "value": 90,
           "type": "AI"
         }
       ],
+      "ul": null,
+      "ul_unit": null,
       "ul_note": "ND — not determinable"
     }
   ]

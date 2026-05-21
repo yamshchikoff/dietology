@@ -192,15 +192,15 @@ MSD Manual — профессиональное медицинское руко�
 |-----------|-------------|----------|------|--------|
 | **Состав продуктов** | Макро- и микронутриенты на 100г | USDA FoodData Central | A | ✅ готово (363 продукта, 27 nutrients) |
 | | Брендированные продукты (штрихкоды) | Open Food Facts | B | 🔜 context-only (ODbL, 3.7M продуктов) |
-| **Суточные нормы (RDA/UL)** | Витамины | MSD Manual DRI Tables | B | 🔧 экстракция HTML-таблиц |
+| **Суточные нормы (RDA/UL)** | Витамины | MSD Manual DRI Tables | A | ✅ готово (overlay: 11 vitamins, 154 groups) |
 | | Витамины (первичный источник) | National Academies DRI Guide | B | 🔧 экстракция PDF pp. 529–542 |
-| | Минералы | MSD Manual DRI Tables | B | 🔧 экстракция HTML-таблиц |
+| | Минералы | MSD Manual DRI Tables + IOM 2011 + IOM 1997 | A | ✅ готово (overlay: 14 minerals, 214 groups) |
 | | Минералы (первичный источник) | National Academies DRI Guide | B | 🔧 экстракция PDF pp. 529–542 |
-| | Макронутриенты | MSD Manual DRI Tables | B | 🔧 экстракция HTML-таблиц |
+| | Макронутриенты | MSD Manual DRI Tables | A | ✅ готово (overlay: 3 per-kg, 51 groups) |
 | | Альтернатива (EU) | EFSA DRV Finder | B | ⛔ заблокирован (JS-only). Мониторинг. |
-| **Лаб. референсные диапазоны** | Общий компендиум (300+ тестов) | Wikipedia Reference Ranges | C | 🔧 курирование JSON + валидация |
+| **Лаб. референсные диапазоны** | Общий компендиум (254 теста) | Wikipedia Reference Ranges | C | ✅ готово (extract-wiki-lab-ranges.py) |
 | | Первичный авторитетный | — | — | **⚠️ ПРОБЕЛ:** не существует машиночитаемого Tier A/B источника |
-| **Пороговые значения дефицита** | Анемия (гемоглобин) | WHO 2024 Hb Guideline | B | 🔧 экстракция таблиц PDF |
+| **Пороговые значения дефицита** | Анемия (гемоглобин) | WHO 2024 Hb Guideline | B | ✅ готово (extract-who-hb.py, 9 thresholds) |
 | | Дефицит железа (ферритин) | — | — | **⚠️ ПРОБЕЛ:** WHO guideline в нарративном PDF, не machine-readable |
 | | Дефицит витамина A, цинка, йода, etc. | — | — | **⚠️ ПРОБЕЛ:** WHO guidelines в нарративных PDF |
 | **Популяционные нормы** | Анемия, BMI, диабет (194 страны) | WHO GHO | A | ✅ готово (3 индикатора, ~52 MB JSON) |
@@ -235,10 +235,10 @@ MSD Manual — профессиональное медицинское руко�
 
 ### TODO
 
-- [ ] Скрипт экстракции DRI таблиц из MSD Manual (HTML) — витамины, минералы, макронутриенты
+- [x] Скрипт экстракции DRI таблиц из MSD Manual (HTML) — витамины, минералы, макронутриенты
 - [ ] Скрипт экстракции DRI Summary Tables из National Academies PDF (pp. 529–542)
-- [ ] Скрипт экстракции WHO 2024 Haemoglobin thresholds
-- [ ] Курирование JSON референсных диапазонов из Wikipedia (с валидацией по первичным источникам)
+- [x] Скрипт экстракции WHO 2024 Haemoglobin thresholds
+- [x] Курирование JSON референсных диапазонов из Wikipedia (с валидацией по первичным источникам)
 - [ ] Докачка дополнительных индикаторов WHO GHO через OData API
 - [ ] Мониторинг: EFSA DRV Finder (при появлении статического экспорта)
 - [ ] Мониторинг: NIH ODS (при снятии Cloudflare-блокировки)

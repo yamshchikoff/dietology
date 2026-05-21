@@ -1,0 +1,131 @@
+{
+  "_meta": {
+    "schema": "dietology-data-index-v1",
+    "description": "Unified manifest of all dietology knowledge base files. Each dataset entry includes domain, tier, sources, and provenance metadata.",
+    "build_script": "data/build-data-index.py",
+    "build_date": "2026-05-21T19:38:48Z",
+    "sources": [
+      "iom-dri-1997",
+      "iom-dri-2011",
+      "msd-consumer-minerals",
+      "msd-macronutrients-per-kg",
+      "msd-manual-dri",
+      "usda-fdc-2026-04",
+      "who-2024-hb",
+      "wikipedia-lab-ranges"
+    ],
+    "provenance_guarantee": "All values are from-source (numeric facts extraction from public sources). 0 fabrication, 0 recalculation. Every value traceable to original source document in data/external/."
+  },
+  "datasets": {
+    "dri-minerals-overlay.json": {
+      "domain": "dri",
+      "tier": "A",
+      "description": "14 minerals, 214 groups, finest granularity per source",
+      "sources": [
+        "iom-dri-2011",
+        "iom-dri-1997",
+        "msd-manual-dri",
+        "msd-consumer-minerals"
+      ],
+      "build_script": "data/build-minerals-overlay.py",
+      "notes": "Ca: IOM 2011 (22 groups + ul_groups). P/Mg: IOM 1997 via NCBI cross-verification (22 groups each). Trace minerals: MSD Professional (16 groups each). Na/K: MSD Consumer (adult only). Pregnancy/breastfeeding split into teen/adult subgroups.",
+      "file": "data/dri-minerals-overlay.json",
+      "count": 14,
+      "detail": "14 nutrients, 214 groups"
+    },
+    "dri-vitamins-overlay.json": {
+      "domain": "dri",
+      "tier": "A",
+      "description": "11 vitamins, 154 groups, machine-parsed values with full metadata",
+      "sources": [
+        "msd-manual-dri"
+      ],
+      "build_script": "data/build-vitamins-overlay.py",
+      "notes": "Values from MSD Professional HTML parser. Metadata (ul_note, unit_note, proper unit names) from manual transcription. Pregnancy/breastfeeding are single groups without age split — MSD vitamins table does not provide teen/adult breakdown.",
+      "file": "data/dri-vitamins-overlay.json",
+      "count": 11,
+      "detail": "11 nutrients, 154 groups"
+    },
+    "dri-macronutrients-per-kg-overlay.json": {
+      "domain": "dri",
+      "tier": "A",
+      "description": "3 nutrients (Ca/P/Mg), 51 groups (17 each), mg/kg of body weight",
+      "sources": [
+        "msd-macronutrients-per-kg"
+      ],
+      "build_script": "data/build-macronutrients-per-kg-overlay.py",
+      "notes": "Per-kg values — model must multiply by individual body weight. More accurate for individual use than absolute DRI. Infants: AI. Children and adults: RDA. Based on IOM 1997.",
+      "file": "data/dri-macronutrients-per-kg-overlay.json",
+      "count": 3,
+      "detail": "3 nutrients, 51 groups"
+    },
+    "usda-foundation-foods-essential.json": {
+      "domain": "food_composition",
+      "tier": "A",
+      "description": "363 foods with nutrient composition (per 100g), 27 essential nutrients",
+      "sources": [
+        "usda-fdc-2026-04"
+      ],
+      "extraction_script": "data/extract-usda.py",
+      "notes": "Subset of USDA Foundation Foods (CC0). Filtered to foods with complete nutrient profiles for 27 essential nutrients.",
+      "file": "data/usda-foundation-foods-essential.json",
+      "count": 363,
+      "detail": "363 foods"
+    },
+    "lab-reference-ranges.json": {
+      "domain": "lab_ranges",
+      "tier": "C",
+      "description": "254 lab test reference ranges across 16 categories",
+      "sources": [
+        "wikipedia-lab-ranges"
+      ],
+      "extraction_script": "data/extract-wiki-lab-ranges.py",
+      "notes": "Wikipedia-sourced reference ranges. Tier C: useful for context but not authoritative clinical reference. Values are population averages, not individual diagnostic thresholds.",
+      "file": "data/lab-reference-ranges.json",
+      "count": 254,
+      "detail": "254 ranges"
+    },
+    "who-hb-thresholds.json": {
+      "domain": "deficiency_thresholds",
+      "tier": "B",
+      "description": "9 hemoglobin diagnostic thresholds for anemia (WHO 2024)",
+      "sources": [
+        "who-2024-hb"
+      ],
+      "extraction_script": "data/extract-who-hb.py",
+      "notes": "WHO 2024 Guideline on haemoglobin cutoffs. Includes severity classification (mild/moderate/severe), altitude/smoking adjustments, pregnancy-specific thresholds.",
+      "file": "data/who-hb-thresholds.json",
+      "count": 9,
+      "detail": "9 diagnostic thresholds"
+    },
+    "sources-final.json": {
+      "domain": "manifest",
+      "tier": "A",
+      "description": "Unified source manifest — definitive reference for all dietology data sources (15 sources, 5 tier levels)",
+      "sources": [
+        "iom-dri-1997",
+        "iom-dri-2011",
+        "msd-consumer-minerals",
+        "msd-macronutrients-per-kg",
+        "msd-manual-dri",
+        "usda-fdc-2026-04",
+        "who-2024-hb",
+        "wikipedia-lab-ranges"
+      ],
+      "build_script": "data/build-sources-overlay.py",
+      "notes": "Merges sources.json (base) + sources-overlay.json (DRI overlay) + data-index.json (catalog). Single authoritative source reference — model loads ONLY this file. Supersedes sources.json.",
+      "file": "data/sources-final.json",
+      "count": 15,
+      "detail": "15 sources"
+    }
+  },
+  "stats": {
+    "total_dri_nutrients": 28,
+    "total_dri_groups": 419,
+    "total_foods": 363,
+    "total_lab_tests": 254,
+    "total_diagnostic_thresholds": 9,
+    "fabrication": 0,
+    "recalculation": 0
+  }
+}

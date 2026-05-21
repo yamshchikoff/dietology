@@ -6,37 +6,68 @@
 > Данное положение пропагировать без сокращений во все файлы документации проекта.
 
 ```
-СПРАВОЧНЫЕ ДАННЫЕ PROVENANCE OVERLAY
-=====================================
+ФИНАЛЬНЫЙ PROVENANCE OVERLAY
+=============================
 
-██████████████████████████████████████████████████ 7/7 источников скачаны
-██████████████████████████████████████████████████ 15/15 записей from-source с исходником
-██████████████████████████████████████████████████ 0 fabrication, 0 recalculation
+██████████████████████████████████████████████████ 8/8 источников скачаны
+██████████████████████████████████████████████████ 3/3 оверлейных слоя собраны
+██████████████████████████████████████████████████ 1/1 data-index.json — единый манифест
+██████████████████████████████████████████████████ 28 DRI нутриентов, 419 групп — все machine-verified
+██████████████████████████████████████████████████ 363 foods, 254 lab tests, 9 Hb thresholds
+██████████████████████████████████████████████████ 0 fabrication, 0 recalculation, 100% from-source
 ```
 
-| Запись | Групп | Значения из | Исходник в external/ | Экстрактор |
-|--------|-------|------------|---------------------|------------|
-| **USDA foods** (363 продукта) | 27 нутриентов | USDA FoodData Central (CC0) | `.zip` ✓ | `extract-usda.py` ✓ |
-| **Lab ranges** (254 теста) | 16 категорий | Wikipedia (CC BY-SA) | `.html` ✓ | `extract-wiki-lab-ranges.py` ✓ |
-| **Vitamins** — 11 шт. | 154 | MSD Professional DRI table | `.html` ✓ | `extract-msd-dri-parser.py` ✓ |
-| **Trace minerals** — 9 шт. | 144 | MSD Professional DRI table | `.html` ✓ | `extract-msd-dri-parser.py` ✓ |
-| **Ca/P/Mg per-kg** — 3 шт. | 51 | MSD Professional macronutrients | `.html` ✓ | `extract-msd-dri-parser.py` ✓ |
-| **Na** — adult AI | 2 (1500 ♂/♀ mg) | MSD Consumer minerals | `.html` ✓ | `extract-msd-dri-parser.py` ✓ |
-| **K** — adult AI | 2 (3400 ♂ / 2600 ♀ mg) | MSD Consumer minerals | `.html` ✓ | `extract-msd-dri-parser.py` ✓ |
-| **Ca** — absolute | 22 возрастных групп | IOM 2011 DRI | `iom-dri-calcium-vitamin-d-2011.pdf` ✓ | `extract-iom-dri.py` ✓ |
-| **P** — absolute | 12 возрастных групп | IOM 1997 DRI | `iom-dri-ca-p-mg-vitd-f-1997.pdf` ✓ | — (PDF text scrambled) |
-| **Mg** — absolute | 16 возрастных групп | IOM 1997 DRI | `iom-dri-ca-p-mg-vitd-f-1997.pdf` ✓ | — (PDF text scrambled) |
-| **WHO Hb thresholds** | 9 diagnostic | WHO 2024 Guideline | `who-2024-hb-guideline.pdf` ✓ | `extract-who-hb.py` ✓ |
+## Оверлейные слои (merge machine-parsed + manual metadata)
 
-**Нижняя черта:** все значения — from-source. Выдумок и пересчётов нет.
+| Файл | Состав | Групп | source_id | Сборщик | Статус |
+|------|--------|-------|-----------|---------|--------|
+| **dri-minerals-overlay.json** | 14 минералов | 214 | iom-dri-2011, iom-dri-1997, msd-manual-dri, msd-consumer-minerals | `build-minerals-overlay.py` | ✓ |
+| **dri-vitamins-overlay.json** | 11 витаминов | 154 | msd-manual-dri | `build-vitamins-overlay.py` | ✓ |
+| **dri-macronutrients-per-kg-overlay.json** | 3 per-kg (Ca/P/Mg) | 51 | msd-macronutrients-per-kg | `build-macronutrients-per-kg-overlay.py` | ✓ |
+| **data-index.json** | единый манифест | — | 8 sources | `build-data-index.py` | ✓ |
 
-**Осталось:**
-- Нет парсеров — 2 строки (P и Mg absolute из IOM 1997 PDF). PDF 1997 года использует scrambled character rendering — programmatic extraction невозможна (значения верифицированы по printed tables вручную).
-- Ca (IOM 2011): парсер есть, 22 группы извлечены, все overlapping значения совпадают с ручной транскрипцией.
+## Самостоятельные файлы (machine-parsed, merge не требуется)
 
-**Статус парсеров:**
-- `extract-msd-dri-parser.py`: парсит 4 таблицы — vitamins (154 группы), trace minerals (144 группы), macronutrients per-kg (51 группа), consumer minerals (4 группы). Все значения совпадают с ручной транскрипцией. 353 группы total.
-- `extract-iom-dri.py`: парсит IOM 2011 PDF Table S-1 — 22 группы Calcium (AI/RDA/UL). Все overlapping значения совпадают с ручной транскрипцией. P и Mg из IOM 1997 не извлечены — PDF text scrambled.
-- `extract-who-hb.py`: парсит WHO 2024 Hb Guideline PDF — 9 diagnostic thresholds. ✓
-- `extract-usda.py`: парсит USDA FoodData Central ZIP — 363 продукта. ✓
-- `extract-wiki-lab-ranges.py`: парсит Wikipedia API HTML — 254 теста. ✓
+| Файл | Состав | source_id | Экстрактор |
+|------|--------|-----------|------------|
+| **usda-foundation-foods-essential.json** | 363 продукта, 27 нутриентов | usda-fdc-2026-04 | `extract-usda.py` |
+| **lab-reference-ranges.json** | 254 теста, 16 категорий | wikipedia-lab-ranges | `extract-wiki-lab-ranges.py` |
+| **who-hb-thresholds.json** | 9 diagnostic thresholds | who-2024-hb | `extract-who-hb.py` |
+
+## Детализация оверлейных слоёв
+
+### `dri-minerals-overlay.json` — 14 минералов, 214 групп
+- **Ca:** 22 группы (+ UL groups) — IOM 2011 (source_id: `iom-dri-2011`)
+- **P и Mg:** 22 группы каждый — IOM 1997, verified via NCBI Bookshelf cross-check (source_id: `iom-dri-1997`)
+- **Trace minerals (9):** 16 групп каждый — MSD Professional (source_id: `msd-manual-dri`)
+- **Na, K:** 2 adult группы каждый — MSD Consumer (source_id: `msd-consumer-minerals`)
+- **Pregnancy/breastfeeding:** teen (14-18yr) и adult (19-30yr, 31-50yr) подгруппы — matching IOM source granularity
+- **Metadata:** ul/ul_unit/ul_note — machine-verified (parsed-first) для trace minerals (9, MSD Professional) и Calcium (IOM 2011); `metadata_source: manual_transcription` для P, Mg (NCBI — нет ul в источнике), Na, K (MSD Consumer — нет ul в источнике). per-group notes — из ручной транскрипции (нет machine-источника).
+
+### `dri-vitamins-overlay.json` — 11 витаминов, 154 группы
+- **Все витамины:** 14 групп каждый (source_id: `msd-manual-dri`)
+- **Значения:** из `dri-vitamins-parsed.json` (MSD Professional HTML parser)
+- **Метаданные:** unit_note (Niacin "1 NE = ...", Vitamin D "200 IU = 5 mcg"), ul_note (Folate — synthetic folic acid), proper unit names (mcg DFE, mg NE, mcg RAE) — извлечены парсером из HTML (machine-verified, все поля идентичны ручной транскрипции).
+- **Pregnancy/breastfeeding:** без возрастной разбивки (MSD vitamins table не даёт teen/adult split)
+
+### `dri-macronutrients-per-kg-overlay.json` — 3 нутриента, 51 группа
+- **Ca/P/Mg в mg/kg:** 17 групп каждый (source_id: `msd-macronutrients-per-kg`)
+- **Конвенция:** все значения в mg/kg body weight. Model должен умножать на индивидуальный вес.
+- **Типы:** Infants — AI, children и adults — RDA.
+- **Основание:** IOM 1997, воспроизведено MSD Manual Professional.
+
+### `data-index.json` — единый манифест
+- **6 datasets** с доменами, tier-уровнями, источниками, build/extraction скриптами
+- **Итоговая статистика:** 28 DRI нутриентов, 419 групп, 363 foods, 254 lab tests, 9 Hb thresholds
+- **Provenance guarantee:** 0 fabrication, 0 recalculation, 100% from-source
+
+## Статус парсеров и сборки
+- `extract-msd-dri-parser.py`: 5 таблиц — vitamins (154), trace minerals (144), macronutrients per-kg (51), consumer minerals (4), NCBI IOM 1997 RDA/AI (44). 397 групп total. ✓
+- `extract-iom-dri.py`: IOM 2011 PDF Table S-1 — 22 Calcium (AI/RDA/UL). ✓
+- `extract-who-hb.py`: WHO 2024 Hb Guideline PDF — 9 diagnostic thresholds. ✓
+- `extract-usda.py`: USDA FoodData Central ZIP — 363 foods. ✓
+- `extract-wiki-lab-ranges.py`: Wikipedia API HTML — 254 tests. ✓
+- `build-minerals-overlay.py`: 5 input files → 14 minerals, 214 groups. ✓
+- `build-vitamins-overlay.py`: 2 input files → 11 vitamins, 154 groups. ✓
+- `build-macronutrients-per-kg-overlay.py`: 2 input files → 3 nutrients, 51 groups. ✓
+- `build-data-index.py`: 6 datasets → unified manifest. ✓

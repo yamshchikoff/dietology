@@ -33,6 +33,7 @@
 | `who-2024-hb-guideline.pdf` | WHO 2024 Hb Guideline | CC BY-NC-SA 3.0 IGO |
 | `iom-dri-calcium-vitamin-d-2011.pdf` | IOM DRI Calcium/Vitamin D 2011 | NAS © — numeric facts |
 | `iom-dri-ca-p-mg-vitd-f-1997.pdf` | IOM DRI Ca/P/Mg/Vitamin D/Fluoride 1997 | NAS © — numeric facts |
+| `ncbi-iom1997-dri-rda-ai.html` | NCBI Bookshelf — IOM 1997 DRI RDA/AI table (cross-verification) | Numeric facts — HTML rendering |
 
 ## Скачивание
 

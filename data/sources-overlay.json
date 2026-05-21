@@ -1,0 +1,227 @@
+{
+  "schema_version": "1.0",
+  "description": "Source manifest for the DIETOLOGY overlay layer. Every DRI overlay file references a source_id from this manifest. This file supersedes sources.json for DRI data — model loads this AFTER sources.json to get the authoritative overlay dataset catalog.",
+  "base_manifest": "data/sources.json",
+  "build_date": "2026-05-21",
+  "build_script": "data/build-data-index.py",
+
+  "sources": {
+    "msd-manual-dri": {
+      "name": "MSD Manual Professional — DRI Tables",
+      "tier": "A",
+      "tier_note": "Upgraded from B: all values now machine-verified via extract-msd-dri-parser.py. Original Tier B reflected manual transcription — overlay replaces that with parsed values while preserving metadata.",
+      "category": "dri_values",
+      "url": "https://www.msdmanuals.com/professional",
+      "license": "Copyright Merck & Co. — numeric facts not copyrightable",
+      "mit_compatible": true,
+      "format": "HTML tables (structured, parseable). Parser: extract-msd-dri-parser.py",
+      "authority": "secondary",
+      "authority_note": "Reproduces National Academies DRI values in HTML format. Peer-reviewed professional medical reference published since 1899.",
+      "update_frequency": "periodic",
+      "description": "Dietary Reference Intakes (RDA, AI, UL) for 11 vitamins and 9 trace minerals by age and sex. Values extracted via HTML parser, metadata (ul_note, unit_note, proper unit names) from manual transcription.",
+      "extraction_script": "data/extract-msd-dri-parser.py",
+      "build_script": "data/build-vitamins-overlay.py",
+      "overlay_files": ["dri-vitamins-overlay.json", "dri-minerals-overlay.json"],
+      "overlay_nutrients": {
+        "vitamins": 11,
+        "trace_minerals": 9
+      },
+      "overlay_groups": {
+        "vitamins": 154,
+        "trace_minerals": 144
+      },
+      "source_files": [
+        "data/external/msd-manual-vitamins-2026-05.html",
+        "data/external/msd-manual-trace-minerals-2026-05.html"
+      ]
+    },
+
+    "iom-dri-2011": {
+      "name": "IOM Dietary Reference Intakes — Calcium and Vitamin D (2011)",
+      "tier": "A",
+      "category": "dri_values",
+      "url": "https://nap.nationalacademies.org/catalog/13050/",
+      "license": "Free PDF download — numeric facts not copyrightable",
+      "mit_compatible": true,
+      "mit_compatible_note": "Numeric DRI values are facts established by the US/Canadian governments. Full citation: Institute of Medicine. 2011. Dietary Reference Intakes for Calcium and Vitamin D. Washington, DC: The National Academies Press.",
+      "format": "PDF with text layer (born-digital, 2011). Parser: extract-iom-dri.py (pdfplumber).",
+      "authority": "primary",
+      "authority_note": "Current authoritative DRI for Calcium. Supersedes IOM 1997 values for this nutrient. Provides finest granularity: 22 age/sex groups including teen/adult pregnancy/breastfeeding subgroups with separate UL groups.",
+      "update_frequency": "static (current as of 2011)",
+      "description": "Current DRI tables for calcium across all age/sex groups. Extracted from Table S-1 (Summary Tables, pp. 499–542). Calcium RDA/AI + UL groups per age.",
+      "extraction_script": "data/extract-iom-dri.py",
+      "build_script": "data/build-minerals-overlay.py",
+      "overlay_files": ["dri-minerals-overlay.json"],
+      "overlay_nutrients": {
+        "Calcium": 1
+      },
+      "overlay_groups": {
+        "Calcium": 22,
+        "Calcium_ul_groups": 22
+      },
+      "source_files": [
+        "data/external/iom-dri-calcium-vitamin-d-2011.pdf"
+      ]
+    },
+
+    "iom-dri-1997": {
+      "name": "IOM Dietary Reference Intakes — Ca, P, Mg, Vitamin D, Fluoride (1997)",
+      "tier": "A",
+      "category": "dri_values",
+      "url": "https://nap.nationalacademies.org/catalog/5776/",
+      "license": "Free PDF download — numeric facts not copyrightable",
+      "mit_compatible": true,
+      "mit_compatible_note": "Numeric DRI values are facts established by the US/Canadian governments. Full citation: Institute of Medicine. 1997. Dietary Reference Intakes for Calcium, Phosphorus, Magnesium, Vitamin D, and Fluoride. Washington, DC: The National Academies Press.",
+      "format": "PDF with text layer (born-digital, 1997). Cross-verified via NCBI Bookshelf machine-readable HTML.",
+      "authority": "primary",
+      "authority_note": "Original DRI report establishing RDA/AI for P and Mg. Values extracted from NCBI Bookshelf HTML rendering (clean machine-parseable table, same IOM 1997 source) and cross-verified against manual transcription: 24/28 groups 100% match, 4 PARTIAL_MATCH due to pregnancy/breastfeeding granularity difference (teen vs adult).",
+      "update_frequency": "static (historical reference)",
+      "description": "Current DRI for phosphorus and magnesium. Values from NCBI Bookshelf (ttt00057_1 table) — machine-readable rendering of IOM 1997 RDA/AI summary. Cross-verified against manual transcription from original PDF.",
+      "extraction_script": "data/extract-msd-dri-parser.py",
+      "build_script": "data/build-minerals-overlay.py",
+      "cross_verified_by": "ncbi-iom1997-summary",
+      "cross_verification_results": {
+        "total_groups": 28,
+        "match": 24,
+        "partial_match": 4,
+        "mismatch": 0,
+        "partial_match_note": "4 pregnancy/breastfeeding groups: manual used adult values for consolidated groups, NCBI shows per-subgroup values. Teen values (≤18y) are systematically higher. Overlay uses NCBI per-subgroup values for finest granularity."
+      },
+      "overlay_files": ["dri-minerals-overlay.json"],
+      "overlay_nutrients": {
+        "Phosphorus": 1,
+        "Magnesium": 1
+      },
+      "overlay_groups": {
+        "Phosphorus": 22,
+        "Magnesium": 22
+      },
+      "source_files": [
+        "data/external/iom-dri-ca-p-mg-vitd-f-1997.pdf",
+        "data/external/ncbi-iom1997-dri-rda-ai.html"
+      ]
+    },
+
+    "msd-consumer-minerals": {
+      "name": "MSD Manual Consumer — Overview of Minerals",
+      "tier": "B",
+      "tier_note": "Tier B because adult values only — no age-specific breakdown. Na/K adult AI values are the only available machine-readable source.",
+      "category": "dri_values",
+      "url": "https://www.msdmanuals.com/home/disorders-of-nutrition/minerals/overview-of-minerals",
+      "license": "Copyright Merck & Co. — numeric facts not copyrightable",
+      "mit_compatible": true,
+      "format": "HTML table (structured, parseable). Parser: extract-msd-dri-parser.py",
+      "authority": "secondary",
+      "authority_note": "Consumer edition of MSD Manual. Adult RDA/AI values only. Source for Na (1500 mg AI) and K (3400/2600 mg AI) adult values. No pediatric or adolescent breakdown.",
+      "update_frequency": "periodic",
+      "description": "Adult RDA/AI for Na and K. Adult values only — no age-specific breakdown. Overlay adds note flagging this limitation.",
+      "extraction_script": "data/extract-msd-dri-parser.py",
+      "build_script": "data/build-minerals-overlay.py",
+      "overlay_files": ["dri-minerals-overlay.json"],
+      "overlay_nutrients": {
+        "Sodium": 1,
+        "Potassium": 1
+      },
+      "overlay_groups": {
+        "Sodium": 2,
+        "Potassium": 2
+      },
+      "limitation": "Adult values only. Age-specific breakdown not available in machine-readable form. Requires National Academies DRI 2019 PDF for full age breakdown.",
+      "source_files": [
+        "data/external/msd-manual-consumer-minerals-2026-05.html"
+      ]
+    },
+
+    "msd-macronutrients-per-kg": {
+      "name": "MSD Manual — Macronutrients DRI per kg",
+      "tier": "A",
+      "tier_note": "Upgraded from B: values now machine-verified via extract-msd-dri-parser.py. Per-kg values are the primary form from IOM 1997 — more accurate for individual use than absolute DRI.",
+      "category": "dri_values",
+      "url": "https://www.msdmanuals.com/professional/multimedia/table/recommended-dietary-reference-intakes-for-some-macronutrients-food-and-nutrition-board-institute-of-medicine-of-the-national-academies",
+      "license": "Copyright Merck & Co. — numeric facts not copyrightable",
+      "mit_compatible": true,
+      "mit_compatible_note": "Numeric DRI values are facts. Source: Institute of Medicine. 1997. Dietary Reference Intakes for Calcium, Phosphorus, Magnesium, Vitamin D, and Fluoride. Washington, DC: The National Academies Press.",
+      "format": "HTML table (structured, parseable). All values in mg/kg of body weight.",
+      "authority": "secondary",
+      "authority_note": "Reproduces IOM 1997 per-kg values. These are the PRIMARY form — absolute DRI values are derived by multiplying by reference body weights. Per-kg values are MORE accurate for individual use: multiply by actual body weight, not population reference weight.",
+      "update_frequency": "periodic",
+      "description": "Calcium, Phosphorus, Magnesium DRI in mg/kg for 17 age/sex groups. All values in mg/kg — model MUST multiply by individual body weight. Infants: AI. Children and adults: RDA.",
+      "extraction_script": "data/extract-msd-dri-parser.py",
+      "build_script": "data/build-macronutrients-per-kg-overlay.py",
+      "convention": "All values in mg/kg of body weight. Multiply by individual body weight for absolute daily intake. More accurate for individual use than fixed absolute DRI values.",
+      "overlay_files": ["dri-macronutrients-per-kg-overlay.json"],
+      "overlay_nutrients": {
+        "Calcium_per_kg": 1,
+        "Phosphorus_per_kg": 1,
+        "Magnesium_per_kg": 1
+      },
+      "overlay_groups": {
+        "Calcium_per_kg": 17,
+        "Phosphorus_per_kg": 17,
+        "Magnesium_per_kg": 17
+      },
+      "source_files": [
+        "data/external/msd-manual-macronutrients-2026-05.html"
+      ]
+    }
+  },
+
+  "overlay_catalog": {
+    "dri-minerals-overlay.json": {
+      "description": "14 minerals (Ca, P, Mg, Na, K, Fe, Zn, Cu, I, Se, Mn, Cr, Mo, F), 214 groups at finest available granularity",
+      "schema": "dri-minerals-overlay-v1",
+      "sources_merged": ["iom-dri-2011", "iom-dri-1997", "msd-manual-dri", "msd-consumer-minerals"],
+      "build_script": "data/build-minerals-overlay.py",
+      "input_files": [
+        "data/dri-minerals.json (metadata: ul, ul_note, per-group notes, proper category)",
+        "data/dri-minerals-parsed.json (trace mineral values, 9×16=144 groups)",
+        "data/dri-calcium-iom-2011-parsed.json (Ca values + ul_groups, 22+22)",
+        "data/dri-macrominerals-absolute-parsed.json (Na/K values, 2×2=4 groups)",
+        "data/dri-p-mg-ncbi-crosscheck.json (P/Mg values via NCBI, 2×22=44 groups)"
+      ],
+      "per_nutrient_source_id": true,
+      "pregnancy_breastfeeding_granularity": "split into teen (14-18yr), adult 19-30yr, adult 31-50yr for Ca/P/Mg/trace minerals. Na/K are adult only."
+    },
+    "dri-vitamins-overlay.json": {
+      "description": "11 vitamins, 154 groups. Machine-parsed values + full metadata (unit_note, ul_note, proper unit names) from manual transcription",
+      "schema": "dri-vitamins-overlay-v1",
+      "sources_merged": ["msd-manual-dri"],
+      "build_script": "data/build-vitamins-overlay.py",
+      "input_files": [
+        "data/dri-vitamins.json (metadata: unit names like mcg DFE/mg NE/mcg RAE/IU, ul_note, unit_note)",
+        "data/dri-vitamins-parsed.json (machine-parsed values, 11×14=154 groups)"
+      ],
+      "per_nutrient_source_id": true,
+      "pregnancy_breastfeeding_granularity": "single group (19-50yr), no teen split. MSD vitamins table does not provide teen/adult breakdown for pregnancy/breastfeeding — source limitation, not extraction error."
+    },
+    "dri-macronutrients-per-kg-overlay.json": {
+      "description": "3 nutrients (Ca/P/Mg in mg/kg), 51 groups. Per-kg values — model must multiply by individual body weight",
+      "schema": "dri-macronutrients-per-kg-overlay-v1",
+      "sources_merged": ["msd-macronutrients-per-kg"],
+      "build_script": "data/build-macronutrients-per-kg-overlay.py",
+      "input_files": [
+        "data/dri-macronutrients-per-kg.json (metadata: category, note, citation)",
+        "data/dri-macronutrients-per-kg-parsed.json (machine-parsed values, 3×17=51 groups)"
+      ],
+      "per_nutrient_source_id": true,
+      "convention": "All values in mg/kg of body weight. Multiply by individual body weight. Infants: AI. Children and adults: RDA."
+    }
+  },
+
+  "full_rebuild_command": "python3 data/extract-msd-dri-parser.py && python3 data/extract-iom-dri.py && python3 data/build-minerals-overlay.py && python3 data/build-vitamins-overlay.py && python3 data/build-macronutrients-per-kg-overlay.py && python3 data/build-data-index.py",
+
+  "final_stats": {
+    "dri_nutrients_total": 28,
+    "dri_groups_total": 419,
+    "minerals": 14,
+    "vitamins": 11,
+    "per_kg_macronutrients": 3,
+    "unique_sources": 5,
+    "source_files_in_external": 7,
+    "extraction_scripts": 3,
+    "build_scripts": 4,
+    "fabrication": 0,
+    "recalculation": 0,
+    "provenance": "100% from-source"
+  }
+}

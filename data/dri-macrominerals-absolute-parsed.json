@@ -2,7 +2,7 @@
   "_meta": {
     "source_id": "msd-consumer-minerals",
     "source_file": "data/external/msd-manual-consumer-minerals-2026-05.html",
-    "extraction_date": "2026-05-21T13:52:15Z",
+    "extraction_date": "2026-05-21T15:37:51Z",
     "extraction_script": "data/extract-msd-dri-parser.py",
     "extraction_method": "html-parser",
     "extracted_by": "agent",

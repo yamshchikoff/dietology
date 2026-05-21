@@ -104,6 +104,32 @@
       "source_file": "data/external/iom-dri-ca-p-mg-vitd-f-1997.pdf",
       "extraction_date": "2026-05-21"
     },
+    "ncbi-iom1997-summary": {
+      "name": "NCBI Bookshelf — IOM 1997 DRI Summary Tables",
+      "tier": "A",
+      "category": "dri_values",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK222881/table/ttt00057_1/",
+      "license": "Numeric facts not copyrightable — HTML rendering of public government report",
+      "mit_compatible": true,
+      "mit_compatible_note": "Machine-readable HTML version of IOM 1997 DRI summary tables. Same Tier A source as IOM 1997 PDF. Numeric DRI values are facts established by the US/Canadian governments. Full citation: Institute of Medicine. 1997. Dietary Reference Intakes for Calcium, Phosphorus, Magnesium, Vitamin D, and Fluoride. Washington, DC: The National Academies Press.",
+      "format": "HTML table via NCBI Bookshelf ?report=objectonly endpoint (structured, machine-parseable).",
+      "authority": "primary",
+      "authority_note": "Same IOM 1997 DRI report as the original PDF, rendered by NCBI in clean HTML. Used for automated cross-verification of P and Mg values manually transcribed from scrambled PDF. NOT an independent Tier B source — this IS the Tier A IOM 1997 in machine-readable form.",
+      "update_frequency": "static (historical reference, published 2000 on NCBI)",
+      "description": "Machine-readable HTML rendering of IOM 1997 DRI RDA/AI summary table. Columns: Ca, P, Mg, Vitamin D, Fluoride, Thiamin, Riboflavin, Niacin, B6, Folate, B12, Pantothenic Acid, Biotin. Used for cross-verification of manually transcribed phosphorus and magnesium values from the scrambled IOM 1997 PDF.",
+      "data_files": ["dri-p-mg-ncbi-crosscheck.json"],
+      "source_file": "data/external/ncbi-iom1997-dri-rda-ai.html",
+      "extraction_script": "data/extract-msd-dri-parser.py",
+      "extraction_date": "2026-05-21",
+      "cross_verification_for": ["iom-dri-1997"],
+      "crosscheck_summary": {
+        "total_groups": 28,
+        "match": 24,
+        "partial_match": 4,
+        "mismatch": 0,
+        "partial_match_note": "4 pregnancy/breastfeeding groups show partial match because dri-minerals.json consolidates teen (≤18y) and adult subgroups into a single group using adult value. NCBI source shows per-subgroup values. Adult values match 100%; teen values differ as expected for consolidated groups."
+      }
+    },
     "iom-dri-2011": {
       "name": "IOM Dietary Reference Intakes — Calcium and Vitamin D (2011)",
       "tier": "A",
