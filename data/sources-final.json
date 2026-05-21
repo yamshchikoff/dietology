@@ -3,7 +3,7 @@
     "schema": "sources-final-v1",
     "description": "Unified source manifest — definitive reference for all dietology data sources. Merges base sources.json with overlay-specific metadata from sources-overlay.json and dataset catalog from data-index.json.",
     "build_script": "data/build-sources-overlay.py",
-    "build_date": "2026-05-21T21:54:18Z",
+    "build_date": "2026-05-21T22:36:46Z",
     "input_files": [
       "data/sources.json (base manifest — all sources)",
       "data/sources-overlay.json (DRI overlay metadata)",
@@ -662,7 +662,7 @@
   },
   "build_pipeline": {
     "description": "Full rebuild command — parses source documents, builds overlays, generates index and this manifest.",
-    "command": "python3 data/extract-msd-dri-parser.py && python3 data/extract-iom-dri.py && python3 data/build-minerals-overlay.py && python3 data/build-vitamins-overlay.py && python3 data/build-macronutrients-per-kg-overlay.py && python3 data/build-data-index.py",
+    "command": "python3 data/extract-msd-dri-parser.py && python3 data/extract-iom-dri.py && python3 data/extract-nas-dri-2019.py && python3 data/extract-lpi-ul.py && python3 data/build-minerals-overlay.py && python3 data/build-vitamins-overlay.py && python3 data/build-macronutrients-per-kg-overlay.py && python3 data/build-data-index.py && python3 data/build-sources-overlay.py",
     "final_step": "python3 data/build-sources-overlay.py",
     "steps": [
       {
@@ -679,30 +679,42 @@
       },
       {
         "step": 3,
+        "script": "data/extract-nas-dri-2019.py",
+        "inputs": 1,
+        "outputs": "dri-na-k-2019-parsed.json"
+      },
+      {
+        "step": 4,
+        "script": "data/extract-lpi-ul.py",
+        "inputs": 2,
+        "outputs": "dri-p-mg-ul-parsed.json"
+      },
+      {
+        "step": 5,
         "script": "data/build-minerals-overlay.py",
         "inputs": 5,
         "outputs": "dri-minerals-overlay.json"
       },
       {
-        "step": 4,
+        "step": 6,
         "script": "data/build-vitamins-overlay.py",
         "inputs": 2,
         "outputs": "dri-vitamins-overlay.json"
       },
       {
-        "step": 5,
+        "step": 7,
         "script": "data/build-macronutrients-per-kg-overlay.py",
         "inputs": 2,
         "outputs": "dri-macronutrients-per-kg-overlay.json"
       },
       {
-        "step": 6,
+        "step": 8,
         "script": "data/build-data-index.py",
-        "inputs": 6,
+        "inputs": 7,
         "outputs": "data-index.json"
       },
       {
-        "step": 7,
+        "step": 9,
         "script": "data/build-sources-overlay.py",
         "inputs": 3,
         "outputs": "sources-final.json"

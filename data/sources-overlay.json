@@ -266,7 +266,7 @@
     }
   },
 
-  "full_rebuild_command": "python3 data/extract-msd-dri-parser.py && python3 data/extract-iom-dri.py && python3 data/build-minerals-overlay.py && python3 data/build-vitamins-overlay.py && python3 data/build-macronutrients-per-kg-overlay.py && python3 data/build-data-index.py",
+  "full_rebuild_command": "python3 data/extract-msd-dri-parser.py && python3 data/extract-iom-dri.py && python3 data/extract-nas-dri-2019.py && python3 data/extract-lpi-ul.py && python3 data/build-minerals-overlay.py && python3 data/build-vitamins-overlay.py && python3 data/build-macronutrients-per-kg-overlay.py && python3 data/build-data-index.py && python3 data/build-sources-overlay.py",
 
   "final_stats": {
     "dri_nutrients_total": 28,

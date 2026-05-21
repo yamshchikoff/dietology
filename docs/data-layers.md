@@ -169,20 +169,20 @@ Manual transcription (dri-vitamins.json)
 ## Полная пересборка
 
 ```bash
-# Шаг 1-2: Извлечение из исходных документов
+# Шаг 1-4: Извлечение из исходных документов
 python3 data/extract-msd-dri-parser.py
 python3 data/extract-iom-dri.py
 python3 data/extract-nas-dri-2019.py
 python3 data/extract-lpi-ul.py
 
-# Шаг 3-5: Сборка оверлейных данных
+# Шаг 5-7: Сборка оверлейных данных
 python3 data/build-minerals-overlay.py
 python3 data/build-vitamins-overlay.py
 python3 data/build-macronutrients-per-kg-overlay.py
 
-# Шаг 6: Сборка data-index
+# Шаг 8: Сборка data-index
 python3 data/build-data-index.py
 
-# Шаг 7: Сборка sources-final (зависит от data-index!)
+# Шаг 9: Сборка sources-final (зависит от data-index!)
 python3 data/build-sources-overlay.py
 ```

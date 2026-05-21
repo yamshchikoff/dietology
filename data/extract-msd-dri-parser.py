@@ -24,7 +24,6 @@ MINERALS_OUT = os.path.join(SCRIPT_DIR, "dri-minerals-parsed.json")
 
 CONSUMER_MINERALS_HTML = os.path.join(EXTERNAL_DIR, "msd-manual-consumer-minerals-2026-05.html")
 MACRONUTRIENTS_HTML = os.path.join(EXTERNAL_DIR, "msd-manual-macronutrients-2026-05.html")
-MACROMINERALS_ABSOLUTE_OUT = os.path.join(SCRIPT_DIR, "dri-macrominerals-absolute-parsed.json")
 MACRONUTRIENTS_PER_KG_OUT = os.path.join(SCRIPT_DIR, "dri-macronutrients-per-kg-parsed.json")
 
 NCBI_HTML = os.path.join(EXTERNAL_DIR, "ncbi-iom1997-dri-rda-ai.html")
@@ -1126,27 +1125,6 @@ def main():
     with open(MINERALS_OUT, "w") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
     print(f"  Written to {MINERALS_OUT}")
-
-    # ── Consumer Minerals (Na/K Adult AI) ──
-    print()
-    print("Parsing Consumer minerals table (Na/K adult AI)...")
-    tables = parse_html(CONSUMER_MINERALS_HTML)
-    target_table = tables[0] if tables else []
-
-    consumer_minerals = parse_consumer_minerals(target_table)
-    total_groups = sum(len(n.get("groups", [])) for n in consumer_minerals)
-    print(f"  Extracted {len(consumer_minerals)} nutrients, {total_groups} group entries")
-
-    output = {
-        "_meta": build_meta("msd-consumer-minerals",
-                            "data/external/msd-manual-consumer-minerals-2026-05.html",
-                            CONSUMER_MINERALS_HTML),
-        "_meta_note": "Na and K adult AI values extracted from MSD Manual Consumer 'Overview of Minerals' table. Consumer version contains only adult RDA/AI values — no pediatric or adolescent age breakdown. Na: 1500 mg AI for all adults. K: 3400 mg AI for men, 2600 mg AI for women. Both are AI (Adequate Intake) — no RDA established for these nutrients.",
-        "nutrients": consumer_minerals,
-    }
-    with open(MACROMINERALS_ABSOLUTE_OUT, "w") as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
-    print(f"  Written to {MACROMINERALS_ABSOLUTE_OUT}")
 
     # ── Macronutrients Per-kg (Ca/P/Mg) ──
     print()

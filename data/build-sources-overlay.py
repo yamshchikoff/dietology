@@ -149,11 +149,13 @@ def main():
             "steps": [
                 {"step": 1, "script": "data/extract-msd-dri-parser.py", "inputs": 5, "outputs": "*-parsed.json, ncbi-crosscheck.json"},
                 {"step": 2, "script": "data/extract-iom-dri.py", "inputs": 1, "outputs": "dri-calcium-iom-2011-parsed.json"},
-                {"step": 3, "script": "data/build-minerals-overlay.py", "inputs": 5, "outputs": "dri-minerals-overlay.json"},
-                {"step": 4, "script": "data/build-vitamins-overlay.py", "inputs": 2, "outputs": "dri-vitamins-overlay.json"},
-                {"step": 5, "script": "data/build-macronutrients-per-kg-overlay.py", "inputs": 2, "outputs": "dri-macronutrients-per-kg-overlay.json"},
-                {"step": 6, "script": "data/build-data-index.py", "inputs": 6, "outputs": "data-index.json"},
-                {"step": 7, "script": "data/build-sources-overlay.py", "inputs": 3, "outputs": "sources-final.json"},
+                {"step": 3, "script": "data/extract-nas-dri-2019.py", "inputs": 1, "outputs": "dri-na-k-2019-parsed.json"},
+                {"step": 4, "script": "data/extract-lpi-ul.py", "inputs": 2, "outputs": "dri-p-mg-ul-parsed.json"},
+                {"step": 5, "script": "data/build-minerals-overlay.py", "inputs": 5, "outputs": "dri-minerals-overlay.json"},
+                {"step": 6, "script": "data/build-vitamins-overlay.py", "inputs": 2, "outputs": "dri-vitamins-overlay.json"},
+                {"step": 7, "script": "data/build-macronutrients-per-kg-overlay.py", "inputs": 2, "outputs": "dri-macronutrients-per-kg-overlay.json"},
+                {"step": 8, "script": "data/build-data-index.py", "inputs": 7, "outputs": "data-index.json"},
+                {"step": 9, "script": "data/build-sources-overlay.py", "inputs": 3, "outputs": "sources-final.json"},
             ],
         },
     }

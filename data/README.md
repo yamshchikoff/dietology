@@ -41,7 +41,6 @@ data/
 ├── data-index.json                        # Tier A | Единый манифест всех knowledge base файлов
 ├── extract-usda.py                        # Скрипт: USDA → foods JSON (+ _meta)
 ├── usda-foundation-foods-essential.json   # Tier A | 363 продукта, 27 nutrients
-├── extract-msd-dri.py                     # Скрипт: MSD Manual DRI → проверка JSON
 ├── extract-msd-dri-parser.py              # Скрипт: парсинг MSD HTML → JSON
 ├── extract-iom-dri.py                     # Скрипт: парсинг IOM 2011 PDF → JSON
 │
@@ -62,7 +61,6 @@ data/
 ├── dri-calcium-iom-2011-parsed.json       # Machine-parsed из IOM 2011 PDF
 ├── dri-na-k-2019-parsed.json              # Machine-parsed из NAS 2019 PDF
 ├── dri-p-mg-ul-parsed.json               # Machine-parsed из LPI HTML
-├── dri-macrominerals-absolute-parsed.json # Machine-parsed из MSD Consumer HTML (legacy)
 ├── dri-macronutrients-per-kg.json         # Ручная транскрипция — metadata source
 ├── dri-macronutrients-per-kg-parsed.json  # Machine-parsed из HTML (51 group)
 ├── dri-p-mg-ncbi-crosscheck.json         # NCBI cross-check data (44 P/Mg entries)
