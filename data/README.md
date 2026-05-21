@@ -18,8 +18,12 @@ data/
 │   ├── msd-manual-vitamins-2026-05.html   # MSD Manual DRI Vitamins (source HTML)
 │   ├── msd-manual-trace-minerals-2026-05.html  # MSD Manual DRI Minerals (source HTML)
 │   ├── msd-manual-macronutrients-2026-05.html  # MSD Manual Macronutrients per-kg (source HTML)
+│   ├── msd-manual-consumer-minerals-2026-05.html  # MSD Manual Consumer Minerals (source HTML)
+│   ├── msd-manual-professional-minerals-2026-05.html  # MSD Manual Professional Minerals Overview (source HTML)
 │   ├── wikipedia-lab-ranges-2026-05.html  # Wikipedia API response (source HTML)
-│   └── who-2024-hb-guideline.pdf          # WHO 2024 Hb Guideline (manual download)
+│   ├── who-2024-hb-guideline.pdf          # WHO 2024 Hb Guideline
+│   ├── iom-dri-calcium-vitamin-d-2011.pdf # IOM DRI Calcium/Vitamin D 2011
+│   └── iom-dri-ca-p-mg-vitd-f-1997.pdf    # IOM DRI Ca/P/Mg/Vitamin D/Fluoride 1997
 ├── extract-usda.py                        # Скрипт: USDA → foods JSON (+ _meta)
 ├── usda-foundation-foods-essential.json   # Tier A | 363 продукта, 27 nutrients
 ├── extract-msd-dri.py                     # Скрипт: MSD Manual DRI → проверка JSON
@@ -106,6 +110,16 @@ data/
 
 **Другое:** Cholesterol
 
+## Лицензирование данных
+
+**Модель «numeric facts extraction».**
+
+- **Продукт содержит только извлечённые факты** (`data/*.json`) — числовые значения нутриентов, DRI, лабораторных норм, диагностических порогов. Числовые факты не являются объектом авторского права (Feist v. Rural, 1991).
+- **Исходные документы в `external/` — toolchain, не продукт.** PDF и HTML хранятся для запуска extraction scripts и независимой верификации сообществом. В билд продукта не попадают.
+- **Лицензия исходного документа ≠ лицензия извлечённых фактов.** Вне зависимости от лицензии исходника (CC, © Merck, CC BY-NC-SA), извлечённые числовые значения являются publicly established medical facts и используются законно.
+
+Подробнее: [docs/data-provenance-inventory.md](../docs/data-provenance-inventory.md), [docs/data-provenance-overlay.md](../docs/data-provenance-overlay.md).
+
 ## Обновление данных
 
 1. **USDA:** скачать свежий zip с https://fdc.nal.usda.gov/download-datasets, заменить в `external/`, запустить `extract-usda.py`.
@@ -116,6 +130,8 @@ data/
 
 ## TODO
 
+- [x] Скачать National Academies DRI PDF (1997, 2011) — в `external/`
+- [x] Скачать WHO 2024 Hb Guideline PDF — в `external/`
 - [ ] Экстракция DRI Summary Tables из National Academies PDF (pp. 529–542) — кросс-валидация с MSD Manual
 - [ ] Докачка дополнительных индикаторов WHO GHO через OData API
 - [ ] Мониторинг: EFSA DRV Finder (при появлении статического экспорта)
