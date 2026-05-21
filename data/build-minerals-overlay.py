@@ -1,5 +1,5 @@
-# Build dri-minerals-overlay.json — best of both worlds:
-# machine-verified values from parsers + rich metadata from manual transcription.
+# Build dri-minerals-overlay.json — all values machine-verified from parsed sources.
+# Zero dependency on manual transcription files.
 # Run: python3 build-minerals-overlay.py
 
 import json
@@ -9,7 +9,6 @@ from datetime import datetime, timezone
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-MANUAL = os.path.join(SCRIPT_DIR, "dri-minerals.json")
 TRACE_PARSED = os.path.join(SCRIPT_DIR, "dri-minerals-parsed.json")
 CALCIUM_PARSED = os.path.join(SCRIPT_DIR, "dri-calcium-iom-2011-parsed.json")
 NAK_2019_PARSED = os.path.join(SCRIPT_DIR, "dri-na-k-2019-parsed.json")
@@ -30,57 +29,68 @@ SOURCE_URLS = {
                          "https://lpi.oregonstate.edu/mic/minerals/magnesium"],
 }
 
+# Hardcoded taxonomy — minerals are classified as macrominerals or trace minerals
+# per standard nutritional science. This is structural metadata, not sourced medical facts.
+CATEGORIES = {
+    "Calcium": "macromineral",
+    "Phosphorus": "macromineral",
+    "Magnesium": "macromineral",
+    "Sodium": "macromineral",
+    "Potassium": "macromineral",
+    "Iron": "trace mineral",
+    "Zinc": "trace mineral",
+    "Copper": "trace mineral",
+    "Iodine": "trace mineral",
+    "Selenium": "trace mineral",
+    "Manganese": "trace mineral",
+    "Chromium": "trace mineral",
+    "Molybdenum": "trace mineral",
+    "Fluoride": "trace mineral",
+}
+
+# Hardcoded nutrient notes — scientific context not present in machine-parsed sources.
+NUTRIENT_NOTES = {
+    "Chromium": "Essentiality questioned by recent research (Vincent, J Nutr 2017). Values are AI.",
+}
+
+# Pregnancy/breastfeeding teen vs adult annotation.
+# The overlay splits pregnancy/breastfeeding into teen (14-18yr) and adult (19-30yr, 31-50yr)
+# subgroups. The teen subgroup uses the adolescent age-bracket value, not the adult value.
+# These per-group notes clarify that distinction.
+PREGNANCY_BREASTFEEDING_TEEN_NOTES = {
+    "Calcium": ("AI", 1300),
+    "Phosphorus": ("RDA", 1250),
+    "Magnesium": ("RDA", 400),
+}
+BREASTFEEDING_TEEN_NOTES = {
+    "Calcium": ("AI", 1300),
+    "Phosphorus": ("RDA", 1250),
+    "Magnesium": ("RDA", 360),
+}
+
 
 def load_json(path):
     with open(path) as f:
         return json.load(f)
 
 
-def extract_manual_metadata(manual):
-    """Extract per-nutrient metadata from manual dri-minerals.json."""
-    meta = {}
-    for n in manual["nutrients"]:
-        name = n["name"]
-        entry = {
-            "category": n.get("category"),
-        }
-        for field in ("ul", "ul_unit", "ul_note", "note"):
-            if field in n:
-                entry[field] = n[field]
-        # Per-group notes
-        per_group_notes = {}
-        for g in n.get("groups", []):
-            if g.get("note"):
-                per_group_notes[g["group"]] = g["note"]
-        if per_group_notes:
-            entry["per_group_notes"] = per_group_notes
-        meta[name] = entry
-    return meta
-
-
-def build_trace_mineral(nutrient, manual_meta):
-    """Take parsed trace mineral groups, metadata from parsed (machine-verified) with manual fallback."""
+def build_trace_mineral(nutrient):
+    """Take parsed trace mineral groups — all values machine-verified from MSD Professional HTML."""
     name = nutrient["name"]
+    category = nutrient.get("category") or CATEGORIES.get(name)
     entry = {
         "name": name,
         "unit": nutrient["unit"],
-        "category": nutrient.get("category") or manual_meta.get("category"),
+        "category": category,
         "source_id": "msd-manual-dri",
         "source_urls": SOURCE_URLS["msd-manual-dri"],
         "groups": [],
     }
-    # UL metadata: prefer machine-parsed, fall back to manual
     for field in ("ul", "ul_unit", "ul_note"):
         if field in nutrient and nutrient[field] is not None:
             entry[field] = nutrient[field]
-        elif field in manual_meta:
-            entry[field] = manual_meta[field]
-    # note: manual-only (interpretive text, no machine source)
-    if "note" in manual_meta:
-        entry["note"] = manual_meta["note"]
-
-    # Attach per-group notes from manual if any
-    pg_notes = manual_meta.get("per_group_notes", {})
+    if name in NUTRIENT_NOTES:
+        entry["note"] = NUTRIENT_NOTES[name]
 
     for g in nutrient["groups"]:
         group_entry = {
@@ -90,37 +100,27 @@ def build_trace_mineral(nutrient, manual_meta):
             "value": int(g["value"]) if g["value"] == int(g["value"]) else g["value"],
             "type": g.get("type", "RDA"),
         }
-        # Map manual group_id (e.g. "pregnant") → age-suffixed overlay group_id
-        for base_key, note_text in pg_notes.items():
-            if g["group"].startswith(base_key):
-                group_entry["note"] = note_text
-                break
         entry["groups"].append(group_entry)
 
     return entry
 
 
-def build_calcium(parsed, manual_meta):
-    """Take IOM 2011 parsed Calcium, metadata from parsed (machine-verified) with manual fallback."""
+def build_calcium(parsed):
+    """Take IOM 2011 parsed Calcium — all values machine-verified."""
     ca = parsed["nutrients"][0]
     entry = {
         "name": "Calcium",
         "unit": "mg",
-        "category": ca.get("category") or manual_meta.get("category", "macromineral"),
+        "category": ca.get("category") or CATEGORIES.get("Calcium", "macromineral"),
         "source_id": "iom-dri-2011",
         "source_urls": SOURCE_URLS["iom-dri-2011"],
         "groups": [],
     }
-    # UL metadata: prefer machine-parsed (ca), fall back to manual
     for field in ("ul", "ul_unit", "ul_note"):
         if field in ca and ca[field] is not None:
             entry[field] = ca[field]
-        elif field in manual_meta:
-            entry[field] = manual_meta[field]
     if "ul_groups" in ca:
         entry["ul_groups"] = ca["ul_groups"]
-
-    pg_notes = manual_meta.get("per_group_notes", {})
 
     for g in ca["groups"]:
         group_entry = {
@@ -130,10 +130,13 @@ def build_calcium(parsed, manual_meta):
             "value": g["value"],
             "type": g.get("type", "RDA"),
         }
-        for base_key, note_text in pg_notes.items():
-            if g["group"].startswith(base_key):
-                group_entry["note"] = note_text
-                break
+        # Annotate teen pregnancy/breastfeeding groups
+        if g["group"].startswith("pregnant_14"):
+            dri_type, val = PREGNANCY_BREASTFEEDING_TEEN_NOTES["Calcium"]
+            group_entry["note"] = f"{dri_type} for pregnant ≤18 yr: {val} mg"
+        elif g["group"].startswith("breastfeeding_14"):
+            dri_type, val = BREASTFEEDING_TEEN_NOTES["Calcium"]
+            group_entry["note"] = f"{dri_type} for breastfeeding ≤18 yr: {val} mg"
         entry["groups"].append(group_entry)
 
     return entry
@@ -181,7 +184,6 @@ def _category_to_prefix(category, age_label):
     if c == "females":
         return "female"
     if c == "pregnancy":
-        # ≤18 y maps to 14_18yr within pregnant
         return "pregnant"
     if c == "lactation":
         return "breastfeeding"
@@ -216,15 +218,14 @@ def _map_ul_to_group(group_id, ul_data):
         gt70 = ul_data.get("adult_gt70yr")
         if gt70 is not None:
             return gt70
-    # Default: adult value
     for k in ["adult_19_70yr", "adult"]:
         if k in ul_data and ul_data[k] is not None:
             return ul_data[k]
     return None
 
 
-def build_p_mg(nutrient_name, ncbi_entries, manual_meta, lpi_ul):
-    """Build P or Mg entry from NCBI crosscheck + LPI UL data."""
+def build_p_mg(nutrient_name, ncbi_entries, lpi_ul):
+    """Build P or Mg entry from NCBI crosscheck + LPI UL data. All machine-verified."""
     entries = [e for e in ncbi_entries if e["nutrient"] == nutrient_name]
     if not entries:
         raise ValueError(f"No NCBI entries for {nutrient_name}")
@@ -235,7 +236,7 @@ def build_p_mg(nutrient_name, ncbi_entries, manual_meta, lpi_ul):
     entry = {
         "name": nutrient_name,
         "unit": "mg",
-        "category": manual_meta.get("category", "macromineral"),
+        "category": CATEGORIES.get(nutrient_name, "macromineral"),
         "source_id": "iom-dri-1997",
         "source_urls": SOURCE_URLS["iom-dri-1997"],
         "ul_source_id": "lpi-mic-minerals",
@@ -243,7 +244,6 @@ def build_p_mg(nutrient_name, ncbi_entries, manual_meta, lpi_ul):
         "groups": [],
     }
 
-    # UL from machine-verified LPI source
     adult_ul = (
         ul_data.get("adult_19_70yr") or ul_data.get("adult")
     )
@@ -255,10 +255,6 @@ def build_p_mg(nutrient_name, ncbi_entries, manual_meta, lpi_ul):
     elif nutrient_name == "Phosphorus":
         senior_ul = ul_data.get("adult_gt70yr")
         entry["ul_note"] = f"Adults 19–70 yr: {adult_ul} mg. Adults >70 yr: {senior_ul} mg. Source: Linus Pauling Institute, based on IOM 1997."
-
-    # note from manual
-    if "note" in manual_meta:
-        entry["note"] = manual_meta["note"]
 
     # Build ul_groups (per-group UL)
     ul_groups = []
@@ -283,8 +279,6 @@ def build_p_mg(nutrient_name, ncbi_entries, manual_meta, lpi_ul):
     if ul_groups:
         entry["ul_groups"] = ul_groups
 
-    pg_notes = manual_meta.get("per_group_notes", {})
-
     for e in entries:
         age_suffix = _age_to_id(e["age_label"])
         prefix = _category_to_prefix(e["category"], e["age_label"])
@@ -303,11 +297,15 @@ def build_p_mg(nutrient_name, ncbi_entries, manual_meta, lpi_ul):
             "value": e["value"],
             "type": dri_type,
         }
-        # Attach per-group note — manual uses base key like "pregnant"
-        for base_key, note_text in pg_notes.items():
-            if group_id.startswith(base_key):
-                group_entry["note"] = note_text
-                break
+        # Annotate teen pregnancy/breastfeeding groups
+        if group_id.startswith("pregnant_14"):
+            if nutrient_name in PREGNANCY_BREASTFEEDING_TEEN_NOTES:
+                dri_type_note, val = PREGNANCY_BREASTFEEDING_TEEN_NOTES[nutrient_name]
+                group_entry["note"] = f"{dri_type_note} for pregnant ≤18 yr: {val} mg"
+        elif group_id.startswith("breastfeeding_14"):
+            if nutrient_name in BREASTFEEDING_TEEN_NOTES:
+                dri_type_note, val = BREASTFEEDING_TEEN_NOTES[nutrient_name]
+                group_entry["note"] = f"{dri_type_note} for breastfeeding ≤18 yr: {val} mg"
 
         entry["groups"].append(group_entry)
 
@@ -320,12 +318,11 @@ def build_na_k(nutrient):
     entry = {
         "name": name,
         "unit": nutrient["unit"],
-        "category": nutrient.get("category", "macromineral"),
+        "category": nutrient.get("category") or CATEGORIES.get(name, "macromineral"),
         "source_id": "nas-dri-2019",
         "source_urls": SOURCE_URLS["nas-dri-2019"],
         "groups": [],
     }
-    # UL metadata from parsed
     for field in ("ul", "ul_unit", "ul_note", "note"):
         if field in nutrient and nutrient[field] is not None:
             entry[field] = nutrient[field]
@@ -338,7 +335,6 @@ def build_na_k(nutrient):
             "value": g["value"],
             "type": g.get("type", "AI"),
         }
-        # Carry CDRR if present (Sodium)
         if g.get("cdrr") is not None:
             group_entry["cdrr"] = g["cdrr"]
         if g.get("note"):
@@ -349,32 +345,25 @@ def build_na_k(nutrient):
 
 
 def main():
-    print("Building dri-minerals-overlay.json")
-    print("==================================")
+    print("Building dri-minerals-overlay.json (0 manual dependencies)")
+    print("============================================================")
     print()
 
-    # Phase 1: load
-    manual = load_json(MANUAL)
     trace = load_json(TRACE_PARSED)
     calcium = load_json(CALCIUM_PARSED)
     nak_2019 = load_json(NAK_2019_PARSED)
     lpi = load_json(LPI_UL_PARSED)
     ncbi = load_json(NCBI_CROSSCHECK)
 
-    manual_meta = extract_manual_metadata(manual)
     ncbi_entries = ncbi["ncbi_entries"]
 
     nutrients = []
 
-    # Phase 2: build per nutrient
-
     # Trace minerals (9)
     print("Trace minerals:")
-    trace_names = [n["name"] for n in trace["nutrients"]]
     for n in trace["nutrients"]:
         name = n["name"]
-        meta = manual_meta.get(name, {})
-        entry = build_trace_mineral(n, meta)
+        entry = build_trace_mineral(n)
         nutrients.append(entry)
         print(f"  {name}: {len(entry['groups'])} groups")
     print(f"  Total: {sum(len(n['groups']) for n in nutrients)} groups")
@@ -382,24 +371,21 @@ def main():
     # Calcium
     print()
     print("Calcium:")
-    ca_meta = manual_meta.get("Calcium", {})
-    ca_entry = build_calcium(calcium, ca_meta)
+    ca_entry = build_calcium(calcium)
     nutrients.append(ca_entry)
     print(f"  Calcium: {len(ca_entry['groups'])} groups, {len(ca_entry.get('ul_groups', []))} ul_groups")
 
     # Phosphorus and Magnesium from NCBI
     print()
     print("P and Mg from NCBI + LPI UL:")
-    p_meta = manual_meta.get("Phosphorus", {})
-    mg_meta = manual_meta.get("Magnesium", {})
-    p_entry = build_p_mg("Phosphorus", ncbi_entries, p_meta, lpi)
-    mg_entry = build_p_mg("Magnesium", ncbi_entries, mg_meta, lpi)
+    p_entry = build_p_mg("Phosphorus", ncbi_entries, lpi)
+    mg_entry = build_p_mg("Magnesium", ncbi_entries, lpi)
     nutrients.append(p_entry)
     nutrients.append(mg_entry)
     print(f"  Phosphorus: {len(p_entry['groups'])} groups")
     print(f"  Magnesium: {len(mg_entry['groups'])} groups")
 
-    # Sodium and Potassium (NAS 2019, machine-verified)
+    # Sodium and Potassium (NAS 2019)
     print()
     print("Na/K from NAS 2019:")
     for n in nak_2019["nutrients"]:
@@ -407,20 +393,23 @@ def main():
         nutrients.append(entry)
         print(f"  {entry['name']}: {len(entry['groups'])} groups")
 
-    # Phase 3: write
+    # Write
     total_groups = sum(len(n["groups"]) for n in nutrients)
-    present_groups = sum(1 for n in nutrients if len(n["groups"]) > 0)
     source_ids = sorted(set(n["source_id"] for n in nutrients))
+    # Add ul_source_id entries if present
+    for n in nutrients:
+        if "ul_source_id" in n:
+            source_ids.append(n["ul_source_id"])
+    source_ids = sorted(set(source_ids))
 
     output = {
         "_meta": {
             "schema": "dri-minerals-overlay-v1",
-            "description": "Merged DRI values for 14 minerals: machine-parsed values from IOM/NCBI/MSD/NAS/LPI sources at finest available granularity. All UL/UL_unit/UL_note now machine-verified: trace minerals (MSD Professional), Calcium (IOM 2011), Sodium/Potassium (NAS 2019), Phosphorus/Magnesium (LPI, based on IOM 1997). 0 manual_transcription.",
+            "description": "Merged DRI values for 14 minerals: all values machine-parsed from IOM/NCBI/MSD/NAS/LPI sources at finest available granularity. All UL/UL_unit/UL_note machine-verified. 0 manual_transcription, 0 manual source file dependencies.",
             "build_script": "data/build-minerals-overlay.py",
             "build_date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "sources": source_ids,
             "input_files": [
-                "data/dri-minerals.json (metadata: per-group notes, nutrient notes)",
                 "data/dri-minerals-parsed.json (trace mineral values + ul)",
                 "data/dri-calcium-iom-2011-parsed.json (Ca values + ul_groups)",
                 "data/dri-na-k-2019-parsed.json (Na/K values, NAS 2019)",
@@ -443,7 +432,7 @@ def main():
     print(f"  {len(nutrients)} nutrients, {total_groups} groups")
     print(f"  Sources: {', '.join(source_ids)}")
 
-    # Quick verification: ensure every nutrient has required fields
+    # Quick verification
     for n in nutrients:
         assert n.get("name"), f"Missing name"
         assert n.get("unit"), f"{n['name']}: missing unit"

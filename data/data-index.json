@@ -3,7 +3,7 @@
     "schema": "dietology-data-index-v1",
     "description": "Unified manifest of all dietology knowledge base files. Each dataset entry includes domain, tier, sources, and provenance metadata.",
     "build_script": "data/build-data-index.py",
-    "build_date": "2026-05-21T21:15:47Z",
+    "build_date": "2026-05-21T21:54:18Z",
     "sources": [
       "iom-dri-1997",
       "iom-dri-2011",
@@ -120,8 +120,8 @@
       "build_script": "data/build-sources-overlay.py",
       "notes": "Merges sources.json (base) + sources-overlay.json (DRI overlay) + data-index.json (catalog). Single authoritative source reference — model loads ONLY this file. Supersedes sources.json.",
       "file": "data/sources-final.json",
-      "count": 16,
-      "detail": "16 sources"
+      "count": 17,
+      "detail": "17 sources"
     }
   },
   "stats": {

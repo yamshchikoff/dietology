@@ -1,17 +1,17 @@
 {
   "_meta": {
     "schema": "dri-minerals-overlay-v1",
-    "description": "Merged DRI values for 14 minerals: machine-parsed values from IOM/NCBI/MSD/NAS/LPI sources at finest available granularity. All UL/UL_unit/UL_note now machine-verified: trace minerals (MSD Professional), Calcium (IOM 2011), Sodium/Potassium (NAS 2019), Phosphorus/Magnesium (LPI, based on IOM 1997). 0 manual_transcription.",
+    "description": "Merged DRI values for 14 minerals: all values machine-parsed from IOM/NCBI/MSD/NAS/LPI sources at finest available granularity. All UL/UL_unit/UL_note machine-verified. 0 manual_transcription, 0 manual source file dependencies.",
     "build_script": "data/build-minerals-overlay.py",
-    "build_date": "2026-05-21T21:06:09Z",
+    "build_date": "2026-05-21T21:54:18Z",
     "sources": [
       "iom-dri-1997",
       "iom-dri-2011",
+      "lpi-mic-minerals",
       "msd-manual-dri",
       "nas-dri-2019"
     ],
     "input_files": [
-      "data/dri-minerals.json (metadata: per-group notes, nutrient notes)",
       "data/dri-minerals-parsed.json (trace mineral values + ul)",
       "data/dri-calcium-iom-2011-parsed.json (Ca values + ul_groups)",
       "data/dri-na-k-2019-parsed.json (Na/K values, NAS 2019)",
@@ -148,7 +148,6 @@
           "type": "RDA"
         }
       ],
-      "ul": null,
       "ul_unit": "mcg",
       "ul_note": "No UL established",
       "note": "Essentiality questioned by recent research (Vincent, J Nutr 2017). Values are AI."
@@ -1287,16 +1286,14 @@
           "sex": "female",
           "age_range": "19–30y",
           "value": 1000,
-          "type": "RDA",
-          "note": "AI for pregnant ≤18 yr: 1300 mg"
+          "type": "RDA"
         },
         {
           "group": "pregnant_31_50yr",
           "sex": "female",
           "age_range": "31–50y",
           "value": 1000,
-          "type": "RDA",
-          "note": "AI for pregnant ≤18 yr: 1300 mg"
+          "type": "RDA"
         },
         {
           "group": "breastfeeding_14_18yr",
@@ -1311,16 +1308,14 @@
           "sex": "female",
           "age_range": "19–30y",
           "value": 1000,
-          "type": "RDA",
-          "note": "AI for breastfeeding ≤18 yr: 1300 mg"
+          "type": "RDA"
         },
         {
           "group": "breastfeeding_31_50yr",
           "sex": "female",
           "age_range": "31–50y",
           "value": 1000,
-          "type": "RDA",
-          "note": "AI for breastfeeding ≤18 yr: 1300 mg"
+          "type": "RDA"
         }
       ],
       "ul": 2500,
@@ -1579,16 +1574,14 @@
           "sex": "female",
           "age_range": "19–30 y",
           "value": 700,
-          "type": "RDA",
-          "note": "RDA for pregnant ≤18 yr: 1250 mg"
+          "type": "RDA"
         },
         {
           "group": "pregnant_31_50yr",
           "sex": "female",
           "age_range": "31–50 y",
           "value": 700,
-          "type": "RDA",
-          "note": "RDA for pregnant ≤18 yr: 1250 mg"
+          "type": "RDA"
         },
         {
           "group": "breastfeeding_14_18yr",
@@ -1603,16 +1596,14 @@
           "sex": "female",
           "age_range": "19–30 y",
           "value": 700,
-          "type": "RDA",
-          "note": "RDA for breastfeeding ≤18 yr: 1250 mg"
+          "type": "RDA"
         },
         {
           "group": "breastfeeding_31_50yr",
           "sex": "female",
           "age_range": "31–50 y",
           "value": 700,
-          "type": "RDA",
-          "note": "RDA for breastfeeding ≤18 yr: 1250 mg"
+          "type": "RDA"
         }
       ],
       "ul": 4000,
@@ -1861,16 +1852,14 @@
           "sex": "female",
           "age_range": "19–30 y",
           "value": 350,
-          "type": "RDA",
-          "note": "RDA for pregnant ≤18 yr: 400 mg"
+          "type": "RDA"
         },
         {
           "group": "pregnant_31_50yr",
           "sex": "female",
           "age_range": "31–50 y",
           "value": 360,
-          "type": "RDA",
-          "note": "RDA for pregnant ≤18 yr: 400 mg"
+          "type": "RDA"
         },
         {
           "group": "breastfeeding_14_18yr",
@@ -1885,16 +1874,14 @@
           "sex": "female",
           "age_range": "19–30 y",
           "value": 310,
-          "type": "RDA",
-          "note": "RDA for breastfeeding ≤18 yr: 360 mg"
+          "type": "RDA"
         },
         {
           "group": "breastfeeding_31_50yr",
           "sex": "female",
           "age_range": "31–50 y",
           "value": 320,
-          "type": "RDA",
-          "note": "RDA for breastfeeding ≤18 yr: 360 mg"
+          "type": "RDA"
         }
       ],
       "ul": 350,

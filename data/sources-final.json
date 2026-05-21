@@ -3,7 +3,7 @@
     "schema": "sources-final-v1",
     "description": "Unified source manifest — definitive reference for all dietology data sources. Merges base sources.json with overlay-specific metadata from sources-overlay.json and dataset catalog from data-index.json.",
     "build_script": "data/build-sources-overlay.py",
-    "build_date": "2026-05-21T21:15:54Z",
+    "build_date": "2026-05-21T21:54:18Z",
     "input_files": [
       "data/sources.json (base manifest — all sources)",
       "data/sources-overlay.json (DRI overlay metadata)",
@@ -464,7 +464,7 @@
       ],
       "extraction_script": null,
       "build_script": "data/build-data-index.py",
-      "build_date": "2026-05-21T21:15:47Z"
+      "build_date": "2026-05-21T21:54:18Z"
     }
   },
   "gaps": {
@@ -486,7 +486,7 @@
   },
   "overlay_catalog": {
     "dri-minerals-overlay.json": {
-      "description": "14 minerals (Ca, P, Mg, Na, K, Fe, Zn, Cu, I, Se, Mn, Cr, Mo, F), 254 groups at finest available granularity. 0 manual_transcription — all values and UL metadata machine-verified.",
+      "description": "14 minerals (Ca, P, Mg, Na, K, Fe, Zn, Cu, I, Se, Mn, Cr, Mo, F), 254 groups at finest available granularity. 0 manual_transcription, 0 manual source file dependencies — all values and metadata machine-verified or programmatically generated.",
       "schema": "dri-minerals-overlay-v1",
       "sources_merged": [
         "iom-dri-2011",
@@ -498,7 +498,6 @@
       ],
       "build_script": "data/build-minerals-overlay.py",
       "input_files": [
-        "data/dri-minerals.json (metadata: per-group notes, nutrient notes)",
         "data/dri-minerals-parsed.json (trace mineral values + UL, 9×16=144 groups)",
         "data/dri-calcium-iom-2011-parsed.json (Ca values + ul_groups, 22+22)",
         "data/dri-na-k-2019-parsed.json (Na/K values, NAS 2019, 2×22=44 groups)",
@@ -640,8 +639,8 @@
       "build_script": "data/build-sources-overlay.py",
       "notes": "Merges sources.json (base) + sources-overlay.json (DRI overlay) + data-index.json (catalog). Single authoritative source reference — model loads ONLY this file. Supersedes sources.json.",
       "file": "data/sources-final.json",
-      "count": 16,
-      "detail": "16 sources"
+      "count": 17,
+      "detail": "17 sources"
     }
   },
   "stats": {

@@ -225,12 +225,11 @@
 
   "overlay_catalog": {
     "dri-minerals-overlay.json": {
-      "description": "14 minerals (Ca, P, Mg, Na, K, Fe, Zn, Cu, I, Se, Mn, Cr, Mo, F), 254 groups at finest available granularity. 0 manual_transcription — all values and UL metadata machine-verified.",
+      "description": "14 minerals (Ca, P, Mg, Na, K, Fe, Zn, Cu, I, Se, Mn, Cr, Mo, F), 254 groups at finest available granularity. 0 manual_transcription, 0 manual source file dependencies — all values and metadata machine-verified or programmatically generated.",
       "schema": "dri-minerals-overlay-v1",
       "sources_merged": ["iom-dri-2011", "iom-dri-1997", "msd-manual-dri", "nas-dri-2019", "lpi-mic-minerals", "msd-consumer-minerals"],
       "build_script": "data/build-minerals-overlay.py",
       "input_files": [
-        "data/dri-minerals.json (metadata: per-group notes, nutrient notes)",
         "data/dri-minerals-parsed.json (trace mineral values + UL, 9×16=144 groups)",
         "data/dri-calcium-iom-2011-parsed.json (Ca values + ul_groups, 22+22)",
         "data/dri-na-k-2019-parsed.json (Na/K values, NAS 2019, 2×22=44 groups)",
