@@ -22,8 +22,25 @@ TRACE_MINERALS_HTML = os.path.join(EXTERNAL_DIR, "msd-manual-trace-minerals-2026
 VITAMINS_OUT = os.path.join(SCRIPT_DIR, "dri-vitamins-parsed.json")
 MINERALS_OUT = os.path.join(SCRIPT_DIR, "dri-minerals-parsed.json")
 
+CONSUMER_MINERALS_HTML = os.path.join(EXTERNAL_DIR, "msd-manual-consumer-minerals-2026-05.html")
+MACRONUTRIENTS_HTML = os.path.join(EXTERNAL_DIR, "msd-manual-macronutrients-2026-05.html")
+MACROMINERALS_ABSOLUTE_OUT = os.path.join(SCRIPT_DIR, "dri-macrominerals-absolute-parsed.json")
+MACRONUTRIENTS_PER_KG_OUT = os.path.join(SCRIPT_DIR, "dri-macronutrients-per-kg-parsed.json")
+
 VITAMINS_EXISTING = os.path.join(SCRIPT_DIR, "dri-vitamins.json")
 MINERALS_EXISTING = os.path.join(SCRIPT_DIR, "dri-minerals.json")
+
+# Real MSD Manual URLs for each source HTML file
+SOURCE_URLS = {
+    "msd-manual-vitamins-2026-05.html":
+        "https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins",
+    "msd-manual-trace-minerals-2026-05.html":
+        "https://www.msdmanuals.com/professional/multimedia/table/guidelines-for-daily-intake-of-trace-minerals",
+    "msd-manual-consumer-minerals-2026-05.html":
+        "https://www.msdmanuals.com/home/disorders-of-nutrition/minerals/overview-of-minerals",
+    "msd-manual-macronutrients-2026-05.html":
+        "https://www.msdmanuals.com/professional/multimedia/table/recommended-dietary-reference-intakes-for-some-macronutrients-food-and-nutrition-board-institute-of-medicine-of-the-national-academies",
+}
 
 
 # ── HTML Table Parser ──────────────────────────────────────────────
@@ -102,6 +119,31 @@ def parse_html(filepath):
     parser = TableParser()
     parser.feed(html)
     return parser.tables
+
+
+def extract_footnote(filepath):
+    """Extract footnote/note text from after the last </table> in an HTML file."""
+    with open(filepath, encoding="utf-8") as f:
+        html = f.read()
+    table_end = html.rfind("</table>")
+    if table_end < 0:
+        return ""
+    after = html[table_end + len("</table>"):]
+    # Strip HTML tags
+    text = re.sub(r"<[^>]+>", " ", after)
+    # Collapse whitespace
+    text = re.sub(r"\s+", " ", text).strip()
+    # Truncate at first obvious structural boundary
+    cutoffs = []
+    for marker in ["View sub-sections", "Drugs Mentioned",
+                   "All rights reserved", "Was This Helpful",
+                   "Copyright", "Merck & Co"]:
+        idx = text.find(marker)
+        if idx >= 0:
+            cutoffs.append(idx)
+    if cutoffs:
+        text = text[:min(cutoffs)].strip()
+    return text
 
 
 # ── Value Cleaning ─────────────────────────────────────────────────
@@ -200,6 +242,19 @@ VITAMIN_UL = {
     "Vitamin E": 1000,
 }
 
+VITAMIN_UL_NOTES = {
+    "Folate": "Applies to synthetic folic acid from supplements and fortified foods",
+    "Riboflavin": "ND — not determinable",
+    "Thiamin": "ND — not determinable",
+    "Vitamin B12": "ND — not determinable",
+    "Vitamin K": "ND — not determinable",
+}
+
+VITAMIN_UNIT_NOTES = {
+    "Niacin": "1 NE = 1 mg niacin or 60 mg dietary tryptophan",
+    "Vitamin D": "200 IU = 5 mcg cholecalciferol",
+}
+
 # Map (category, age_range) → standard group_id and sex
 VITAMIN_GROUP_MAP = {
     ("infants", "0–6 months"): ("infants_0_6mo", "any"),
@@ -293,6 +348,10 @@ def parse_vitamins(rows):
                     "ul_unit": VITAMIN_UNITS.get(name, ""),
                     "groups": [],
                 }
+                if VITAMIN_UL_NOTES.get(name):
+                    nutrient["ul_note"] = VITAMIN_UL_NOTES[name]
+                if VITAMIN_UNIT_NOTES.get(name):
+                    nutrient["unit_note"] = VITAMIN_UNIT_NOTES[name]
                 nutrients.append(nutrient)
 
             nutrient["groups"].append({
@@ -466,6 +525,204 @@ def parse_trace_minerals(rows):
     return nutrients
 
 
+# ── Consumer Minerals Parser (Na/K Adult AI) ────────────────────────
+
+# Minerals to extract from Consumer table — only Na/K (Ca/P/Mg from IOM PDFs)
+CONSUMER_TARGET_MINERALS = {
+    "sodium": "Sodium",
+    "potassium": "Potassium",
+}
+
+CONSUMER_UNITS = {
+    "Sodium": "mg",
+    "Potassium": "mg",
+}
+
+
+def parse_rdai_text(text):
+    """Parse narrative RDA/AI text into (value_mg, sex_or_None) tuples.
+
+    Handles: '1,500 milligrams', '3.4 grams for men 2.6 grams for women',
+    '320 milligrams for women 420 milligrams for men'.
+    """
+    results = []
+    # Remove commas from numbers like "1,500"
+    text = re.sub(r'(\d),(\d)', r'\1\2', text)
+
+    # Find number + unit + optional sex specifier
+    # Use lookahead for sex boundary — some HTML has no space between sex and next value
+    pattern = r'([\d.]+)\s*(grams?|milligrams?|micrograms?)\s*(?:for\s+(men|women|males?|females?)(?=\s|\d|$))?'
+
+    for match in re.finditer(pattern, text, re.IGNORECASE):
+        value = float(match.group(1))
+        unit = match.group(2).lower()
+        sex_word = match.group(3)
+
+        # Convert to mg
+        if unit.startswith('gram'):
+            value *= 1000
+        elif unit.startswith('microgram'):
+            value /= 1000
+
+        if sex_word and sex_word[0].lower() in ('m', 'b'):
+            sex = 'male'
+        elif sex_word and sex_word[0].lower() in ('w', 'f', 'g'):
+            sex = 'female'
+        else:
+            sex = None
+
+        results.append((value, sex))
+
+    return results
+
+
+def parse_consumer_minerals(rows):
+    """Parse Consumer minerals table rows for Na and K adult AI values."""
+    nutrients = []
+
+    for row in rows:
+        texts = [cell[0] for cell in row]
+        if not texts or len(texts) < 4:
+            continue
+
+        mineral_name = texts[0].strip().lower()
+
+        if mineral_name not in CONSUMER_TARGET_MINERALS:
+            continue
+
+        display_name = CONSUMER_TARGET_MINERALS[mineral_name]
+        rdai_text = texts[3].strip()
+        parsed = parse_rdai_text(rdai_text)
+
+        groups = []
+        for value, sex in parsed:
+            value = int(value) if value == int(value) else value
+            if sex is None:
+                groups.append({
+                    "group": "adult_male",
+                    "sex": "male",
+                    "age_range": "adult",
+                    "value": value,
+                    "type": "AI",
+                })
+                groups.append({
+                    "group": "adult_female",
+                    "sex": "female",
+                    "age_range": "adult",
+                    "value": value,
+                    "type": "AI",
+                })
+            else:
+                groups.append({
+                    "group": f"adult_{sex}",
+                    "sex": sex,
+                    "age_range": "adult",
+                    "value": value,
+                    "type": "AI",
+                })
+
+        nutrients.append({
+            "name": display_name,
+            "unit": CONSUMER_UNITS[display_name],
+            "category": "macromineral",
+            "groups": groups,
+        })
+
+    return nutrients
+
+
+# ── Macronutrients Per-kg Parser (Ca/P/Mg) ──────────────────────────
+
+MACRONUTRIENT_HEADERS = ["Calcium", "Phosphorus", "Magnesium"]
+MACRONUTRIENT_COL_OFFSET = 4  # Column 4 = first nutrient
+
+# Map (category, age_html) → (group_id, sex, type)
+MACRONUTRIENT_GROUP_MAP = {
+    ("Infants", "0.0–0.5"): ("infants_0_0.5yr", "any", "AI"),
+    ("Infants", "0.5–1.0"): ("infants_0.5_1yr", "any", "AI"),
+    ("Children", "1–3"): ("children_1_3yr", "any", "RDA"),
+    ("Children", "4–6"): ("children_4_6yr", "any", "RDA"),
+    ("Children", "7–10"): ("children_7_10yr", "any", "RDA"),
+    ("Males", "11–14"): ("male_11_14yr", "male", "RDA"),
+    ("Males", "15–18"): ("male_15_18yr", "male", "RDA"),
+    ("Males", "19–24"): ("male_19_24yr", "male", "RDA"),
+    ("Males", "25–50"): ("male_25_50yr", "male", "RDA"),
+    ("Males", "51+"): ("male_51plus_yr", "male", "RDA"),
+    ("Females", "11–14"): ("female_11_14yr", "female", "RDA"),
+    ("Females", "15–18"): ("female_15_18yr", "female", "RDA"),
+    ("Females", "19–24"): ("female_19_24yr", "female", "RDA"),
+    ("Females", "25–50"): ("female_25_50yr", "female", "RDA"),
+    ("Females", "51+"): ("female_51plus_yr", "female", "RDA"),
+    ("Pregnant", "—"): ("pregnant", "female", "RDA"),
+    ("Breastfeeding", "1st year"): ("breastfeeding", "female", "RDA"),
+}
+
+
+def parse_macronutrients_per_kg(rows):
+    """Parse macronutrients per-kg table rows for Ca/P/Mg values."""
+    nutrients = []
+    current_category = None
+
+    for row in rows:
+        texts = [cell[0] for cell in row]
+        if not texts or len(texts) < 2:
+            continue
+
+        first = texts[0].strip()
+        age = texts[1].strip() if len(texts) > 1 else ""
+
+        # Skip header and footnote rows
+        if first.lower().startswith(("category", "*", "data from")):
+            continue
+
+        # Update current_category when first cell names a category
+        if first in ("Infants", "Children", "Males", "Females",
+                      "Pregnant", "Breastfeeding"):
+            current_category = first
+            # Fall through — this row may also carry data (age col)
+
+        if not current_category or not age:
+            continue
+
+        group_key = (current_category, age)
+        if group_key not in MACRONUTRIENT_GROUP_MAP:
+            print(f"  WARNING: unknown macronutrient group: {group_key}")
+            continue
+
+        group_id, sex, value_type = MACRONUTRIENT_GROUP_MAP[group_key]
+
+        for i, name in enumerate(MACRONUTRIENT_HEADERS):
+            col_idx = MACRONUTRIENT_COL_OFFSET + i
+            if col_idx >= len(texts):
+                continue
+            val = clean_value(texts[col_idx], name)
+            if val is None:
+                continue
+
+            nutrient = None
+            for n in nutrients:
+                if n["name"] == name:
+                    nutrient = n
+                    break
+            if nutrient is None:
+                nutrient = {
+                    "name": name,
+                    "unit": "mg/kg",
+                    "groups": [],
+                }
+                nutrients.append(nutrient)
+
+            nutrient["groups"].append({
+                "group": group_id,
+                "sex": sex,
+                "age_range": age,
+                "value": val,
+                "type": value_type,
+            })
+
+    return nutrients
+
+
 # ── Comparison ─────────────────────────────────────────────────────
 
 def compare(parsed_file, existing_file, label):
@@ -540,8 +797,11 @@ def compare(parsed_file, existing_file, label):
 
 # ── Main ───────────────────────────────────────────────────────────
 
-def build_meta(source_id, source_file, html_filename):
-    return {
+def build_meta(source_id, source_file, html_filename, source_url=None, note=None):
+    if source_url is None:
+        html_basename = os.path.basename(html_filename)
+        source_url = SOURCE_URLS.get(html_basename, f"file://{os.path.abspath(html_filename)}")
+    meta = {
         "source_id": source_id,
         "source_file": source_file,
         "extraction_date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -552,10 +812,11 @@ def build_meta(source_id, source_file, html_filename):
             "presumed_date": "2024",
             "presumed_author": "Merck & Co., Inc., based on National Academies of Sciences, Engineering, and Medicine DRI reports"
         },
-        "source_urls": [
-            f"file://{os.path.abspath(html_filename)}"
-        ],
+        "source_urls": [source_url],
     }
+    if note:
+        meta["note"] = note
+    return meta
 
 
 def main():
@@ -583,10 +844,12 @@ def main():
     total_groups = sum(len(n.get("groups", [])) for n in vitamins)
     print(f"  Extracted {len(vitamins)} nutrients, {total_groups} group entries")
 
+    vitamins_footnote = extract_footnote(VITAMINS_HTML)
     output = {
         "_meta": build_meta("msd-manual-dri",
                             "data/external/msd-manual-vitamins-2026-05.html",
                             VITAMINS_HTML),
+        "_meta_note": f"Bold values = AI, regular type = RDA. UL = Tolerable Upper Intake Level. ND = Not Determinable. Source table footnote: {vitamins_footnote}",
         "nutrients": vitamins,
     }
     with open(VITAMINS_OUT, "w") as f:
@@ -606,16 +869,59 @@ def main():
     total_groups = sum(len(n.get("groups", [])) for n in minerals)
     print(f"  Extracted {len(minerals)} nutrients, {total_groups} group entries")
 
+    minerals_footnote = extract_footnote(TRACE_MINERALS_HTML)
     output = {
         "_meta": build_meta("msd-manual-dri",
                             "data/external/msd-manual-trace-minerals-2026-05.html",
                             TRACE_MINERALS_HTML),
-        "_meta_note": "Trace minerals extracted from 'Guidelines for Daily Intake of Trace Minerals' table. Bold = AI, Regular = RDA. This file contains ONLY trace minerals — Ca/P/Mg/Na/K are in dri-minerals.json (absolute) and dri-macronutrients-per-kg.json (per-kg).",
+        "_meta_note": f"Trace minerals extracted from 'Guidelines for Daily Intake of Trace Minerals' table. Bold = AI, Regular = RDA. This file contains ONLY trace minerals — Ca/P/Mg/Na/K are in dri-minerals.json (absolute) and dri-macronutrients-per-kg.json (per-kg). Source table footnote: {minerals_footnote}",
         "nutrients": minerals,
     }
     with open(MINERALS_OUT, "w") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
     print(f"  Written to {MINERALS_OUT}")
+
+    # ── Consumer Minerals (Na/K Adult AI) ──
+    print()
+    print("Parsing Consumer minerals table (Na/K adult AI)...")
+    tables = parse_html(CONSUMER_MINERALS_HTML)
+    target_table = tables[0] if tables else []
+
+    consumer_minerals = parse_consumer_minerals(target_table)
+    total_groups = sum(len(n.get("groups", [])) for n in consumer_minerals)
+    print(f"  Extracted {len(consumer_minerals)} nutrients, {total_groups} group entries")
+
+    output = {
+        "_meta": build_meta("msd-consumer-minerals",
+                            "data/external/msd-manual-consumer-minerals-2026-05.html",
+                            CONSUMER_MINERALS_HTML),
+        "_meta_note": "Na and K adult AI values extracted from MSD Manual Consumer 'Overview of Minerals' table. Consumer version contains only adult RDA/AI values — no pediatric or adolescent age breakdown. Na: 1500 mg AI for all adults. K: 3400 mg AI for men, 2600 mg AI for women. Both are AI (Adequate Intake) — no RDA established for these nutrients.",
+        "nutrients": consumer_minerals,
+    }
+    with open(MACROMINERALS_ABSOLUTE_OUT, "w") as f:
+        json.dump(output, f, ensure_ascii=False, indent=2)
+    print(f"  Written to {MACROMINERALS_ABSOLUTE_OUT}")
+
+    # ── Macronutrients Per-kg (Ca/P/Mg) ──
+    print()
+    print("Parsing Macronutrients per-kg table (Ca/P/Mg)...")
+    tables = parse_html(MACRONUTRIENTS_HTML)
+    target_table = tables[0] if tables else []
+
+    macro_nutrients = parse_macronutrients_per_kg(target_table)
+    total_groups = sum(len(n.get("groups", [])) for n in macro_nutrients)
+    print(f"  Extracted {len(macro_nutrients)} nutrients, {total_groups} group entries")
+
+    output = {
+        "_meta": build_meta("msd-macronutrients-per-kg",
+                            "data/external/msd-manual-macronutrients-2026-05.html",
+                            MACRONUTRIENTS_HTML),
+        "_meta_note": "Ca/P/Mg per-kg values extracted from MSD Manual 'Recommended Dietary Reference Intakes for Some Macronutrients' table. Source: Institute of Medicine 1997. All values in mg/kg of body weight. Infants: AI. Children and adults: RDA. Model must multiply by individual body weight.",
+        "nutrients": macro_nutrients,
+    }
+    with open(MACRONUTRIENTS_PER_KG_OUT, "w") as f:
+        json.dump(output, f, ensure_ascii=False, indent=2)
+    print(f"  Written to {MACRONUTRIENTS_PER_KG_OUT}")
 
     # ── Compare with existing ──
     vitamins_ok = compare(VITAMINS_OUT, VITAMINS_EXISTING, "Vitamins")

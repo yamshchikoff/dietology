@@ -1,0 +1,62 @@
+{
+  "_meta": {
+    "source_id": "msd-consumer-minerals",
+    "source_file": "data/external/msd-manual-consumer-minerals-2026-05.html",
+    "extraction_date": "2026-05-21T13:52:15Z",
+    "extraction_script": "data/extract-msd-dri-parser.py",
+    "extraction_method": "html-parser",
+    "extracted_by": "agent",
+    "source_claims": {
+      "presumed_date": "2024",
+      "presumed_author": "Merck & Co., Inc., based on National Academies of Sciences, Engineering, and Medicine DRI reports"
+    },
+    "source_urls": [
+      "https://www.msdmanuals.com/home/disorders-of-nutrition/minerals/overview-of-minerals"
+    ]
+  },
+  "_meta_note": "Na and K adult AI values extracted from MSD Manual Consumer 'Overview of Minerals' table. Consumer version contains only adult RDA/AI values — no pediatric or adolescent age breakdown. Na: 1500 mg AI for all adults. K: 3400 mg AI for men, 2600 mg AI for women. Both are AI (Adequate Intake) — no RDA established for these nutrients.",
+  "nutrients": [
+    {
+      "name": "Potassium",
+      "unit": "mg",
+      "category": "macromineral",
+      "groups": [
+        {
+          "group": "adult_male",
+          "sex": "male",
+          "age_range": "adult",
+          "value": 3400,
+          "type": "AI"
+        },
+        {
+          "group": "adult_female",
+          "sex": "female",
+          "age_range": "adult",
+          "value": 2600,
+          "type": "AI"
+        }
+      ]
+    },
+    {
+      "name": "Sodium",
+      "unit": "mg",
+      "category": "macromineral",
+      "groups": [
+        {
+          "group": "adult_male",
+          "sex": "male",
+          "age_range": "adult",
+          "value": 1500,
+          "type": "AI"
+        },
+        {
+          "group": "adult_female",
+          "sex": "female",
+          "age_range": "adult",
+          "value": 1500,
+          "type": "AI"
+        }
+      ]
+    }
+  ]
+}

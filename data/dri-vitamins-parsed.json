@@ -2,7 +2,7 @@
   "_meta": {
     "source_id": "msd-manual-dri",
     "source_file": "data/external/msd-manual-vitamins-2026-05.html",
-    "extraction_date": "2026-05-20T19:26:31Z",
+    "extraction_date": "2026-05-21T13:52:15Z",
     "extraction_script": "data/extract-msd-dri-parser.py",
     "extraction_method": "html-parser",
     "extracted_by": "agent",
@@ -11,9 +11,10 @@
       "presumed_author": "Merck & Co., Inc., based on National Academies of Sciences, Engineering, and Medicine DRI reports"
     },
     "source_urls": [
-      "file:///home/agent/dietology/data/external/msd-manual-vitamins-2026-05.html"
+      "https://www.msdmanuals.com/professional/multimedia/table/recommended-daily-intakes-for-vitamins"
     ]
   },
+  "_meta_note": "Bold values = AI, regular type = RDA. UL = Tolerable Upper Intake Level. ND = Not Determinable. Source table footnote: NOTE: Recommended dietary allowances (RDAs) are shown in regular type. RDAs are set to meet the needs of 97 to 98% of healthy people. Adequate intakes (AIs) are shown in bold type. When data to calculate the RDA for a nutrient are insufficient, AIs are based on observed or experimentally determined estimates of nutrient intake by healthy people. * 1 niacin equivalent (NE) equals 1 mg niacin or 60 mg dietary tryptophan . equivalent (NE) equals 1 mg niacin or 60 mg dietary tryptophan. † 200 IU of vitamin D equals 5 mcg cholecalciferol. † 200 IU of vitamin D equals 5 mcg cholecalciferol. ‡ 800 IU of vitamin D is recommended for people ‡ 800 IU of vitamin D is recommended for people ≥ 70 years. § UL (tolerable upper intake level) is the largest amount of a nutrient that most adults can ingest daily without risk of adverse effects. The more the UL is exceeded, the greater the risk of adverse effects. IU = international units; ND = not determinable because of lack of data (sources of intake should be limited to foods); RAE = retinol activity equivalents (1 mcg RAE of preformed vitamin A = 3.33 units). retinol activity equivalents (1 mcg RAE of preformed vitamin A = 3.33 units). Data from Institute of Medicine (US) Subcommittee on Interpretation and Uses of Dietary Reference Intakes (DRIs); Institute of Medicine (US) Standing Committee on the Scientific Evaluation of Dietary Reference Intakes : DRI Dietary Reference Intakes: Applications in Dietary Assessment. Washington (DC): National Academies Press (US); 2000. In these topics Overview of Vitamins &gt; About us Disclaimer Permissions Privacy Cookie Preferences Terms of use Partnerships Contact Us Global Medical Knowledge Veterinary Manual Mobile App",
   "nutrients": [
     {
       "name": "Folate",
@@ -119,7 +120,8 @@
           "value": 500.0,
           "type": "RDA"
         }
-      ]
+      ],
+      "ul_note": "Applies to synthetic folic acid from supplements and fortified foods"
     },
     {
       "name": "Niacin",
@@ -225,7 +227,8 @@
           "value": 17.0,
           "type": "RDA"
         }
-      ]
+      ],
+      "unit_note": "1 NE = 1 mg niacin or 60 mg dietary tryptophan"
     },
     {
       "name": "Riboflavin",
@@ -331,7 +334,8 @@
           "value": 1.6,
           "type": "RDA"
         }
-      ]
+      ],
+      "ul_note": "ND — not determinable"
     },
     {
       "name": "Thiamin",
@@ -437,7 +441,8 @@
           "value": 1.4,
           "type": "RDA"
         }
-      ]
+      ],
+      "ul_note": "ND — not determinable"
     },
     {
       "name": "Vitamin A",
@@ -755,7 +760,8 @@
           "value": 2.8,
           "type": "RDA"
         }
-      ]
+      ],
+      "ul_note": "ND — not determinable"
     },
     {
       "name": "Vitamin C",
@@ -967,7 +973,8 @@
           "value": 600.0,
           "type": "AI"
         }
-      ]
+      ],
+      "unit_note": "200 IU = 5 mcg cholecalciferol"
     },
     {
       "name": "Vitamin E",
@@ -1179,7 +1186,8 @@
           "value": 90.0,
           "type": "AI"
         }
-      ]
+      ],
+      "ul_note": "ND — not determinable"
     }
   ]
 }

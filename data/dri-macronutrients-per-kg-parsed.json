@@ -1,0 +1,395 @@
+{
+  "_meta": {
+    "source_id": "msd-macronutrients-per-kg",
+    "source_file": "data/external/msd-manual-macronutrients-2026-05.html",
+    "extraction_date": "2026-05-21T13:52:15Z",
+    "extraction_script": "data/extract-msd-dri-parser.py",
+    "extraction_method": "html-parser",
+    "extracted_by": "agent",
+    "source_claims": {
+      "presumed_date": "2024",
+      "presumed_author": "Merck & Co., Inc., based on National Academies of Sciences, Engineering, and Medicine DRI reports"
+    },
+    "source_urls": [
+      "https://www.msdmanuals.com/professional/multimedia/table/recommended-dietary-reference-intakes-for-some-macronutrients-food-and-nutrition-board-institute-of-medicine-of-the-national-academies"
+    ]
+  },
+  "_meta_note": "Ca/P/Mg per-kg values extracted from MSD Manual 'Recommended Dietary Reference Intakes for Some Macronutrients' table. Source: Institute of Medicine 1997. All values in mg/kg of body weight. Infants: AI. Children and adults: RDA. Model must multiply by individual body weight.",
+  "nutrients": [
+    {
+      "name": "Calcium",
+      "unit": "mg/kg",
+      "groups": [
+        {
+          "group": "infants_0_0.5yr",
+          "sex": "any",
+          "age_range": "0.0–0.5",
+          "value": 66.7,
+          "type": "AI"
+        },
+        {
+          "group": "infants_0.5_1yr",
+          "sex": "any",
+          "age_range": "0.5–1.0",
+          "value": 66.7,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3",
+          "value": 61.5,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_6yr",
+          "sex": "any",
+          "age_range": "4–6",
+          "value": 40.0,
+          "type": "RDA"
+        },
+        {
+          "group": "children_7_10yr",
+          "sex": "any",
+          "age_range": "7–10",
+          "value": 28.6,
+          "type": "RDA"
+        },
+        {
+          "group": "male_11_14yr",
+          "sex": "male",
+          "age_range": "11–14",
+          "value": 26.7,
+          "type": "RDA"
+        },
+        {
+          "group": "male_15_18yr",
+          "sex": "male",
+          "age_range": "15–18",
+          "value": 18.2,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_24yr",
+          "sex": "male",
+          "age_range": "19–24",
+          "value": 16.7,
+          "type": "RDA"
+        },
+        {
+          "group": "male_25_50yr",
+          "sex": "male",
+          "age_range": "25–50",
+          "value": 10.1,
+          "type": "RDA"
+        },
+        {
+          "group": "male_51plus_yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 10.4,
+          "type": "RDA"
+        },
+        {
+          "group": "female_11_14yr",
+          "sex": "female",
+          "age_range": "11–14",
+          "value": 26.1,
+          "type": "RDA"
+        },
+        {
+          "group": "female_15_18yr",
+          "sex": "female",
+          "age_range": "15–18",
+          "value": 21.8,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_24yr",
+          "sex": "female",
+          "age_range": "19–24",
+          "value": 20.7,
+          "type": "RDA"
+        },
+        {
+          "group": "female_25_50yr",
+          "sex": "female",
+          "age_range": "25–50",
+          "value": 12.7,
+          "type": "RDA"
+        },
+        {
+          "group": "female_51plus_yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 12.3,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant",
+          "sex": "female",
+          "age_range": "—",
+          "value": 18.5,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding",
+          "sex": "female",
+          "age_range": "1st year",
+          "value": 19.0,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Phosphorus",
+      "unit": "mg/kg",
+      "groups": [
+        {
+          "group": "infants_0_0.5yr",
+          "sex": "any",
+          "age_range": "0.0–0.5",
+          "value": 50.0,
+          "type": "AI"
+        },
+        {
+          "group": "infants_0.5_1yr",
+          "sex": "any",
+          "age_range": "0.5–1.0",
+          "value": 55.6,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3",
+          "value": 61.5,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_6yr",
+          "sex": "any",
+          "age_range": "4–6",
+          "value": 40.0,
+          "type": "RDA"
+        },
+        {
+          "group": "children_7_10yr",
+          "sex": "any",
+          "age_range": "7–10",
+          "value": 28.6,
+          "type": "RDA"
+        },
+        {
+          "group": "male_11_14yr",
+          "sex": "male",
+          "age_range": "11–14",
+          "value": 26.7,
+          "type": "RDA"
+        },
+        {
+          "group": "male_15_18yr",
+          "sex": "male",
+          "age_range": "15–18",
+          "value": 18.2,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_24yr",
+          "sex": "male",
+          "age_range": "19–24",
+          "value": 16.7,
+          "type": "RDA"
+        },
+        {
+          "group": "male_25_50yr",
+          "sex": "male",
+          "age_range": "25–50",
+          "value": 10.1,
+          "type": "RDA"
+        },
+        {
+          "group": "male_51plus_yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 10.4,
+          "type": "RDA"
+        },
+        {
+          "group": "female_11_14yr",
+          "sex": "female",
+          "age_range": "11–14",
+          "value": 26.1,
+          "type": "RDA"
+        },
+        {
+          "group": "female_15_18yr",
+          "sex": "female",
+          "age_range": "15–18",
+          "value": 21.8,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_24yr",
+          "sex": "female",
+          "age_range": "19–24",
+          "value": 20.7,
+          "type": "RDA"
+        },
+        {
+          "group": "female_25_50yr",
+          "sex": "female",
+          "age_range": "25–50",
+          "value": 12.7,
+          "type": "RDA"
+        },
+        {
+          "group": "female_51plus_yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 12.3,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant",
+          "sex": "female",
+          "age_range": "—",
+          "value": 18.5,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding",
+          "sex": "female",
+          "age_range": "1st year",
+          "value": 19.0,
+          "type": "RDA"
+        }
+      ]
+    },
+    {
+      "name": "Magnesium",
+      "unit": "mg/kg",
+      "groups": [
+        {
+          "group": "infants_0_0.5yr",
+          "sex": "any",
+          "age_range": "0.0–0.5",
+          "value": 6.7,
+          "type": "AI"
+        },
+        {
+          "group": "infants_0.5_1yr",
+          "sex": "any",
+          "age_range": "0.5–1.0",
+          "value": 6.7,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3",
+          "value": 6.2,
+          "type": "RDA"
+        },
+        {
+          "group": "children_4_6yr",
+          "sex": "any",
+          "age_range": "4–6",
+          "value": 6.0,
+          "type": "RDA"
+        },
+        {
+          "group": "children_7_10yr",
+          "sex": "any",
+          "age_range": "7–10",
+          "value": 6.1,
+          "type": "RDA"
+        },
+        {
+          "group": "male_11_14yr",
+          "sex": "male",
+          "age_range": "11–14",
+          "value": 6.0,
+          "type": "RDA"
+        },
+        {
+          "group": "male_15_18yr",
+          "sex": "male",
+          "age_range": "15–18",
+          "value": 6.1,
+          "type": "RDA"
+        },
+        {
+          "group": "male_19_24yr",
+          "sex": "male",
+          "age_range": "19–24",
+          "value": 4.9,
+          "type": "RDA"
+        },
+        {
+          "group": "male_25_50yr",
+          "sex": "male",
+          "age_range": "25–50",
+          "value": 4.4,
+          "type": "RDA"
+        },
+        {
+          "group": "male_51plus_yr",
+          "sex": "male",
+          "age_range": "51+",
+          "value": 4.5,
+          "type": "RDA"
+        },
+        {
+          "group": "female_11_14yr",
+          "sex": "female",
+          "age_range": "11–14",
+          "value": 6.1,
+          "type": "RDA"
+        },
+        {
+          "group": "female_15_18yr",
+          "sex": "female",
+          "age_range": "15–18",
+          "value": 5.5,
+          "type": "RDA"
+        },
+        {
+          "group": "female_19_24yr",
+          "sex": "female",
+          "age_range": "19–24",
+          "value": 4.8,
+          "type": "RDA"
+        },
+        {
+          "group": "female_25_50yr",
+          "sex": "female",
+          "age_range": "25–50",
+          "value": 4.4,
+          "type": "RDA"
+        },
+        {
+          "group": "female_51plus_yr",
+          "sex": "female",
+          "age_range": "51+",
+          "value": 4.3,
+          "type": "RDA"
+        },
+        {
+          "group": "pregnant",
+          "sex": "female",
+          "age_range": "—",
+          "value": 4.9,
+          "type": "RDA"
+        },
+        {
+          "group": "breastfeeding",
+          "sex": "female",
+          "age_range": "1st year",
+          "value": 5.4,
+          "type": "RDA"
+        }
+      ]
+    }
+  ]
+}

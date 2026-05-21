@@ -2,7 +2,7 @@
   "_meta": {
     "source_id": "msd-manual-dri",
     "source_file": "data/external/msd-manual-trace-minerals-2026-05.html",
-    "extraction_date": "2026-05-20T19:26:31Z",
+    "extraction_date": "2026-05-21T13:52:15Z",
     "extraction_script": "data/extract-msd-dri-parser.py",
     "extraction_method": "html-parser",
     "extracted_by": "agent",
@@ -11,10 +11,10 @@
       "presumed_author": "Merck & Co., Inc., based on National Academies of Sciences, Engineering, and Medicine DRI reports"
     },
     "source_urls": [
-      "file:///home/agent/dietology/data/external/msd-manual-trace-minerals-2026-05.html"
+      "https://www.msdmanuals.com/professional/multimedia/table/guidelines-for-daily-intake-of-trace-minerals"
     ]
   },
-  "_meta_note": "Trace minerals extracted from 'Guidelines for Daily Intake of Trace Minerals' table. Bold = AI, Regular = RDA. This file contains ONLY trace minerals — Ca/P/Mg/Na/K are in dri-minerals.json (absolute) and dri-macronutrients-per-kg.json (per-kg).",
+  "_meta_note": "Trace minerals extracted from 'Guidelines for Daily Intake of Trace Minerals' table. Bold = AI, Regular = RDA. This file contains ONLY trace minerals — Ca/P/Mg/Na/K are in dri-minerals.json (absolute) and dri-macronutrients-per-kg.json (per-kg). Source table footnote: * Except where noted differently. NOTE: Recommended dietary allowances (RDAs) are shown in regular type. RDAs are set to meet the needs of 97 to 98% of people in a group. Adequate intakes (AIs) are shown in bold type. For healthy breastfed infants, AIs are the mean intake. For other groups, AIs are amounts believed to meet the needs of all people in the group, but because of lack of data, the percentage of people covered cannot be specified with confidence. NR = not recommended; ND = not determinable because of lack of data, so sources of intake should be limited to foods. Adapted from Dietary Reference Intakes (DRIs): Recommended Dietary Allowances and Adequate Intakes, Elements, Food and Nutrition Board, National Academies, 2019 . Reference 1. Vincent JB . New evidence against chromium as an essential trace element. J Nutr. 147(12):2212–2219, 2017. doi:10.3945/jn.117.255901 More Information The following English-language resource may be useful. Please note that The Manual is not responsible for the content of this resource. U.S. Department of Agriculture : Micronutrients. Accessed April 18, 2025. Test your Knowledge Take a Quiz!",
   "nutrients": [
     {
       "name": "Chromium",
