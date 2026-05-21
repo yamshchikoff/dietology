@@ -46,8 +46,8 @@ data/
 ├── extract-iom-dri.py                     # Скрипт: парсинг IOM 2011 PDF → JSON
 │
 ├── # ── Оверлейные слои (machine-verified + metadata) ──
-├── build-minerals-overlay.py              # Сборщик: 5 input → minerals overlay
-├── dri-minerals-overlay.json              # Tier A | 14 минералов, 214 групп (finest granularity)
+├── build-minerals-overlay.py              # Сборщик: 5 machine-parsed inputs → minerals overlay (0 manual dependencies)
+├── dri-minerals-overlay.json              # Tier A | 14 минералов, 254 группы (finest granularity)
 ├── build-vitamins-overlay.py              # Сборщик: 2 input → vitamins overlay
 ├── dri-vitamins-overlay.json              # Tier A | 11 витаминов, 154 группы (all metadata)
 ├── build-macronutrients-per-kg-overlay.py # Сборщик: 2 input → per-kg overlay
@@ -57,10 +57,12 @@ data/
 ├── # ── Промежуточные файлы (intermediate, consumed by overlays) ──
 ├── dri-vitamins.json                      # Ручная транскрипция — metadata source
 ├── dri-vitamins-parsed.json               # Machine-parsed из HTML (154 groups)
-├── dri-minerals.json                      # Ручная транскрипция — metadata source
+├── dri-minerals.json                      # Ручная транскрипция — более не build dependency
 ├── dri-minerals-parsed.json               # Machine-parsed из HTML (144 groups)
 ├── dri-calcium-iom-2011-parsed.json       # Machine-parsed из IOM 2011 PDF
-├── dri-macrominerals-absolute-parsed.json # Machine-parsed из MSD Consumer HTML
+├── dri-na-k-2019-parsed.json              # Machine-parsed из NAS 2019 PDF
+├── dri-p-mg-ul-parsed.json               # Machine-parsed из LPI HTML
+├── dri-macrominerals-absolute-parsed.json # Machine-parsed из MSD Consumer HTML (legacy)
 ├── dri-macronutrients-per-kg.json         # Ручная транскрипция — metadata source
 ├── dri-macronutrients-per-kg-parsed.json  # Machine-parsed из HTML (51 group)
 ├── dri-p-mg-ncbi-crosscheck.json         # NCBI cross-check data (44 P/Mg entries)
@@ -124,12 +126,12 @@ data/
 
 | Файл | Состав | Групп | Источники |
 |------|--------|-------|-----------|
-| `dri-minerals-overlay.json` | 14 минералов | 214 | IOM 2011, IOM 1997 (NCBI), MSD Professional, MSD Consumer |
+| `dri-minerals-overlay.json` | 14 минералов | 254 | IOM 2011, IOM 1997 (NCBI), MSD Professional, NAS 2019, LPI |
 | `dri-vitamins-overlay.json` | 11 витаминов | 154 | MSD Manual Professional |
 | `dri-macronutrients-per-kg-overlay.json` | 3 per-kg (Ca/P/Mg) | 51 | MSD Manual / IOM 1997 |
 
-**Metdata provenance:**
-- **Минералы:** ul/ul_unit/ul_note — machine-verified (из parsed-файлов) для trace minerals + Calcium; manual transcription для P, Mg, Na, K (в источниках нет UL).
+**Metadata provenance:**
+- **Минералы:** все значения, UL, UL_unit, UL_note — machine-verified (0 manual_transcription). Trace minerals — MSD Professional. Ca — IOM 2011. Na/K — NAS 2019. P/Mg RDA/AI — NCBI Bookshelf. P/Mg UL — LPI. Категории и per-group notes — программно сгенерированы.
 - **Витамины:** все метаданные (unit_note, ul_note) извлечены парсером из HTML — идентичны ручной транскрипции.
 - **Per-kg:** category — из ручной транскрипции (единственный источник).
 
@@ -137,7 +139,7 @@ data/
 
 Промежуточные файлы (`*-parsed.json`, `dri-vitamins.json`, `dri-minerals.json`) — consumed by build-скриптами, не предназначены для прямого использования моделью.
 
-Сборка всего: `python3 build-minerals-overlay.py && python3 build-vitamins-overlay.py && python3 build-macronutrients-per-kg-overlay.py && python3 build-data-index.py`
+Полная пересборка: 7 шагов от парсинга исходных документов до `sources-final.json`. См. `docs/data-layers.md`.
 
 ## Источники
 
@@ -189,10 +191,11 @@ data/
 
 - [x] Скачать National Academies DRI PDF (1997, 2011) — в `external/`
 - [x] Скачать WHO 2024 Hb Guideline PDF — в `external/`
-- [x] Machine-verified extraction для всех DRI значений через оверлейные слои
+- [x] Экстракция DRI из всех источников через оверлейные слои (7 extraction scripts)
 - [x] Cross-verification P/Mg через NCBI Bookshelf (IOM 1997)
+- [x] Na/K возрастная разбивка — NAS 2019 (22 группы)
+- [x] P/Mg UL — LPI (machine-verified)
 - [x] Единый data-index.json манифест
-- [ ] Экстракция DRI Summary Tables из National Academies PDF (pp. 529–542) — для Na/K возрастной разбивки
 - [ ] Докачка дополнительных индикаторов WHO GHO через OData API
 - [ ] Мониторинг: EFSA DRV Finder (при появлении статического экспорта)
 - [ ] Мониторинг: NIH ODS (при снятии Cloudflare-блокировки)
