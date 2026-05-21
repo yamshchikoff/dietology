@@ -93,7 +93,7 @@
 
 | Нутриент | Текущий источник | Статус поиска | Результат |
 |----------|-----------------|---------------|-----------|
-| P | IOM 1997 PDF (scrambled) | 🔍 поиск | — |
-| Mg | IOM 1997 PDF (scrambled) | 🔍 поиск | — |
-| Na | NAS 2019 PDF (не скачан) | 🔍 требуется скачать | — |
-| K | NAS 2019 PDF (не скачан) | 🔍 требуется скачать | — |
+| Na | NAS 2019 PDF | ✅ найден | [Отчёт](source-report-nas-2019-nak.md) — machine-verified |
+| K | NAS 2019 PDF | ✅ найден | [Отчёт](source-report-nas-2019-nak.md) — machine-verified |
+| P | LPI HTML (IOM 1997) | ✅ найден | [Отчёт](source-report-lpi-p-mg-ul.md) — machine-verified |
+| Mg | LPI HTML (IOM 1997) | ✅ найден | [Отчёт](source-report-lpi-p-mg-ul.md) — machine-verified |

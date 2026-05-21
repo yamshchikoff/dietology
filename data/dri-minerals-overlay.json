@@ -1,27 +1,28 @@
 {
   "_meta": {
     "schema": "dri-minerals-overlay-v1",
-    "description": "Merged DRI values for 14 minerals: machine-parsed values from IOM/NCBI/MSD sources at finest available granularity, combined with metadata (UL notes, per-group caveats) from manual transcription.",
+    "description": "Merged DRI values for 14 minerals: machine-parsed values from IOM/NCBI/MSD/NAS/LPI sources at finest available granularity. All UL/UL_unit/UL_note now machine-verified: trace minerals (MSD Professional), Calcium (IOM 2011), Sodium/Potassium (NAS 2019), Phosphorus/Magnesium (LPI, based on IOM 1997). 0 manual_transcription.",
     "build_script": "data/build-minerals-overlay.py",
-    "build_date": "2026-05-21T19:34:59Z",
+    "build_date": "2026-05-21T21:06:09Z",
     "sources": [
       "iom-dri-1997",
       "iom-dri-2011",
-      "msd-consumer-minerals",
-      "msd-manual-dri"
+      "msd-manual-dri",
+      "nas-dri-2019"
     ],
     "input_files": [
-      "data/dri-minerals.json (metadata)",
-      "data/dri-minerals-parsed.json (trace mineral values)",
+      "data/dri-minerals.json (metadata: per-group notes, nutrient notes)",
+      "data/dri-minerals-parsed.json (trace mineral values + ul)",
       "data/dri-calcium-iom-2011-parsed.json (Ca values + ul_groups)",
-      "data/dri-macrominerals-absolute-parsed.json (Na/K values)",
-      "data/dri-p-mg-ncbi-crosscheck.json (P/Mg values via NCBI cross-verification)"
+      "data/dri-na-k-2019-parsed.json (Na/K values, NAS 2019)",
+      "data/dri-p-mg-ul-parsed.json (P/Mg UL, LPI based on IOM 1997)",
+      "data/dri-p-mg-ncbi-crosscheck.json (P/Mg AI/RDA via NCBI cross-verification)"
     ],
     "stats": {
       "nutrients": 14,
-      "total_groups": 214,
-      "granularity": "finest available per source: Ca 22 groups (IOM 2011), P/Mg 22 groups each (IOM 1997 via NCBI), trace minerals 16 groups each (MSD Professional), Na/K 2 adult groups (MSD Consumer)",
-      "pregnancy_breastfeeding": "split into teen (14-18yr), adult 19-30yr, adult 31-50yr subgroups — matching IOM source granularity"
+      "total_groups": 254,
+      "granularity": "finest available per source: Ca 22 groups (IOM 2011), P/Mg 22 groups each (IOM 1997 via NCBI), trace minerals 16 groups each (MSD Professional), Na/K 22 groups each (NAS 2019)",
+      "pregnancy_breastfeeding": "split into teen (14-18yr), adult 19-30yr, adult 31-50yr subgroups — matching IOM/NAS source granularity"
     }
   },
   "nutrients": [
@@ -1447,6 +1448,11 @@
         "https://nap.nationalacademies.org/catalog/5776/",
         "https://www.ncbi.nlm.nih.gov/books/NBK222881/table/ttt00057_1/"
       ],
+      "ul_source_id": "lpi-mic-minerals",
+      "ul_source_urls": [
+        "https://lpi.oregonstate.edu/mic/minerals/phosphorus",
+        "https://lpi.oregonstate.edu/mic/minerals/magnesium"
+      ],
       "groups": [
         {
           "group": "infants_0_6mo",
@@ -1611,8 +1617,109 @@
       ],
       "ul": 4000,
       "ul_unit": "mg",
-      "ul_note": "Adults 19–70 yr. UL 3000 mg for adults >70 yr.",
-      "metadata_source": "manual_transcription"
+      "ul_note": "Adults 19–70 yr: 4000 mg. Adults >70 yr: 3000 mg. Source: Linus Pauling Institute, based on IOM 1997.",
+      "ul_groups": [
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "value": 3000
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "value": 3000
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "value": 4000
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "value": 4000
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "value": 4000
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "value": 4000
+        },
+        {
+          "group": "male_51_70yr",
+          "sex": "male",
+          "value": 4000
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "value": 3000
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "value": 4000
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "value": 4000
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "value": 4000
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "value": 4000
+        },
+        {
+          "group": "female_51_70yr",
+          "sex": "female",
+          "value": 4000
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "value": 3000
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "value": 3500
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "value": 3500
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "value": 3500
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "value": 4000
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "value": 4000
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "value": 4000
+        }
+      ]
     },
     {
       "name": "Magnesium",
@@ -1622,6 +1729,11 @@
       "source_urls": [
         "https://nap.nationalacademies.org/catalog/5776/",
         "https://www.ncbi.nlm.nih.gov/books/NBK222881/table/ttt00057_1/"
+      ],
+      "ul_source_id": "lpi-mic-minerals",
+      "ul_source_urls": [
+        "https://lpi.oregonstate.edu/mic/minerals/phosphorus",
+        "https://lpi.oregonstate.edu/mic/minerals/magnesium"
       ],
       "groups": [
         {
@@ -1787,67 +1899,457 @@
       ],
       "ul": 350,
       "ul_unit": "mg",
-      "ul_note": "UL applies to supplemental magnesium only, not food sources",
-      "metadata_source": "manual_transcription"
+      "ul_note": "UL applies to supplemental magnesium only, not food sources. Source: Linus Pauling Institute, based on IOM 1997.",
+      "ul_groups": [
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "value": 65
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "value": 110
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "value": 350
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "value": 350
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "value": 350
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "value": 350
+        },
+        {
+          "group": "male_51_70yr",
+          "sex": "male",
+          "value": 350
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "value": 350
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "value": 350
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "value": 350
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "value": 350
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "value": 350
+        },
+        {
+          "group": "female_51_70yr",
+          "sex": "female",
+          "value": 350
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "value": 350
+        }
+      ]
     },
     {
       "name": "Potassium",
       "unit": "mg",
       "category": "macromineral",
-      "source_id": "msd-consumer-minerals",
+      "source_id": "nas-dri-2019",
       "source_urls": [
-        "https://www.msdmanuals.com/home/disorders-of-nutrition/minerals/overview-of-minerals"
+        "https://nap.nationalacademies.org/catalog/25353",
+        "https://nap.nationalacademies.org/resource/25353/030519DRISodiumPotassium.pdf"
       ],
       "groups": [
         {
-          "group": "adult_male",
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 400,
+          "type": "AI"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 860,
+          "type": "AI"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 2000,
+          "type": "AI"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 2300,
+          "type": "AI"
+        },
+        {
+          "group": "male_9_13yr",
           "sex": "male",
-          "age_range": "adult",
+          "age_range": "9–13 years",
+          "value": 2500,
+          "type": "AI"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
+          "value": 3000,
+          "type": "AI"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30 years",
           "value": 3400,
           "type": "AI"
         },
         {
-          "group": "adult_female",
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50 years",
+          "value": 3400,
+          "type": "AI"
+        },
+        {
+          "group": "male_51_70yr",
+          "sex": "male",
+          "age_range": "51-70 years",
+          "value": 3400,
+          "type": "AI"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": ">70 years",
+          "value": 3400,
+          "type": "AI"
+        },
+        {
+          "group": "female_9_13yr",
           "sex": "female",
-          "age_range": "adult",
+          "age_range": "9–13 years",
+          "value": 2300,
+          "type": "AI"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 2300,
+          "type": "AI"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 years",
           "value": 2600,
+          "type": "AI"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 years",
+          "value": 2600,
+          "type": "AI"
+        },
+        {
+          "group": "female_51_70yr",
+          "sex": "female",
+          "age_range": "51–70 years",
+          "value": 2600,
+          "type": "AI"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": ">70 years",
+          "value": 2600,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 2600,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 years",
+          "value": 2900,
+          "type": "AI"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 years",
+          "value": 2900,
+          "type": "AI"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 2500,
+          "type": "AI"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 years",
+          "value": 2800,
+          "type": "AI"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 years",
+          "value": 2800,
           "type": "AI"
         }
       ],
-      "ul": null,
-      "ul_note": "No UL established from food sources",
-      "note": "AI from National Academies DRI (2019). Age-specific AI values: infants 0–6 mo 400 mg, 7–12 mo 700 mg, children 1–3 yr 3000 mg, 4–8 yr 3800 mg, males 9–13 yr 4500 mg, 14–18 yr 4700 mg, 19+ yr 3400 mg. Females 9–13 yr 4500 mg, 14–18 yr 4700 mg, 19+ yr 2600 mg.",
-      "metadata_source": "manual_transcription"
+      "ul_note": "ND — not determined. NAS 2019: insufficient evidence to establish UL for potassium.",
+      "note": "AI values from NAS 2019 DRI for Sodium and Potassium. No UL or CDRR established for potassium."
     },
     {
       "name": "Sodium",
       "unit": "mg",
       "category": "macromineral",
-      "source_id": "msd-consumer-minerals",
+      "source_id": "nas-dri-2019",
       "source_urls": [
-        "https://www.msdmanuals.com/home/disorders-of-nutrition/minerals/overview-of-minerals"
+        "https://nap.nationalacademies.org/catalog/25353",
+        "https://nap.nationalacademies.org/resource/25353/030519DRISodiumPotassium.pdf"
       ],
       "groups": [
         {
-          "group": "adult_male",
-          "sex": "male",
-          "age_range": "adult",
-          "value": 1500,
-          "type": "AI"
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 110,
+          "type": "AI",
+          "note": "CDRR: not determined"
         },
         {
-          "group": "adult_female",
-          "sex": "female",
-          "age_range": "adult",
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 370,
+          "type": "AI",
+          "note": "CDRR: not determined"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 800,
+          "type": "AI",
+          "cdrr": 1200,
+          "note": "CDRR: 1200 mg/day"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 1000,
+          "type": "AI",
+          "cdrr": 1500,
+          "note": "CDRR: 1500 mg/day"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 years",
+          "value": 1200,
+          "type": "AI",
+          "cdrr": 1800,
+          "note": "CDRR: 1800 mg/day"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
           "value": 1500,
-          "type": "AI"
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "male_51_70yr",
+          "sex": "male",
+          "age_range": "51–70 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": ">70 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 years",
+          "value": 1200,
+          "type": "AI",
+          "cdrr": 1800,
+          "note": "CDRR: 1800 mg/day"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "female_51_70yr",
+          "sex": "female",
+          "age_range": "51–70 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": ">70 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "note": "CDRR: 2300 mg/day"
         }
       ],
-      "ul": 2300,
-      "ul_unit": "mg",
-      "ul_note": "Chronic Disease Risk Reduction (CDRR) intake. UL not defined.",
-      "note": "AI from MSD Manual Consumer table. Age-specific AI values: infants 0–6 mo 110 mg, 7–12 mo 370 mg, children 1–3 yr 800 mg, 4–8 yr 1000 mg, 9–13 yr 1200 mg, 14+ yr 1500 mg.",
-      "metadata_source": "manual_transcription"
+      "ul_note": "ND — not determined. No UL for sodium. CDRR (Chronic Disease Risk Reduction) replaces UL: 2300 mg/day for adults ≥14 yr; lower for children.",
+      "note": "AI values from NAS 2019 DRI for Sodium and Potassium. CDRR (not UL) is the relevant upper intake benchmark for sodium."
     }
   ]
 }

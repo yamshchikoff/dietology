@@ -1,0 +1,39 @@
+{
+  "_meta": {
+    "source_id": "lpi-mic-minerals",
+    "source_file": "data/external/lpi-phosphorus-ul.html, data/external/lpi-magnesium-ul.html",
+    "source_urls": [
+      "https://lpi.oregonstate.edu/mic/minerals/phosphorus",
+      "https://lpi.oregonstate.edu/mic/minerals/magnesium"
+    ],
+    "extraction_date": "2026-05-21T21:00:39Z",
+    "extraction_script": "data/extract-lpi-ul.py",
+    "extraction_method": "html-table-parser",
+    "extracted_by": "agent",
+    "source_claims": {
+      "presumed_date": "2025",
+      "presumed_author": "Linus Pauling Institute, Oregon State University",
+      "based_on": "Institute of Medicine DRI reports (1997 for P/Mg)"
+    },
+    "note": "UL values from Linus Pauling Institute Micronutrient Information Center. LPI is an academic peer-reviewed source that reproduces IOM DRI values. Tier B — authoritative secondary, machine-readable. UL for Magnesium applies to supplemental magnesium only, not food sources. UL for Phosphorus: 4000 mg (19-70 yr), 3000 mg (>70 yr)."
+  },
+  "phosphorus_ul": {
+    "infants": null,
+    "children_1_3yr": 3000,
+    "children_4_8yr": 3000,
+    "children_9_13yr": 4000,
+    "adolescent_14_18yr": 4000,
+    "adult_19_70yr": 4000,
+    "adult_gt70yr": 3000,
+    "pregnant": 3500,
+    "breastfeeding": 4000
+  },
+  "magnesium_ul": {
+    "infants": null,
+    "children_1_3yr": 65,
+    "children_4_8yr": 110,
+    "children_9_13yr": 350,
+    "adolescent_14_18yr": 350,
+    "adult": 350
+  }
+}

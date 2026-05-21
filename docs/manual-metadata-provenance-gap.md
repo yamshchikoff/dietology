@@ -13,97 +13,93 @@
 
 ## Анализ per-nutrient
 
-### Phosphorus (source_id: iom-dri-1997)
+### Phosphorus (source_id: iom-dri-1997) ✅ РЕШЕНО
 
 | Поле | Значение | Реальный источник |
 |------|----------|-------------------|
-| ul | 4000 | IOM 1997 PDF, UL-таблица |
-| ul_unit | mg | Там же |
-| ul_note | "Adults 19–70 yr. UL 3000 mg for adults >70 yr." | Там же |
+| ul | 4000 | LPI HTML (cites IOM 1997) |
+| ul_unit | mg | LPI |
+| ul_note | "Adults 19–70 yr: 4000 mg. >70 yr: 3000 mg" | LPI |
 
-**Статус:** IOM 1997 PDF (`iom-dri-ca-p-mg-vitd-f-1997.pdf`) уже в `external/`. Содержит UL-таблицы, но текст scrambled — `extract-iom-dri.py` стр. 7-8 подтверждает невозможность надёжного pdfplumber-извлечения. NCBI Bookshelf HTML содержит только RDA/AI, не UL.
+**Статус:** ✅ Найден и распарсен. Linus Pauling Institute (Tier B) — академический peer-reviewed источник, воспроизводящий IOM 1997 UL в чистых HTML-таблицах. Парсер: `extract-lpi-ul.py`. Отчёт: [source-report-lpi-p-mg-ul.md](source-report-lpi-p-mg-ul.md).
 
-**Ручная работа исключена.** Ни ручная верификация (открыть PDF и сверить глазами), ни ручная транскрипция значений недопустимы — требования проекта запрещают human error в медицинских числовых данных. Требуется найти альтернативный машиночитаемый источник с UL-таблицами для Phosphorus и Magnesium.
-
-### Magnesium (source_id: iom-dri-1997)
+### Magnesium (source_id: iom-dri-1997) ✅ РЕШЕНО
 
 | Поле | Значение | Реальный источник |
 |------|----------|-------------------|
-| ul | 350 | IOM 1997 PDF |
-| ul_unit | mg | Там же |
-| ul_note | "UL applies to supplemental magnesium only, not food sources" | Там же |
+| ul | 350 | LPI HTML (cites IOM 1997) |
+| ul_unit | mg | LPI |
+| ul_note | "UL applies to supplemental magnesium only, not food sources" | LPI |
 
-**Статус:** тот же scrambled IOM 1997 PDF. Проблема идентична Phosphorus — машиночитаемый источник с UL-таблицами отсутствует.
+**Статус:** ✅ Найден и распарсен. Тот же источник что и Phosphorus — LPI. UL=350 mg (supplemental only).
 
-### Potassium (source_id: msd-consumer-minerals)
-
-| Поле | Значение | Реальный источник |
-|------|----------|-------------------|
-| ul | None | — |
-| ul_note | "No UL established from food sources" | National Academies 2019 DRI update (Na/K) |
-| note | Детальные AI по всем возрастам | National Academies 2019 |
-
-**Статус:** National Academies 2019 report "Dietary Reference Intakes for Sodium and Potassium" доступен бесплатно на `nap.nationalacademies.org/catalog/25353`. НЕ скачан.
-
-### Sodium (source_id: msd-consumer-minerals)
+### Potassium (source_id: nas-dri-2019) ✅ РЕШЕНО
 
 | Поле | Значение | Реальный источник |
 |------|----------|-------------------|
-| ul | 2300 | National Academies 2019 (CDRR) |
-| ul_unit | mg | Там же |
-| ul_note | "Chronic Disease Risk Reduction (CDRR) intake. UL not defined." | Там же |
-| note | AI значения по возрастам | MSD Manual Consumer |
+| ul | None (ND) | NAS 2019: UL not determined |
+| ul_note | "ND — not determined..." | NAS 2019 PDF Highlights |
+| AI | 22 группы по возрастам | NAS 2019 Table 1 |
 
-**Статус:** тот же 2019 report.
+**Статус:** ✅ Найден и распарсен. NAS 2019 PDF Highlights — machine-readable, авторитетный Tier A. Парсер: `extract-nas-dri-2019.py`. Отчёт: [source-report-nas-2019-nak.md](source-report-nas-2019-nak.md).
 
-## Решение
+### Sodium (source_id: nas-dri-2019) ✅ РЕШЕНО
 
-Принцип: **только машиночитаемые источники.** Никакой ручной верификации PDF, никакой ручной транскрипции. Для каждого нутриента требуется найти документ, из которого UL-метаданные извлекаются программно.
+| Поле | Значение | Реальный источник |
+|------|----------|-------------------|
+| ul | None (ND) | NAS 2019: UL not determined |
+| CDRR | 2300 mg/day (взрослые) | NAS 2019 Table 2 |
+| ul_note | "ND — CDRR replaces UL" | NAS 2019 PDF Highlights |
+| AI | 22 группы по возрастам | NAS 2019 Table 2 |
 
-### Задача 1: Phosphorus + Magnesium — найти машиночитаемый источник UL
+**Статус:** ✅ Найден и распарсен. Тот же источник что и Potassium. CDRR извлечён для всех возрастных групп.
 
-IOM 1997 PDF непригоден (scrambled text). NCBI Bookshelf HTML — только RDA/AI, без UL. Требуется найти альтернативный источник, содержащий UL-таблицы для P и Mg в машиночитаемом формате (HTML-таблица, структурированный JSON/CSV, born-digital PDF с извлекаемыми таблицами).
+## Решение (завершено)
 
-Кандидаты для исследования:
-- **MSD Manual Professional** — отдельная страница по макроминералам может содержать UL
-- **NIH ODS Fact Sheets** — Phosphorus и Magnesium fact sheets (доступность под вопросом из-за Cloudflare)
-- **Health Canada DRI tables** — канадские DRI, published как HTML-таблицы
-- **EFSA DRV Finder** — европейские нормы (JS-only, мониторинг)
-- **National Academies — отдельные страницы на nap.edu** — могут иметь HTML-версии UL-таблиц
+### Задача: Phosphorus + Magnesium ✅ ВЫПОЛНЕНО
 
-### Задача 2: Sodium + Potassium — скачать и распарсить 2019 DRI report
+Найден Linus Pauling Institute (Oregon State University) — академический peer-reviewed источник с HTML-таблицами UL для Phosphorus и Magnesium, цитирующий IOM 1997. Tier B, авторитетный вторичный.
 
-National Academies 2019 report "Dietary Reference Intakes for Sodium and Potassium" — born-digital PDF, должен иметь текстовый слой.
+### Задача: Sodium + Potassium ✅ ВЫПОЛНЕНО
 
-- URL: `https://nap.nationalacademies.org/catalog/25353/dietary-reference-intakes-for-sodium-and-potassium`
-- Скачать в `data/external/nas-dri-sodium-potassium-2019.pdf`
-- Написать `data/extract-nas-dri-2019.py` — извлечь CDRR для Sodium, AI для Potassium
-- Если PDF окажется непригодным (scrambled/заблокирован) — искать альтернативный машиночитаемый источник
+Найден NAS 2019 Highlights PDF — machine-readable, Tier A, 22 возрастные группы для каждого нутриента.
 
-### После нахождения источников
+- Добавлены parsed-файлы как input в `build-minerals-overlay.py`
+- Для Na/K: значения из NAS 2019 (22 группы)
+- Для P/Mg: UL из LPI, RDA/AI из NCBI crosscheck
+- `metadata_source: manual_transcription` → полностью исключён (0 nutrients)
+- Исправлен `_meta` в `dri-minerals-overlay.json` — per-nutrient source_id
+- `ul_source_id` добавлен для P/Mg (lpi-mic-minerals, отдельный от source_id)
 
-- Добавить parsed-файлы как input в `build-minerals-overlay.py`
-- Для Na/K и P/Mg: `metadata_source` переключится на parsed
-- Исправить `_meta` в `dri-minerals.json` — per-nutrient source_id вместо единого `msd-manual-dri`
-
-## Итоговая цель
+## Итоговый статус
 
 | Нутриент | UL source | Статус |
 |----------|-----------|--------|
 | Trace (9) | MSD Professional HTML | ✓ machine-verified |
 | Calcium | IOM 2011 PDF | ✓ machine-verified |
-| Phosphorus | ? требуется найти машиночитаемый источник | ⚠ sourcing |
-| Magnesium | ? требуется найти машиночитаемый источник | ⚠ sourcing |
-| Potassium | NAS 2019 PDF (требуется скачать и проверить) | ⚠ sourcing |
-| Sodium | NAS 2019 PDF (требуется скачать и проверить) | ⚠ sourcing |
+| Potassium | NAS 2019 PDF | ✅ machine-verified (22 группы) |
+| Sodium | NAS 2019 PDF | ✅ machine-verified (22 группы) |
+| Phosphorus | LPI HTML (IOM 1997) | ✅ machine-verified (20 ul_groups) |
+| Magnesium | LPI HTML (IOM 1997) | ✅ machine-verified (14 ul_groups) |
 
-## Файлы (после нахождения источников)
+## Файлы
 
-- Новый: `data/external/nas-dri-sodium-potassium-2019.pdf`
-- Новый: `data/extract-nas-dri-2019.py` (парсер Na/K)
-- Новый: `data/dri-na-k-2019-parsed.json` (выход парсера)
-- Новый: `data/external/<p-mg-ul-source>.html` (источник для P/Mg UL — кандидат уточняется)
-- Новый: парсер для P/Mg UL (скрипт зависит от формата источника)
-- Изменяемый: `data/build-minerals-overlay.py` (добавить parsed inputs)
-- Изменяемый: `data/dri-minerals.json` (_meta с per-nutrient source_id)
-- Пересобирается: `data/dri-minerals-overlay.json`, `data/data-index.json`, `data/sources-final.json`
+### ✅ Уже созданы (Na/K — NAS 2019)
+- `data/external/nas-dri-sodium-potassium-2019.pdf`
+- `data/extract-nas-dri-2019.py`
+- `data/dri-na-k-2019-parsed.json`
+- `docs/source-report-nas-2019-nak.md` — отчёт об отработке источника
+
+### ✅ Уже созданы (P/Mg — LPI)
+- `data/external/lpi-phosphorus-ul.html`
+- `data/external/lpi-magnesium-ul.html`
+- `data/extract-lpi-ul.py`
+- `data/dri-p-mg-ul-parsed.json`
+- `docs/source-report-lpi-p-mg-ul.md` — отчёт об отработке источника
+
+### ✅ Обновлены
+- `data/build-minerals-overlay.py` — интеграция NAS 2019 (Na/K) и LPI (P/Mg UL)
+- `data/dri-minerals-overlay.json` — пересобран (0 manual_transcription)
+- `data/sources.json` — добавлены `nas-dri-2019` и `lpi-mic-minerals`
+- `data/sources-overlay.json` — обновлён (7 источников, 459 групп)
+- `docs/ul-source-search-plan.md` — статус обновлён

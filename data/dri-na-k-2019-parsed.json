@@ -1,0 +1,497 @@
+{
+  "_meta": {
+    "source_id": "nas-dri-2019",
+    "source_file": "data/external/nas-dri-sodium-potassium-2019.pdf",
+    "source_urls": [
+      "https://nap.nationalacademies.org/catalog/25353",
+      "https://nap.nationalacademies.org/resource/25353/030519DRISodiumPotassium.pdf"
+    ],
+    "extraction_date": "2026-05-21T20:22:36Z",
+    "extraction_script": "data/extract-nas-dri-2019.py",
+    "extraction_method": "pdfplumber-text-strategy",
+    "extracted_by": "agent",
+    "source_claims": {
+      "presumed_date": "2019",
+      "presumed_author": "National Academies of Sciences, Engineering, and Medicine"
+    },
+    "note": "Values extracted from the 4-page Highlights PDF (not full report). Contains Tables 1 and 2 with complete DRI for Potassium and Sodium: AI by age/sex/life-stage, UL (ND for both), CDRR (Sodium only). This is the current authoritative DRI for these nutrients in US/Canada, superseding IOM 2005.",
+    "stats": {
+      "potassium_groups": 22,
+      "sodium_groups": 22
+    }
+  },
+  "nutrients": [
+    {
+      "name": "Potassium",
+      "unit": "mg",
+      "category": "macromineral",
+      "source_id": "nas-dri-2019",
+      "source_urls": [
+        "https://nap.nationalacademies.org/catalog/25353",
+        "https://nap.nationalacademies.org/resource/25353/030519DRISodiumPotassium.pdf"
+      ],
+      "ul": null,
+      "ul_unit": null,
+      "ul_note": "ND — not determined. NAS 2019: insufficient evidence to establish UL for potassium.",
+      "note": "AI values from NAS 2019 DRI for Sodium and Potassium. No UL or CDRR established for potassium.",
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 400,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 860,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 2000,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 2300,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 years",
+          "value": 2500,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
+          "value": 3000,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30 years",
+          "value": 3400,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50 years",
+          "value": 3400,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "male_51_70yr",
+          "sex": "male",
+          "age_range": "51-70 years",
+          "value": 3400,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": ">70 years",
+          "value": 3400,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 years",
+          "value": 2300,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 2300,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 years",
+          "value": 2600,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 years",
+          "value": 2600,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "female_51_70yr",
+          "sex": "female",
+          "age_range": "51–70 years",
+          "value": 2600,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": ">70 years",
+          "value": 2600,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 2600,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 years",
+          "value": 2900,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 years",
+          "value": 2900,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 2500,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 years",
+          "value": 2800,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 years",
+          "value": 2800,
+          "type": "AI",
+          "ul": null,
+          "ul_note": "ND — not determined owing to lack of a toxicological indicator specific to excessive potassium intake"
+        }
+      ]
+    },
+    {
+      "name": "Sodium",
+      "unit": "mg",
+      "category": "macromineral",
+      "source_id": "nas-dri-2019",
+      "source_urls": [
+        "https://nap.nationalacademies.org/catalog/25353",
+        "https://nap.nationalacademies.org/resource/25353/030519DRISodiumPotassium.pdf"
+      ],
+      "ul": null,
+      "ul_unit": null,
+      "ul_note": "ND — not determined. No UL for sodium. CDRR (Chronic Disease Risk Reduction) replaces UL: 2300 mg/day for adults ≥14 yr; lower for children.",
+      "note": "AI values from NAS 2019 DRI for Sodium and Potassium. CDRR (not UL) is the relevant upper intake benchmark for sodium.",
+      "groups": [
+        {
+          "group": "infants_0_6mo",
+          "sex": "any",
+          "age_range": "0–6 months",
+          "value": 110,
+          "type": "AI",
+          "cdrr": null,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: not determined"
+        },
+        {
+          "group": "infants_7_12mo",
+          "sex": "any",
+          "age_range": "7–12 months",
+          "value": 370,
+          "type": "AI",
+          "cdrr": null,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: not determined"
+        },
+        {
+          "group": "children_1_3yr",
+          "sex": "any",
+          "age_range": "1–3 years",
+          "value": 800,
+          "type": "AI",
+          "cdrr": 1200,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 1200 mg/day"
+        },
+        {
+          "group": "children_4_8yr",
+          "sex": "any",
+          "age_range": "4–8 years",
+          "value": 1000,
+          "type": "AI",
+          "cdrr": 1500,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 1500 mg/day"
+        },
+        {
+          "group": "male_9_13yr",
+          "sex": "male",
+          "age_range": "9–13 years",
+          "value": 1200,
+          "type": "AI",
+          "cdrr": 1800,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 1800 mg/day"
+        },
+        {
+          "group": "male_14_18yr",
+          "sex": "male",
+          "age_range": "14–18 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "male_19_30yr",
+          "sex": "male",
+          "age_range": "19–30 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "male_31_50yr",
+          "sex": "male",
+          "age_range": "31–50 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "male_51_70yr",
+          "sex": "male",
+          "age_range": "51–70 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "male_gt70yr",
+          "sex": "male",
+          "age_range": ">70 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "female_9_13yr",
+          "sex": "female",
+          "age_range": "9–13 years",
+          "value": 1200,
+          "type": "AI",
+          "cdrr": 1800,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 1800 mg/day"
+        },
+        {
+          "group": "female_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "female_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "female_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "female_51_70yr",
+          "sex": "female",
+          "age_range": "51–70 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "female_gt70yr",
+          "sex": "female",
+          "age_range": ">70 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "pregnant_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "pregnant_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "pregnant_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "breastfeeding_14_18yr",
+          "sex": "female",
+          "age_range": "14–18 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "breastfeeding_19_30yr",
+          "sex": "female",
+          "age_range": "19–30 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        },
+        {
+          "group": "breastfeeding_31_50yr",
+          "sex": "female",
+          "age_range": "31–50 years",
+          "value": 1500,
+          "type": "AI",
+          "cdrr": 2300,
+          "ul": null,
+          "ul_note": "ND — not determined; no UL established for sodium. CDRR replaces UL concept.",
+          "note": "CDRR: 2300 mg/day"
+        }
+      ]
+    }
+  ]
+}

@@ -13,10 +13,10 @@ DATASETS = {
     "dri-minerals-overlay.json": {
         "domain": "dri",
         "tier": "A",
-        "description": "14 minerals, 214 groups, finest granularity per source",
-        "sources": ["iom-dri-2011", "iom-dri-1997", "msd-manual-dri", "msd-consumer-minerals"],
+        "description": "14 minerals, 254 groups, finest granularity per source. 0 manual_transcription.",
+        "sources": ["iom-dri-2011", "iom-dri-1997", "msd-manual-dri", "nas-dri-2019", "lpi-mic-minerals"],
         "build_script": "data/build-minerals-overlay.py",
-        "notes": "Ca: IOM 2011 (22 groups + ul_groups). P/Mg: IOM 1997 via NCBI cross-verification (22 groups each). Trace minerals: MSD Professional (16 groups each). Na/K: MSD Consumer (adult only). Pregnancy/breastfeeding split into teen/adult subgroups.",
+        "notes": "Ca: IOM 2011 (22 groups + ul_groups). P/Mg: IOM 1997 via NCBI cross-verification (22 groups each), UL from LPI (based on IOM 1997). Trace minerals: MSD Professional (16 groups each), UL from MSD Professional. Na/K: NAS 2019 (22 groups each). Pregnancy/breastfeeding split into teen/adult subgroups. All 14 nutrients have machine-verified UL metadata.",
     },
     "dri-vitamins-overlay.json": {
         "domain": "dri",
@@ -62,7 +62,7 @@ DATASETS = {
         "domain": "manifest",
         "tier": "A",
         "description": "Unified source manifest — definitive reference for all dietology data sources (15 sources, 5 tier levels)",
-        "sources": ["iom-dri-1997", "iom-dri-2011", "msd-consumer-minerals", "msd-macronutrients-per-kg", "msd-manual-dri", "usda-fdc-2026-04", "who-2024-hb", "wikipedia-lab-ranges"],
+        "sources": ["iom-dri-1997", "iom-dri-2011", "lpi-mic-minerals", "msd-consumer-minerals", "msd-macronutrients-per-kg", "msd-manual-dri", "nas-dri-2019", "usda-fdc-2026-04", "who-2024-hb", "wikipedia-lab-ranges"],
         "build_script": "data/build-sources-overlay.py",
         "notes": "Merges sources.json (base) + sources-overlay.json (DRI overlay) + data-index.json (catalog). Single authoritative source reference — model loads ONLY this file. Supersedes sources.json.",
     },
