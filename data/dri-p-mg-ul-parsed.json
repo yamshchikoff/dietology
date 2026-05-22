@@ -6,7 +6,7 @@
       "https://lpi.oregonstate.edu/mic/minerals/phosphorus",
       "https://lpi.oregonstate.edu/mic/minerals/magnesium"
     ],
-    "extraction_date": "2026-05-21T21:00:39Z",
+    "extraction_date": "2026-05-21T23:57:47Z",
     "extraction_script": "data/extract-lpi-ul.py",
     "extraction_method": "html-table-parser",
     "extracted_by": "agent",

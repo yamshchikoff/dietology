@@ -130,14 +130,14 @@ data/
 
 **Metadata provenance:**
 - **Минералы:** все значения, UL, UL_unit, UL_note — machine-verified (0 manual_transcription). Trace minerals — MSD Professional. Ca — IOM 2011. Na/K — NAS 2019. P/Mg RDA/AI — NCBI Bookshelf. P/Mg UL — LPI. Категории и per-group notes — программно сгенерированы.
-- **Витамины:** все метаданные (unit_note, ul_note) извлечены парсером из HTML — идентичны ручной транскрипции.
-- **Per-kg:** category — из ручной транскрипции (единственный источник).
+- **Витамины:** все значения и метаданные (unit, UL, ul_unit, ul_note, unit_note) machine-extracted парсером из HTML. 0 manual dependencies.
+- **Per-kg:** все значения machine-parsed. Category, note, citation — программно сгенерированы. 0 manual dependencies.
 
 **`data-index.json`** — единый манифест всех knowledge base файлов с доменами, tier-уровнями и статистикой.
 
 Промежуточные файлы (`*-parsed.json`, `dri-vitamins.json`, `dri-minerals.json`) — consumed by build-скриптами, не предназначены для прямого использования моделью.
 
-Полная пересборка: 7 шагов от парсинга исходных документов до `sources-final.json`. См. `docs/data-layers.md`.
+Полная пересборка: `python3 data/build-all.py` (единый скрипт, 9 шагов). См. `docs/data-layers.md`.
 
 ## Источники
 

@@ -56,15 +56,15 @@ Dietology организует данные в шесть слоёв. Кажды
 
 ## Слой 2: Intermediate data
 
-**Где:** `data/*-parsed.json`, `data/dri-vitamins.json`, `data/dri-minerals.json`, `data/dri-macronutrients-per-kg.json`  
+**Где:** `data/*-parsed.json`, `data/*-crosscheck.json`  
 **Статус:** Промежуточные. Потребляются build-скриптами. Модель НЕ загружает.
 
 Два вида промежуточных файлов:
 
-1. **Machine-parsed** (`*-parsed.json`, `*-crosscheck.json`) — результат работы extraction scripts. Содержат значения из HTML/PDF, но без метаданных.
-2. **Manual transcription** (`dri-vitamins.json`, `dri-minerals.json`, `dri-macronutrients-per-kg.json`) — исходная ручная транскрипция. Содержат rich metadata (unit_note, ul_note, proper unit names), но значения не верифицированы machine-parser'ом.
+1. **Machine-parsed** (`*-parsed.json`, `*-crosscheck.json`) — результат работы extraction scripts. Содержат значения из HTML/PDF и все метаданные (unit, UL, ul_unit, ul_note, unit_note).
+2. **Manual transcription** (`dri-vitamins.json`, `dri-minerals.json`, `dri-macronutrients-per-kg.json`) — исходная ручная транскрипция. Более НЕ потребляются build-скриптами (все метаданные теперь в парсере). Сохранены как исторический reference для валидации парсера (compare step).
 
-Ни один из этих файлов не используется моделью напрямую. Они существуют как входы для build-скриптов слоя 3.
+Ни один из этих файлов не используется моделью напрямую. Только `*-parsed.json` и `*-crosscheck.json` потребляются build-скриптами слоя 3.
 
 ---
 
@@ -73,7 +73,7 @@ Dietology организует данные в шесть слоёв. Кажды
 **Где:** `data/dri-*-overlay.json`  
 **Статус:** Production. Модель загружает эти файлы для DRI данных.
 
-Каждый оверлейный файл = **machine-verified значения** (из слоя 2, parsed) + **rich metadata** (из слоя 2, manual). Build-скрипт читает оба промежуточных файла и создаёт новый — лучший из двух миров.
+Каждый оверлейный файл = **machine-verified значения и метаданные** (из слоя 2, parsed). Build-скрипт читает machine-parsed файл(ы) и создаёт production-ready оверлей. Все метаданные — из парсера, 0 manual dependencies.
 
 | Файл | Нутриентов | Групп | Источников | Сборщик |
 |------|-----------|-------|-----------|---------|
@@ -145,44 +145,122 @@ Dietology организует данные в шесть слоёв. Кажды
 
 ## Принцип оверлея
 
-Оверлей = merge двух миров без редактирования исходников:
+Оверлей = сборка production-файла из machine-parsed данных без редактирования исходников:
 
 ```
-Manual transcription (dri-vitamins.json)
-        │                              │
-        │ rich metadata:               │  machine-verified values:
-        │   unit = "mcg DFE"           │   154 groups из HTML-парсера
-        │   ul_note = "Applies to..."  │   0 расхождений с source
-        │   unit_note = "1 NE = ..."   │
-        │                              │
-        └──────────┬───────────────────┘
-                   │
-         build-vitamins-overlay.py
-                   │
-                   ▼
-       dri-vitamins-overlay.json
-       (лучшее из двух миров)
+Machine-parsed (dri-vitamins-parsed.json)
+        │
+        │ values: 154 groups из HTML-парсера
+        │ metadata: unit = "mcg DFE"
+        │           ul_note = "Applies to..."
+        │           unit_note = "1 NE = ..."
+        │
+        ▼
+ build-vitamins-overlay.py
+        │
+        ▼
+ dri-vitamins-overlay.json
+ (machine-verified, 0 manual dependencies)
 ```
 
 Ни один существующий файл не меняется. Каждый build-скрипт читает только input-файлы, пишет только output-файл.
 
 ## Полная пересборка
 
+Единый скрипт:
+
 ```bash
-# Шаг 1-4: Извлечение из исходных документов
-python3 data/extract-msd-dri-parser.py
-python3 data/extract-iom-dri.py
-python3 data/extract-nas-dri-2019.py
-python3 data/extract-lpi-ul.py
-
-# Шаг 5-7: Сборка оверлейных данных
-python3 data/build-minerals-overlay.py
-python3 data/build-vitamins-overlay.py
-python3 data/build-macronutrients-per-kg-overlay.py
-
-# Шаг 8: Сборка data-index
-python3 data/build-data-index.py
-
-# Шаг 9: Сборка sources-final (зависит от data-index!)
-python3 data/build-sources-overlay.py
+python3 data/build-all.py           # полная пересборка (DRI + USDA + WHO + Wikipedia)
+python3 data/build-all.py --dri-only  # только DRI данные
+python3 data/build-all.py --help      # справка
 ```
+
+Скрипт выполняет 9 шагов в правильном порядке и автоматически обрабатывает круговую зависимость между data-index.json и sources-final.json (bootstrap при первой сборке).
+
+---
+
+## Инвентаризация чистой сборки
+
+Принцип: **все production-данные должны воспроизводиться с нуля** из source documents (external/) + extraction scripts + build scripts. Ни один production JSON-файл не является prerequisit-ом сборки.
+
+### Что необходимо для полной пересборки с нуля
+
+#### Категория 1: Исходные документы (`data/external/`) — toolchain
+
+Бинарные слепки публичных URL. Чужие документы — не наши данные:
+
+| Файл | Источник | Тип |
+|------|----------|-----|
+| `usda-foundation-foods-2026-04.zip` | USDA FoodData Central | бинарный zip |
+| `msd-manual-vitamins-2026-05.html` | MSD Manual Professional | HTML |
+| `msd-manual-trace-minerals-2026-05.html` | MSD Manual Professional | HTML |
+| `msd-manual-macronutrients-2026-05.html` | MSD Manual Professional | HTML |
+| `msd-manual-consumer-minerals-2026-05.html` | MSD Manual Consumer | HTML |
+| `msd-manual-professional-minerals-2026-05.html` | MSD Manual Professional | HTML |
+| `wikipedia-lab-ranges-2026-05.html` | Wikipedia API | HTML |
+| `who-2024-hb-guideline.pdf` | WHO 2024 | PDF (79 стр.) |
+| `iom-dri-calcium-vitamin-d-2011.pdf` | IOM 2011 DRI | PDF |
+| `iom-dri-ca-p-mg-vitd-f-1997.pdf` | IOM 1997 DRI | PDF |
+| `ncbi-iom1997-dri-rda-ai.html` | NCBI Bookshelf | HTML |
+| `nas-dri-sodium-potassium-2019.pdf` | NASEM 2019 | PDF |
+| `lpi-phosphorus-ul.html` | LPI Oregon State | HTML |
+| `lpi-magnesium-ul.html` | LPI Oregon State | HTML |
+
+**14 файлов.** Ни один не создан проектом. Все — внешние source documents.
+
+#### Категория 2: Extraction + build скрипты — исполняемый код
+
+| Файл | Назначение |
+|------|-----------|
+| `extract-msd-dri-parser.py` | MSD HTML → vitamins/minerals/macronutrients parsed JSON |
+| `extract-iom-dri.py` | IOM 2011 PDF → calcium parsed JSON |
+| `extract-nas-dri-2019.py` | NASEM 2019 PDF → sodium/potassium parsed JSON |
+| `extract-lpi-ul.py` | LPI HTML → phosphorus/magnesium UL parsed JSON |
+| `extract-usda.py` | USDA zip → foods JSON |
+| `extract-wiki-lab-ranges.py` | Wikipedia HTML → lab ranges JSON |
+| `extract-who-hb.py` | WHO PDF → Hb thresholds JSON (pdfplumber) |
+| `build-vitamins-overlay.py` | parsed JSON → vitamins overlay |
+| `build-minerals-overlay.py` | 5 parsed inputs → minerals overlay |
+| `build-macronutrients-per-kg-overlay.py` | parsed JSON → per-kg overlay |
+| `build-data-index.py` | 6 datasets → data-index.json |
+| `build-sources-overlay.py` | sources.json + sources-overlay.json + data-index.json → sources-final.json |
+| `build-all.py` | Оркестратор: 9 шагов в правильном порядке |
+
+**13 скриптов.** Не содержат данных — только код.
+
+#### Категория 3: Метаданные манифестов — ручной ввод (описания источников, URLs, tier, build pipeline)
+
+| Файл | Содержание | Происхождение |
+|------|-----------|--------------|
+| `sources.json` | Базовый манифест: 12 источников (tier, URLs, лицензии, категории) | Ручной ввод. Метаданные о том, откуда брать source documents |
+| `sources-overlay.json` | DRI-оверлейный манифест: 7 DRI-источников, build_scripts, overlay_catalog, финальная статистика | Ручной ввод. Метаданные о build pipeline: какие скрипты что собирают |
+
+**2 файла метаданных.** Описывают источники и build pipeline. Не содержат nutritional data (DRI values, food composition, lab ranges, diagnostic thresholds). Это декларация *откуда* берутся данные, а не сами данные.
+
+### Что НЕ нужно для сборки (и НЕ копируется в чистую директорию)
+
+Каждый из этих файлов — **результат** build pipeline, а не prerequisit:
+
+| Файл | Что внутри | Шаг сборки |
+|------|-----------|------------|
+| `dri-minerals-overlay.json` | 14 минералов × 254 группы | Шаг 6: build-minerals-overlay.py |
+| `dri-vitamins-overlay.json` | 11 витаминов × 154 группы | Шаг 5: build-vitamins-overlay.py |
+| `dri-macronutrients-per-kg-overlay.json` | 3 нутриента × 51 группа | Шаг 7: build-macronutrients-per-kg-overlay.py |
+| `usda-foundation-foods-essential.json` | 363 продукта, 27 nutrients | Шаг 8: extract-usda.py |
+| `who-hb-thresholds.json` | 9 diagnostic thresholds + severity | Шаг 8: extract-who-hb.py |
+| `lab-reference-ranges.json` | 254 lab tests, 16 категорий | Шаг 9: extract-wiki-lab-ranges.py |
+| `data-index.json` | Манифест 7 datasets | Шаг 8: build-data-index.py |
+| `sources-final.json` | Единый манифест 15+ источников | Шаг 9: build-sources-overlay.py |
+| Все `*-parsed.json` | Промежуточные machine-parsed данные | Шаги 1-4 (extraction) |
+| Все `*-crosscheck.json` | Cross-verification данные | Шаг 4 (extraction) |
+
+### Итог
+
+```
+Чистая сборка = 14 source documents + 13 scripts + 2 metadata manifests
+                 →  9 шагов build-all.py
+                 →  8 production-файлов (слой 3-5)
+```
+
+**В чистой директории перед запуском build-all.py нет ни одного JSON-файла с данными.**
+Все nutritional values, DRI thresholds, food compositions, lab ranges, diagnostic cutoffs воспроизводятся скриптами из external/ источников.

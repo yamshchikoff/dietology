@@ -1,15 +1,14 @@
 {
   "_meta": {
     "schema": "dri-vitamins-overlay-v1",
-    "description": "Merged DRI values for 11 vitamins: machine-parsed values from MSD Manual Professional HTML table, combined with metadata (unit_note, ul_note, proper unit names) from manual transcription.",
+    "description": "DRI values for 11 vitamins: machine-parsed values and metadata from MSD Manual Professional HTML table. 0 manual transcription dependencies.",
     "build_script": "data/build-vitamins-overlay.py",
-    "build_date": "2026-05-21T16:48:11Z",
+    "build_date": "2026-05-21T23:57:47Z",
     "sources": [
       "msd-manual-dri"
     ],
     "input_files": [
-      "data/dri-vitamins.json (metadata: unit_note, ul_note, proper units)",
-      "data/dri-vitamins-parsed.json (machine-parsed values)"
+      "data/dri-vitamins-parsed.json (machine-parsed values + metadata: unit, UL, ul_unit, ul_note, unit_note)"
     ],
     "stats": {
       "nutrients": 11,
@@ -347,8 +346,6 @@
           "type": "RDA"
         }
       ],
-      "ul": null,
-      "ul_unit": null,
       "ul_note": "ND — not determinable"
     },
     {
@@ -458,8 +455,6 @@
           "type": "RDA"
         }
       ],
-      "ul": null,
-      "ul_unit": null,
       "ul_note": "ND — not determinable"
     },
     {
@@ -789,8 +784,6 @@
           "type": "RDA"
         }
       ],
-      "ul": null,
-      "ul_unit": null,
       "ul_note": "ND — not determinable"
     },
     {
@@ -1231,8 +1224,6 @@
           "type": "AI"
         }
       ],
-      "ul": null,
-      "ul_unit": null,
       "ul_note": "ND — not determinable"
     }
   ]

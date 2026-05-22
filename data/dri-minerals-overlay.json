@@ -3,7 +3,7 @@
     "schema": "dri-minerals-overlay-v1",
     "description": "Merged DRI values for 14 minerals: all values machine-parsed from IOM/NCBI/MSD/NAS/LPI sources at finest available granularity. All UL/UL_unit/UL_note machine-verified. 0 manual_transcription, 0 manual source file dependencies.",
     "build_script": "data/build-minerals-overlay.py",
-    "build_date": "2026-05-21T21:54:18Z",
+    "build_date": "2026-05-21T23:57:47Z",
     "sources": [
       "iom-dri-1997",
       "iom-dri-2011",

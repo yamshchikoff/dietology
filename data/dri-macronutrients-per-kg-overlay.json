@@ -1,16 +1,15 @@
 {
   "_meta": {
     "schema": "dri-macronutrients-per-kg-overlay-v1",
-    "description": "Merged per-kg DRI values for Ca, P, Mg: machine-parsed values from MSD Manual Professional HTML table, combined with category metadata from manual transcription.",
+    "description": "Per-kg DRI values for Ca, P, Mg: machine-parsed values from MSD Manual Professional HTML table. 0 manual transcription dependencies.",
     "build_script": "data/build-macronutrients-per-kg-overlay.py",
-    "build_date": "2026-05-21T17:46:21Z",
+    "build_date": "2026-05-21T23:57:47Z",
     "sources": [
       "msd-macronutrients-per-kg"
     ],
     "note": "Per-kg values from MSD Manual 'Recommended Dietary Reference Intakes for Some Macronutrients' table. ALL values in mg/kg — model MUST multiply by individual body weight (kg). No reference-weight computation applied. Infants: AI. Children and adults: RDA.",
     "citation": "Institute of Medicine. Dietary Reference Intakes for Calcium, Phosphorus, Magnesium, Vitamin D, and Fluoride. Washington, DC: National Academy Press; 1997.",
     "input_files": [
-      "data/dri-macronutrients-per-kg.json (metadata: category, note, citation)",
       "data/dri-macronutrients-per-kg-parsed.json (machine-parsed values)"
     ],
     "stats": {

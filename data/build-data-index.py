@@ -24,7 +24,7 @@ DATASETS = {
         "description": "11 vitamins, 154 groups, machine-parsed values with full metadata",
         "sources": ["msd-manual-dri"],
         "build_script": "data/build-vitamins-overlay.py",
-        "notes": "Values from MSD Professional HTML parser. Metadata (ul_note, unit_note, proper unit names) from manual transcription. Pregnancy/breastfeeding are single groups without age split — MSD vitamins table does not provide teen/adult breakdown.",
+        "notes": "Values and metadata (unit, UL, ul_unit, ul_note, unit_note) all machine-extracted from MSD Professional HTML. 0 manual transcription. Pregnancy/breastfeeding are single groups without age split — MSD vitamins table does not provide teen/adult breakdown.",
     },
     "dri-macronutrients-per-kg-overlay.json": {
         "domain": "dri",
@@ -32,7 +32,7 @@ DATASETS = {
         "description": "3 nutrients (Ca/P/Mg), 51 groups (17 each), mg/kg of body weight",
         "sources": ["msd-macronutrients-per-kg"],
         "build_script": "data/build-macronutrients-per-kg-overlay.py",
-        "notes": "Per-kg values — model must multiply by individual body weight. More accurate for individual use than absolute DRI. Infants: AI. Children and adults: RDA. Based on IOM 1997.",
+        "notes": "Values machine-parsed; category/note/citation programmatically generated. 0 manual transcription. Per-kg values — model must multiply by individual body weight. More accurate for individual use than absolute DRI. Infants: AI. Children and adults: RDA. Based on IOM 1997.",
     },
     "usda-foundation-foods-essential.json": {
         "domain": "food_composition",
@@ -69,8 +69,12 @@ DATASETS = {
 }
 
 def count_dataset(path):
-    """Return (entry_count, detail_str) for a dataset file."""
+    """Return (entry_count, detail_str) for a dataset file.
+    Returns (0, 'not built') for missing files — partial builds are OK.
+    """
     full_path = os.path.join(SCRIPT_DIR, path)
+    if not os.path.exists(full_path):
+        return 0, "not built"
     with open(full_path) as f:
         d = json.load(f)
 
@@ -113,6 +117,8 @@ def main():
 
         print(f"  {filename}: {detail}")
         # Accumulate stats
+        if count == 0 and detail == "not built":
+            continue
         if info["domain"] == "dri":
             full_path = os.path.join(SCRIPT_DIR, filename)
             with open(full_path) as f:

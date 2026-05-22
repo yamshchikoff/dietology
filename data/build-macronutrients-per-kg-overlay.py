@@ -1,5 +1,6 @@
-# Build dri-macronutrients-per-kg-overlay.json — merge machine-parsed values
-# with manual-transcription metadata for 3 macronutrients.
+# Build dri-macronutrients-per-kg-overlay.json — production overlay for 3 macronutrients.
+# All values are machine-parsed from MSD Manual Professional HTML table.
+# No manual transcription dependencies.
 # Run: python3 build-macronutrients-per-kg-overlay.py
 
 import json
@@ -8,11 +9,12 @@ from datetime import datetime, timezone
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-MANUAL = os.path.join(SCRIPT_DIR, "dri-macronutrients-per-kg.json")
 PARSED = os.path.join(SCRIPT_DIR, "dri-macronutrients-per-kg-parsed.json")
 OVERLAY_OUT = os.path.join(SCRIPT_DIR, "dri-macronutrients-per-kg-overlay.json")
 
 SOURCE_URL = "https://www.msdmanuals.com/professional/multimedia/table/recommended-dietary-reference-intakes-for-some-macronutrients-food-and-nutrition-board-institute-of-medicine-of-the-national-academies"
+
+CITATION = "Institute of Medicine. Dietary Reference Intakes for Calcium, Phosphorus, Magnesium, Vitamin D, and Fluoride. Washington, DC: National Academy Press; 1997."
 
 
 def load_json(path):
@@ -25,29 +27,16 @@ def main():
     print("================================================")
     print()
 
-    manual = load_json(MANUAL)
     parsed = load_json(PARSED)
-
-    # Build manual metadata lookup
-    manual_meta = {}
-    for n in manual["nutrients"]:
-        manual_meta[n["name"]] = {
-            "category": n.get("category"),
-        }
-
-    # Pull per-kg note from manual _meta
-    manual_note = manual["_meta"].get("note", "")
-    manual_citation = manual["_meta"].get("citation", "")
 
     nutrients = []
     for n in parsed["nutrients"]:
         name = n["name"]
-        meta = manual_meta.get(name, {})
 
         entry = {
             "name": name,
             "unit": n["unit"],  # always mg/kg
-            "category": meta.get("category"),
+            "category": "macromineral",
             "source_id": "msd-macronutrients-per-kg",
             "source_urls": [SOURCE_URL],
             "groups": [],
@@ -71,14 +60,13 @@ def main():
     output = {
         "_meta": {
             "schema": "dri-macronutrients-per-kg-overlay-v1",
-            "description": "Merged per-kg DRI values for Ca, P, Mg: machine-parsed values from MSD Manual Professional HTML table, combined with category metadata from manual transcription.",
+            "description": "Per-kg DRI values for Ca, P, Mg: machine-parsed values from MSD Manual Professional HTML table. 0 manual transcription dependencies.",
             "build_script": "data/build-macronutrients-per-kg-overlay.py",
             "build_date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "sources": ["msd-macronutrients-per-kg"],
-            "note": manual_note,
-            "citation": manual_citation,
+            "note": "Per-kg values from MSD Manual 'Recommended Dietary Reference Intakes for Some Macronutrients' table. ALL values in mg/kg — model MUST multiply by individual body weight (kg). No reference-weight computation applied. Infants: AI. Children and adults: RDA.",
+            "citation": CITATION,
             "input_files": [
-                "data/dri-macronutrients-per-kg.json (metadata: category, note, citation)",
                 "data/dri-macronutrients-per-kg-parsed.json (machine-parsed values)",
             ],
             "stats": {

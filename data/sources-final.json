@@ -3,7 +3,7 @@
     "schema": "sources-final-v1",
     "description": "Unified source manifest — definitive reference for all dietology data sources. Merges base sources.json with overlay-specific metadata from sources-overlay.json and dataset catalog from data-index.json.",
     "build_script": "data/build-sources-overlay.py",
-    "build_date": "2026-05-21T22:36:46Z",
+    "build_date": "2026-05-21T23:57:48Z",
     "input_files": [
       "data/sources.json (base manifest — all sources)",
       "data/sources-overlay.json (DRI overlay metadata)",
@@ -69,7 +69,7 @@
       ],
       "extraction_script": "data/extract-msd-dri-parser.py",
       "extraction_date": "2026-05-20",
-      "tier_note": "Upgraded from B: all values now machine-verified via extract-msd-dri-parser.py. Original Tier B reflected manual transcription — overlay replaces that with parsed values while preserving metadata.",
+      "tier_note": "Upgraded from B: all values and metadata now machine-verified via extract-msd-dri-parser.py. 0 manual transcription dependencies.",
       "build_script": "data/build-vitamins-overlay.py",
       "overlay_files": [
         "dri-vitamins-overlay.json",
@@ -464,7 +464,7 @@
       ],
       "extraction_script": null,
       "build_script": "data/build-data-index.py",
-      "build_date": "2026-05-21T21:54:18Z"
+      "build_date": "2026-05-21T23:57:48Z"
     }
   },
   "gaps": {
@@ -509,28 +509,26 @@
       "pregnancy_breastfeeding_granularity": "split into teen (14-18yr), adult 19-30yr, adult 31-50yr for all nutrients (Ca, P, Mg, Na, K, trace minerals)"
     },
     "dri-vitamins-overlay.json": {
-      "description": "11 vitamins, 154 groups. Machine-parsed values + full metadata (unit_note, ul_note, proper unit names) from manual transcription",
+      "description": "11 vitamins, 154 groups. All values and metadata machine-extracted from MSD HTML. 0 manual transcription.",
       "schema": "dri-vitamins-overlay-v1",
       "sources_merged": [
         "msd-manual-dri"
       ],
       "build_script": "data/build-vitamins-overlay.py",
       "input_files": [
-        "data/dri-vitamins.json (metadata: unit names like mcg DFE/mg NE/mcg RAE/IU, ul_note, unit_note)",
-        "data/dri-vitamins-parsed.json (machine-parsed values, 11×14=154 groups)"
+        "data/dri-vitamins-parsed.json (machine-parsed values + metadata: unit, UL, ul_unit, ul_note, unit_note, 11×14=154 groups)"
       ],
       "per_nutrient_source_id": true,
       "pregnancy_breastfeeding_granularity": "single group (19-50yr), no teen split. MSD vitamins table does not provide teen/adult breakdown for pregnancy/breastfeeding — source limitation, not extraction error."
     },
     "dri-macronutrients-per-kg-overlay.json": {
-      "description": "3 nutrients (Ca/P/Mg in mg/kg), 51 groups. Per-kg values — model must multiply by individual body weight",
+      "description": "3 nutrients (Ca/P/Mg in mg/kg), 51 groups. All values machine-parsed. Per-kg values — model must multiply by individual body weight. 0 manual transcription.",
       "schema": "dri-macronutrients-per-kg-overlay-v1",
       "sources_merged": [
         "msd-macronutrients-per-kg"
       ],
       "build_script": "data/build-macronutrients-per-kg-overlay.py",
       "input_files": [
-        "data/dri-macronutrients-per-kg.json (metadata: category, note, citation)",
         "data/dri-macronutrients-per-kg-parsed.json (machine-parsed values, 3×17=51 groups)"
       ],
       "per_nutrient_source_id": true,
@@ -563,7 +561,7 @@
         "msd-manual-dri"
       ],
       "build_script": "data/build-vitamins-overlay.py",
-      "notes": "Values from MSD Professional HTML parser. Metadata (ul_note, unit_note, proper unit names) from manual transcription. Pregnancy/breastfeeding are single groups without age split — MSD vitamins table does not provide teen/adult breakdown.",
+      "notes": "Values and metadata (unit, UL, ul_unit, ul_note, unit_note) all machine-extracted from MSD Professional HTML. 0 manual transcription. Pregnancy/breastfeeding are single groups without age split — MSD vitamins table does not provide teen/adult breakdown.",
       "file": "data/dri-vitamins-overlay.json",
       "count": 11,
       "detail": "11 nutrients, 154 groups"
@@ -576,7 +574,7 @@
         "msd-macronutrients-per-kg"
       ],
       "build_script": "data/build-macronutrients-per-kg-overlay.py",
-      "notes": "Per-kg values — model must multiply by individual body weight. More accurate for individual use than absolute DRI. Infants: AI. Children and adults: RDA. Based on IOM 1997.",
+      "notes": "Values machine-parsed; category/note/citation programmatically generated. 0 manual transcription. Per-kg values — model must multiply by individual body weight. More accurate for individual use than absolute DRI. Infants: AI. Children and adults: RDA. Based on IOM 1997.",
       "file": "data/dri-macronutrients-per-kg-overlay.json",
       "count": 3,
       "detail": "3 nutrients, 51 groups"
@@ -661,8 +659,8 @@
     "recalculation": 0
   },
   "build_pipeline": {
-    "description": "Full rebuild command — parses source documents, builds overlays, generates index and this manifest.",
-    "command": "python3 data/extract-msd-dri-parser.py && python3 data/extract-iom-dri.py && python3 data/extract-nas-dri-2019.py && python3 data/extract-lpi-ul.py && python3 data/build-minerals-overlay.py && python3 data/build-vitamins-overlay.py && python3 data/build-macronutrients-per-kg-overlay.py && python3 data/build-data-index.py && python3 data/build-sources-overlay.py",
+    "description": "Full rebuild via unified script build-all.py. Parses source documents, builds overlays, generates index and manifest. Handles circular dependency (data-index ↔ sources-final) automatically.",
+    "command": "python3 data/build-all.py",
     "final_step": "python3 data/build-sources-overlay.py",
     "steps": [
       {
@@ -698,13 +696,13 @@
       {
         "step": 6,
         "script": "data/build-vitamins-overlay.py",
-        "inputs": 2,
+        "inputs": 1,
         "outputs": "dri-vitamins-overlay.json"
       },
       {
         "step": 7,
         "script": "data/build-macronutrients-per-kg-overlay.py",
-        "inputs": 2,
+        "inputs": 1,
         "outputs": "dri-macronutrients-per-kg-overlay.json"
       },
       {

@@ -5,8 +5,8 @@
     "source_urls": [
       "https://www.ncbi.nlm.nih.gov/books/NBK222881/table/ttt00057_1/"
     ],
-    "source_note": "Machine-readable HTML version of IOM 1997 DRI summary tables hosted on NCBI Bookshelf. Same Tier A source as IOM 1997 PDF but machine-parseable. Used for cross-verification of manually-transcribed P and Mg values from scrambled PDF.",
-    "extraction_date": "2026-05-21T15:37:51Z",
+    "source_note": "Machine-readable HTML version of IOM 1997 DRI summary tables hosted on NCBI Bookshelf. Same Tier A source as IOM 1997 PDF but machine-parseable. Used for cross-verification of P and Mg values.",
+    "extraction_date": "2026-05-21T23:57:46Z",
     "extraction_script": "data/extract-msd-dri-parser.py",
     "extraction_method": "html-parser (NCBI Bookshelf ?report=objectonly)",
     "extracted_by": "agent",

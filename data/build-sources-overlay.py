@@ -27,7 +27,12 @@ def main():
 
     base = load_json(BASE)
     overlay = load_json(OVERLAY)
-    index = load_json(INDEX)
+    index = load_json(INDEX) if os.path.exists(INDEX) else None
+    bootstrap = index is None
+    if bootstrap:
+        print("  NOTE: data-index.json not found — running in bootstrap mode")
+        print("  sources-final.json will be regenerated after data-index.json is built")
+        print()
 
     # ── Phase 1: Start with base sources ──
     sources = dict(base["sources"])
@@ -81,12 +86,12 @@ def main():
         "data_files": ["data-index.json"],
         "extraction_script": None,
         "build_script": "data/build-data-index.py",
-        "build_date": index["_meta"]["build_date"]
+        "build_date": index["_meta"]["build_date"] if index else datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     }
 
     # ── Phase 4: Build the final manifest ──
     # Collect stats from data-index
-    idx_stats = index["stats"]
+    idx_stats = index["stats"] if index else {}
 
     # Count sources by tier
     tiers = {}
@@ -110,7 +115,7 @@ def main():
                 "data/sources-overlay.json (DRI overlay metadata)",
                 "data/data-index.json (current dataset catalog + stats)",
             ],
-            "relationship": "This file is the SINGLE authoritative source reference. sources.json and sources-overlay.json are intermediate inputs — model should load ONLY this file.",
+            "relationship": "This file is the SINGLE authoritative source reference. sources.json and sources-overlay.json are intermediate inputs — model should load ONLY this file." + (" (BOOTSTRAP: data-index.json was not available — rerun after build-data-index.py for complete stats)" if bootstrap else ""),
         },
         "schema_version": base["schema_version"],
         "description": base["description"].replace(
@@ -124,7 +129,7 @@ def main():
         "overlay_catalog": overlay.get("overlay_catalog", {}),
 
         # ── Dataset catalog summary (from data-index.json) ──
-        "datasets": index.get("datasets", {}),
+        "datasets": index.get("datasets", {}) if index else {},
 
         # ── Final stats ──
         "stats": {
@@ -143,8 +148,8 @@ def main():
 
         # ── Build pipeline ──
         "build_pipeline": {
-            "description": "Full rebuild command — parses source documents, builds overlays, generates index and this manifest.",
-            "command": overlay.get("full_rebuild_command", ""),
+            "description": "Full rebuild via unified script build-all.py. Parses source documents, builds overlays, generates index and manifest. Handles circular dependency (data-index ↔ sources-final) automatically.",
+            "command": "python3 data/build-all.py",
             "final_step": "python3 data/build-sources-overlay.py",
             "steps": [
                 {"step": 1, "script": "data/extract-msd-dri-parser.py", "inputs": 5, "outputs": "*-parsed.json, ncbi-crosscheck.json"},
@@ -152,8 +157,8 @@ def main():
                 {"step": 3, "script": "data/extract-nas-dri-2019.py", "inputs": 1, "outputs": "dri-na-k-2019-parsed.json"},
                 {"step": 4, "script": "data/extract-lpi-ul.py", "inputs": 2, "outputs": "dri-p-mg-ul-parsed.json"},
                 {"step": 5, "script": "data/build-minerals-overlay.py", "inputs": 5, "outputs": "dri-minerals-overlay.json"},
-                {"step": 6, "script": "data/build-vitamins-overlay.py", "inputs": 2, "outputs": "dri-vitamins-overlay.json"},
-                {"step": 7, "script": "data/build-macronutrients-per-kg-overlay.py", "inputs": 2, "outputs": "dri-macronutrients-per-kg-overlay.json"},
+                {"step": 6, "script": "data/build-vitamins-overlay.py", "inputs": 1, "outputs": "dri-vitamins-overlay.json"},
+                {"step": 7, "script": "data/build-macronutrients-per-kg-overlay.py", "inputs": 1, "outputs": "dri-macronutrients-per-kg-overlay.json"},
                 {"step": 8, "script": "data/build-data-index.py", "inputs": 7, "outputs": "data-index.json"},
                 {"step": 9, "script": "data/build-sources-overlay.py", "inputs": 3, "outputs": "sources-final.json"},
             ],
@@ -167,8 +172,11 @@ def main():
     print(f"  {len(sources)} sources total")
     print(f"  Tiers: {tiers}")
     print(f"  Overlay sources: {with_overlay}, Direct: {without_overlay}")
-    print(f"  DRI: {idx_stats['total_dri_nutrients']} nutrients, {idx_stats['total_dri_groups']} groups")
-    print(f"  Datasets indexed: {len(index['datasets'])}")
+    print(f"  DRI: {idx_stats.get('total_dri_nutrients', 0)} nutrients, {idx_stats.get('total_dri_groups', 0)} groups")
+    if index:
+        print(f"  Datasets indexed: {len(index.get('datasets', {}))}")
+    else:
+        print("  Datasets indexed: 0 (bootstrap — rerun after build-data-index.py)")
     print(f"  Build pipeline: {len(output['build_pipeline']['steps'])} steps")
 
     # Verify

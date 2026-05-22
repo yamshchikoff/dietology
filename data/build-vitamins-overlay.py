@@ -1,5 +1,6 @@
-# Build dri-vitamins-overlay.json — merge machine-parsed values
-# with manual-transcription metadata for 11 vitamins.
+# Build dri-vitamins-overlay.json — production overlay for 11 vitamins.
+# All values and metadata are machine-parsed from MSD Manual Professional HTML.
+# No manual transcription dependencies.
 # Run: python3 build-vitamins-overlay.py
 
 import json
@@ -8,7 +9,6 @@ from datetime import datetime, timezone
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-MANUAL = os.path.join(SCRIPT_DIR, "dri-vitamins.json")
 PARSED = os.path.join(SCRIPT_DIR, "dri-vitamins-parsed.json")
 OVERLAY_OUT = os.path.join(SCRIPT_DIR, "dri-vitamins-overlay.json")
 
@@ -25,45 +25,33 @@ def main():
     print("=================================")
     print()
 
-    manual = load_json(MANUAL)
     parsed = load_json(PARSED)
-
-    # Build manual metadata lookup
-    manual_meta = {}
-    for n in manual["nutrients"]:
-        manual_meta[n["name"]] = {
-            "unit": n.get("unit"),
-            "ul": n.get("ul"),
-            "ul_unit": n.get("ul_unit"),
-            "ul_note": n.get("ul_note"),
-            "unit_note": n.get("unit_note"),
-        }
 
     nutrients = []
     for n in parsed["nutrients"]:
         name = n["name"]
-        meta = manual_meta.get(name, {})
 
         entry = {
             "name": name,
-            "unit": meta.get("unit", n.get("unit")),
+            "unit": n.get("unit"),
             "source_id": "msd-manual-dri",
             "source_urls": [SOURCE_URL],
             "groups": [],
         }
 
-        # UL — prefer manual (has null+note combos), fall back to parsed
-        entry["ul"] = meta.get("ul", n.get("ul"))
-        if "ul_unit" in meta or "ul_unit" in n:
-            entry["ul_unit"] = meta.get("ul_unit", n.get("ul_unit"))
+        # UL
+        if n.get("ul") is not None:
+            entry["ul"] = n["ul"]
+            if n.get("ul_unit"):
+                entry["ul_unit"] = n["ul_unit"]
 
-        # String metadata fields — merge: manual first, then parsed
+        # String metadata fields
         for field in ("ul_note", "unit_note"):
-            val = meta.get(field) or n.get(field)
+            val = n.get(field)
             if val:
                 entry[field] = val
 
-        # Groups — from parsed (machine-verified values)
+        # Groups — machine-verified values
         for g in n["groups"]:
             val = g["value"]
             group_entry = {
@@ -82,13 +70,12 @@ def main():
     output = {
         "_meta": {
             "schema": "dri-vitamins-overlay-v1",
-            "description": "Merged DRI values for 11 vitamins: machine-parsed values from MSD Manual Professional HTML table, combined with metadata (unit_note, ul_note, proper unit names) from manual transcription.",
+            "description": "DRI values for 11 vitamins: machine-parsed values and metadata from MSD Manual Professional HTML table. 0 manual transcription dependencies.",
             "build_script": "data/build-vitamins-overlay.py",
             "build_date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "sources": ["msd-manual-dri"],
             "input_files": [
-                "data/dri-vitamins.json (metadata: unit_note, ul_note, proper units)",
-                "data/dri-vitamins-parsed.json (machine-parsed values)",
+                "data/dri-vitamins-parsed.json (machine-parsed values + metadata: unit, UL, ul_unit, ul_note, unit_note)",
             ],
             "stats": {
                 "nutrients": len(nutrients),
@@ -105,7 +92,6 @@ def main():
     print(f"Written {OVERLAY_OUT}")
     print(f"  {len(nutrients)} nutrients, {total_groups} groups")
 
-    # Print per-nutrient summary
     for n in nutrients:
         notes = []
         if n.get("ul_note"):

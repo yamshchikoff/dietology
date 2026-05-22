@@ -1,8 +1,9 @@
 {
   "_meta": {
     "source_id": "who-2024-hb",
-    "extraction_date": "2026-05-20T00:00:00Z",
+    "extraction_date": "2026-05-22T00:43:58Z",
     "extraction_script": "data/extract-who-hb.py",
+    "extraction_method": "pdfplumber — machine extraction from WHO 2024 PDF Tables 2 and 3",
     "extracted_by": "agent",
     "source_claims": {
       "presumed_date": "2024",
@@ -15,8 +16,7 @@
     ],
     "citation": "WHO. Guideline on haemoglobin cutoffs to define anaemia in individuals and populations. Geneva: World Health Organization; 2024. ISBN 9789240088542.",
     "method_note": "Venous blood preferred. Capillary blood may overestimate Hb. Altitude and smoking adjustments apply.",
-    "source_file": "data/external/who-2024-hb-guideline.pdf",
-    "source_file_note": "PDF requires manual download from https://www.who.int/publications/i/item/9789240088542 (WHO IRIS uses JS SPA)"
+    "source_file": "data/external/who-2024-hb-guideline.pdf"
   },
   "diagnostic_thresholds": [
     {
@@ -56,36 +56,36 @@
       "hb_cutoff_g_per_dl": 12.0
     },
     {
+      "group": "men_15_plus",
+      "sex": "male",
+      "pregnant": false,
+      "hb_cutoff_g_per_l": 130,
+      "hb_cutoff_g_per_dl": 13.0
+    },
+    {
       "group": "pregnant_first_trimester",
       "sex": "female",
       "pregnant": true,
-      "trimester": 1,
       "hb_cutoff_g_per_l": 110,
-      "hb_cutoff_g_per_dl": 11.0
+      "hb_cutoff_g_per_dl": 11.0,
+      "trimester": 1
     },
     {
       "group": "pregnant_second_trimester",
       "sex": "female",
       "pregnant": true,
-      "trimester": 2,
       "hb_cutoff_g_per_l": 105,
       "hb_cutoff_g_per_dl": 10.5,
+      "trimester": 2,
       "note": "New trimester-specific cutoff in 2024 guideline"
     },
     {
       "group": "pregnant_third_trimester",
       "sex": "female",
       "pregnant": true,
-      "trimester": 3,
       "hb_cutoff_g_per_l": 110,
-      "hb_cutoff_g_per_dl": 11.0
-    },
-    {
-      "group": "men_15_plus",
-      "sex": "male",
-      "pregnant": false,
-      "hb_cutoff_g_per_l": 130,
-      "hb_cutoff_g_per_dl": 13.0
+      "hb_cutoff_g_per_dl": 11.0,
+      "trimester": 3
     }
   ],
   "severity_classification": [
@@ -154,7 +154,7 @@
     },
     {
       "group": "pregnant_second_trimester",
-      "normal_low": 110,
+      "normal_low": 105,
       "mild_low": 95,
       "mild_high": 104,
       "moderate_low": 70,

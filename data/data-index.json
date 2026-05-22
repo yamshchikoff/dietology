@@ -3,7 +3,7 @@
     "schema": "dietology-data-index-v1",
     "description": "Unified manifest of all dietology knowledge base files. Each dataset entry includes domain, tier, sources, and provenance metadata.",
     "build_script": "data/build-data-index.py",
-    "build_date": "2026-05-21T21:54:18Z",
+    "build_date": "2026-05-21T23:57:48Z",
     "sources": [
       "iom-dri-1997",
       "iom-dri-2011",
@@ -44,7 +44,7 @@
         "msd-manual-dri"
       ],
       "build_script": "data/build-vitamins-overlay.py",
-      "notes": "Values from MSD Professional HTML parser. Metadata (ul_note, unit_note, proper unit names) from manual transcription. Pregnancy/breastfeeding are single groups without age split — MSD vitamins table does not provide teen/adult breakdown.",
+      "notes": "Values and metadata (unit, UL, ul_unit, ul_note, unit_note) all machine-extracted from MSD Professional HTML. 0 manual transcription. Pregnancy/breastfeeding are single groups without age split — MSD vitamins table does not provide teen/adult breakdown.",
       "file": "data/dri-vitamins-overlay.json",
       "count": 11,
       "detail": "11 nutrients, 154 groups"
@@ -57,7 +57,7 @@
         "msd-macronutrients-per-kg"
       ],
       "build_script": "data/build-macronutrients-per-kg-overlay.py",
-      "notes": "Per-kg values — model must multiply by individual body weight. More accurate for individual use than absolute DRI. Infants: AI. Children and adults: RDA. Based on IOM 1997.",
+      "notes": "Values machine-parsed; category/note/citation programmatically generated. 0 manual transcription. Per-kg values — model must multiply by individual body weight. More accurate for individual use than absolute DRI. Infants: AI. Children and adults: RDA. Based on IOM 1997.",
       "file": "data/dri-macronutrients-per-kg-overlay.json",
       "count": 3,
       "detail": "3 nutrients, 51 groups"

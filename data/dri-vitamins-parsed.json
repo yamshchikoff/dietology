@@ -2,7 +2,7 @@
   "_meta": {
     "source_id": "msd-manual-dri",
     "source_file": "data/external/msd-manual-vitamins-2026-05.html",
-    "extraction_date": "2026-05-21T15:37:51Z",
+    "extraction_date": "2026-05-21T23:57:46Z",
     "extraction_script": "data/extract-msd-dri-parser.py",
     "extraction_method": "html-parser",
     "extracted_by": "agent",
@@ -20,7 +20,7 @@
       "name": "Folate",
       "unit": "mcg DFE",
       "ul": 1000,
-      "ul_unit": "mcg DFE",
+      "ul_unit": "mcg",
       "groups": [
         {
           "group": "infants_0_6mo",
@@ -127,7 +127,7 @@
       "name": "Niacin",
       "unit": "mg NE",
       "ul": 35,
-      "ul_unit": "mg NE",
+      "ul_unit": "mg",
       "groups": [
         {
           "group": "infants_0_6mo",
@@ -234,7 +234,7 @@
       "name": "Riboflavin",
       "unit": "mg",
       "ul": null,
-      "ul_unit": "mg",
+      "ul_unit": null,
       "groups": [
         {
           "group": "infants_0_6mo",
@@ -341,7 +341,7 @@
       "name": "Thiamin",
       "unit": "mg",
       "ul": null,
-      "ul_unit": "mg",
+      "ul_unit": null,
       "groups": [
         {
           "group": "infants_0_6mo",
@@ -448,7 +448,7 @@
       "name": "Vitamin A",
       "unit": "mcg RAE",
       "ul": 3000,
-      "ul_unit": "mcg RAE",
+      "ul_unit": "mcg",
       "groups": [
         {
           "group": "infants_0_6mo",
@@ -660,7 +660,7 @@
       "name": "Vitamin B12",
       "unit": "mcg",
       "ul": null,
-      "ul_unit": "mcg",
+      "ul_unit": null,
       "groups": [
         {
           "group": "infants_0_6mo",
@@ -1086,7 +1086,7 @@
       "name": "Vitamin K",
       "unit": "mcg",
       "ul": null,
-      "ul_unit": "mcg",
+      "ul_unit": null,
       "groups": [
         {
           "group": "infants_0_6mo",
