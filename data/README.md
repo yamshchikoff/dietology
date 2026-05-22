@@ -17,7 +17,7 @@
 Слой 1  external/*.html, *.pdf      ← исходные документы (toolchain)
 ```
 
-Модель загружает: sources-final.json → data-index.json → 6 data-файлов. Всё остальное — toolchain.
+Модель загружает: sources-final.json → data-index.json → 11 data-файлов. Всё остальное — toolchain.
 
 ## Структура
 
@@ -51,22 +51,24 @@ data/
 ├── dri-vitamins-overlay.json              # Tier A | 11 витаминов, 154 группы (all metadata)
 ├── build-macronutrients-per-kg-overlay.py # Сборщик: 2 input → per-kg overlay
 ├── dri-macronutrients-per-kg-overlay.json # Tier A | 3 нутриента, 51 группа (mg/kg)
-├── build-data-index.py                    # Сборщик: 6 datasets → data-index.json
+├── build-data-index.py                    # Сборщик: 10 datasets → data-index.json
 │
 ├── # ── Промежуточные файлы (intermediate, consumed by overlays) ──
-├── dri-vitamins.json                      # Ручная транскрипция — metadata source
 ├── dri-vitamins-parsed.json               # Machine-parsed из HTML (154 groups)
-├── dri-minerals.json                      # Ручная транскрипция — более не build dependency
 ├── dri-minerals-parsed.json               # Machine-parsed из HTML (144 groups)
-├── dri-calcium-iom-2011-parsed.json       # Machine-parsed из IOM 2011 PDF
-├── dri-na-k-2019-parsed.json              # Machine-parsed из NAS 2019 PDF
-├── dri-p-mg-ul-parsed.json               # Machine-parsed из LPI HTML
-├── dri-macronutrients-per-kg.json         # Ручная транскрипция — metadata source
-├── dri-macronutrients-per-kg-parsed.json  # Machine-parsed из HTML (51 group)
-├── dri-p-mg-ncbi-crosscheck.json         # NCBI cross-check data (44 P/Mg entries)
+├── dri-calcium-iom-2011-parsed.json       # Machine-parsed из IOM 2011 PDF (22 groups)
+├── dri-na-k-2019-parsed.json              # Machine-parsed из NAS 2019 PDF (22+22 groups)
+├── dri-p-mg-ul-parsed.json               # Machine-parsed из LPI HTML (P: 9, Mg: 6 groups)
+├── dri-macronutrients-per-kg-parsed.json  # Machine-parsed из HTML (3×17=51 groups)
+├── dri-p-mg-ncbi-crosscheck.json         # NCBI cross-check data (22+22 P/Mg entries)
+├── build-sources-overlay.py              # Сборщик: sources.json + overlay + data-index → sources-final.json
 │
-├── extract-who-hb.py                      # Скрипт: WHO Hb thresholds → JSON
+├── extract-who-hb.py                      # Скрипт: WHO Hb thresholds → JSON (pdfplumber)
 ├── who-hb-thresholds.json                 # Tier B | 9 diagnostic groups, severity
+├── extract-who-gho.py                     # Скрипт: WHO GHO → epidemiological JSON
+├── who-anaemia-nonpregnant-prevalence.json # Tier A | 20,950 records, 242 countries
+├── who-bmi-overweight-prevalence.json     # Tier A | 20,790 records, 210 countries
+├── who-diabetes-prevalence.json           # Tier A | 41,580 records, 210 countries
 ├── extract-wiki-lab-ranges.py             # Скрипт: Wikipedia lab ranges → JSON
 ├── lab-reference-ranges.json              # Tier C | 254 теста, 16 категорий
 └── README.md
@@ -135,7 +137,17 @@ data/
 
 **`data-index.json`** — единый манифест всех knowledge base файлов с доменами, tier-уровнями и статистикой.
 
-Промежуточные файлы (`*-parsed.json`, `dri-vitamins.json`, `dri-minerals.json`) — consumed by build-скриптами, не предназначены для прямого использования моделью.
+Промежуточные файлы (`*-parsed.json`, `*-crosscheck.json`) — consumed by build-скриптами, не предназначены для прямого использования моделью.
+
+**WHO GHO epidemiological data** — три production-файла, извлечённые из WHO GHO OData API JSON dump-ов:
+
+| Файл | Индикатор | Записей | Страны | Годы |
+|------|----------|--------|--------|------|
+| `who-anaemia-nonpregnant-prevalence.json` | Anaemia in non-pregnant women (15–49) | 20,950 | 242 | 1995–2019 |
+| `who-bmi-overweight-prevalence.json` | Overweight (BMI ≥25) in adults 18+ | 20,790 | 210 | 1990–2022 |
+| `who-diabetes-prevalence.json` | Diabetes prevalence, age-standardized | 41,580 | 210 | 1990–2022 |
+
+Все значения — modelled estimates с 95% CI. Не raw survey data — WHO использует статистическое моделирование для кросс-страновой сопоставимости.
 
 Полная пересборка: `python3 data/build-all.py` (единый скрипт, 9 шагов). См. `docs/data-layers.md`.
 

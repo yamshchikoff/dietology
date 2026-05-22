@@ -261,6 +261,27 @@
       ],
       "per_nutrient_source_id": true,
       "convention": "All values in mg/kg of body weight. Multiply by individual body weight. Infants: AI. Children and adults: RDA."
+    },
+    "who-anaemia-nonpregnant-prevalence.json": {
+      "description": "Anaemia prevalence in non-pregnant women (15–49) by country, year, and severity — 20,950 records (242 countries, 1995–2019)",
+      "schema": "who-gho-epidemiology-v1",
+      "sources_merged": ["who-gho"],
+      "extraction_script": "data/extract-who-gho.py",
+      "input_files": ["data/external/who-NUTRITION_ANAEMIA_NONPREGNANT_PREV.json"]
+    },
+    "who-bmi-overweight-prevalence.json": {
+      "description": "Prevalence of overweight (BMI ≥25) among adults 18+ by country, year, and sex — 20,790 records (210 countries, 1990–2022)",
+      "schema": "who-gho-epidemiology-v1",
+      "sources_merged": ["who-gho"],
+      "extraction_script": "data/extract-who-gho.py",
+      "input_files": ["data/external/who-NCD_BMI_25A.json"]
+    },
+    "who-diabetes-prevalence.json": {
+      "description": "Age-standardized diabetes prevalence by country, year, sex, and age group — 41,580 records (210 countries, 1990–2022)",
+      "schema": "who-gho-epidemiology-v1",
+      "sources_merged": ["who-gho"],
+      "extraction_script": "data/extract-who-gho.py",
+      "input_files": ["data/external/who-NCD_DIABETES_PREVALENCE_AGESTD.json"]
     }
   },
 
@@ -272,9 +293,11 @@
     "minerals": 14,
     "vitamins": 11,
     "per_kg_macronutrients": 3,
-    "unique_sources": 7,
-    "source_files_in_external": 9,
-    "extraction_scripts": 5,
+    "epidemiology_indicators": 3,
+    "epidemiology_records": 83320,
+    "unique_sources": 8,
+    "source_files_in_external": 12,
+    "extraction_scripts": 6,
     "build_scripts": 4,
     "fabrication": 0,
     "recalculation": 0,

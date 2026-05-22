@@ -129,25 +129,29 @@ Dietology организует данные в шесть слоёв. Кажды
 | # | Файл | Слой | Содержание | Tier | Источник |
 |---|------|------|-----------|------|----------|
 | 1 | `sources-final.json` | 5 | Манифест: 17 источников, tiers, лицензии, gaps | A | Сборка из sources.json + sources-overlay.json + data-index.json |
-| 2 | `data-index.json` | 4 | Каталог: 7 datasets, domains, статистика | A | build-data-index.py |
+| 2 | `data-index.json` | 4 | Каталог: 10 datasets, domains, статистика | A | build-data-index.py |
 | 3 | `dri-minerals-overlay.json` | 3 | 14 минералов × 254 группы | A | 5 источников (IOM 2011, IOM 1997/NCBI, MSD, NAS 2019, LPI) |
 | 4 | `dri-vitamins-overlay.json` | 3 | 11 витаминов × 154 группы | A | MSD Manual Professional |
 | 5 | `dri-macronutrients-per-kg-overlay.json` | 3 | 3 per-kg нутриента × 51 группа | A | MSD Manual / IOM 1997 |
 | 6 | `usda-foundation-foods-essential.json` | — | 363 продукта × 27 nutrients | A | USDA FoodData Central (CC0) |
 | 7 | `who-hb-thresholds.json` | — | 9 diagnostic thresholds + 9 severity groups | B | WHO 2024 Hb Guideline (pdfplumber) |
-| 8 | `lab-reference-ranges.json` | — | 254 lab tests × 16 категорий | C | Wikipedia |
+| 8 | `who-anaemia-nonpregnant-prevalence.json` | — | 20,950 records: anaemia prevalence by country/year/severity | A | WHO GHO (CC BY 4.0) |
+| 9 | `who-bmi-overweight-prevalence.json` | — | 20,790 records: overweight (BMI≥25) by country/year/sex | A | WHO GHO (CC BY 4.0) |
+| 10 | `who-diabetes-prevalence.json` | — | 41,580 records: diabetes prevalence by country/year/sex/age | A | WHO GHO (CC BY 4.0) |
+| 11 | `lab-reference-ranges.json` | — | 254 lab tests × 16 категорий | C | Wikipedia |
 
 **Консолидированная статистика:**
 - 28 DRI нутриентов, 459 групп
 - 363 food items
 - 254 lab reference ranges
 - 9 anemia diagnostic thresholds
+- 83,320 epidemiology records (3 indicators)
 - Fabrication: 0, Recalculation: 0
 - Все значения machine-extracted из source documents в `data/external/`
 
 **Остальные файлы в `data/` — toolchain,** модель их не загружает:
-- `external/` — 14 source documents (HTML, PDF, ZIP)
-- `*.py` — 13 extraction + build scripts
+- `external/` — 17 source documents (HTML, PDF, ZIP, WHO GHO JSON dump-ы)
+- `*.py` — 14 extraction + build scripts
 - `*-parsed.json`, `*-crosscheck.json` — 7 промежуточных файлов (потребляются build-скриптами)
 - `sources.json`, `sources-overlay.json` — входные манифесты для `build-sources-overlay.py`
 

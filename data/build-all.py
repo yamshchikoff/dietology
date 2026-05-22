@@ -97,6 +97,9 @@ def main():
         else:
             print("  WHO Hb: source PDF not found, skipping")
 
+        run("extract-who-gho.py",
+            "WHO GHO — Extract epidemiological statistics (anaemia, BMI, diabetes)")
+
         run("extract-wiki-lab-ranges.py",
             "Wikipedia — Fetch lab reference ranges (254 tests)")
     else:
@@ -115,13 +118,13 @@ def main():
             "Step 9b — Bootstrap sources-final.json (no data-index.json yet)")
         # Now build data-index.json
         run("build-data-index.py",
-            "Step 8 — Build data-index.json (7 datasets)")
+            "Step 8 — Build data-index.json (10 datasets)")
         # Rebuild sources-final.json with real data-index stats
         run("build-sources-overlay.py",
             "Step 9 — Final sources-final.json (with real stats)")
     else:
         run("build-data-index.py",
-            "Step 8 — Build data-index.json (7 datasets)")
+            "Step 8 — Build data-index.json (10 datasets)")
         run("build-sources-overlay.py",
             "Step 9 — Build sources-final.json (17 sources)")
 
@@ -140,6 +143,8 @@ def main():
         print(f"  Foods: {stats['total_foods']}")
         print(f"  Lab tests: {stats['total_lab_tests']}")
         print(f"  Diagnostic thresholds: {stats['total_diagnostic_thresholds']}")
+        if stats.get('total_epi_records'):
+            print(f"  Epidemiology records: {stats['total_epi_records']:,}")
     print(f"  Fabrication: {stats['fabrication']}, Recalculation: {stats['recalculation']}")
     print(f"  Sources: {', '.join(di['_meta']['sources'])}")
 

@@ -18,23 +18,23 @@
       "extraction_date": "2026-05-19"
     },
     "who-gho": {
-      "name": "WHO Global Health Observatory",
+      "name": "WHO Global Health Observatory — Epidemiological Indicators",
       "tier": "A",
-      "category": "population_norms",
+      "category": "epidemiology",
       "url": "https://www.who.int/data/gho",
       "license": "CC BY 4.0",
       "mit_compatible": true,
-      "format": "JSON/CSV via OData API",
+      "format": "OData JSON API dump. Parser: extract-who-gho.py",
       "authority": "primary",
-      "update_frequency": "live API",
-      "description": "Population-level nutrition indicators for 194 countries. Anaemia prevalence, BMI (overweight/obesity), diabetes prevalence, child growth standards, malnutrition, breastfeeding, micronutrient deficiencies. 1000+ indicators available.",
+      "update_frequency": "periodic (per-indicator, 2022–2024)",
+      "description": "Epidemiological statistics: anaemia prevalence in non-pregnant women (242 countries, 1995–2019), overweight/BMI≥25 prevalence (210 countries, 1990–2022), diabetes prevalence age-standardized (210 countries, 1990–2022). All values are modelled estimates with 95% CI — not raw survey data. Statistical modelling ensures cross-country comparability.",
       "data_files": [
-        "external/who-NUTRITION_ANAEMIA_NONPREGNANT_PREV.json",
-        "external/who-NCD_BMI_25A.json",
-        "external/who-NCD_DIABETES_PREVALENCE_AGESTD.json"
+        "who-anaemia-nonpregnant-prevalence.json",
+        "who-bmi-overweight-prevalence.json",
+        "who-diabetes-prevalence.json"
       ],
-      "extraction_script": "curl + OData API (manual)",
-      "extraction_date": "2026-05-19"
+      "extraction_script": "data/extract-who-gho.py",
+      "extraction_date": null
     },
     "msd-manual-dri": {
       "name": "MSD Manual Professional — DRI Tables",

@@ -58,11 +58,35 @@ DATASETS = {
         "extraction_script": "data/extract-who-hb.py",
         "notes": "WHO 2024 Guideline on haemoglobin cutoffs. Includes severity classification (mild/moderate/severe), altitude/smoking adjustments, pregnancy-specific thresholds.",
     },
+    "who-anaemia-nonpregnant-prevalence.json": {
+        "domain": "epidemiology",
+        "tier": "A",
+        "description": "Anaemia prevalence in non-pregnant women (15–49) by country, year, and severity — 20,950 records (242 countries, 1995–2019)",
+        "sources": ["who-gho"],
+        "extraction_script": "data/extract-who-gho.py",
+        "notes": "WHO GHO modelled estimates. Not raw survey data — statistical modelling for cross-country comparability. Values with 95% CI. CC BY 4.0.",
+    },
+    "who-bmi-overweight-prevalence.json": {
+        "domain": "epidemiology",
+        "tier": "A",
+        "description": "Prevalence of overweight (BMI ≥25) among adults 18+ by country, year, and sex — 20,790 records (210 countries, 1990–2022)",
+        "sources": ["who-gho"],
+        "extraction_script": "data/extract-who-gho.py",
+        "notes": "WHO GHO age-standardized estimates. Both-sex (BTSX), male (MLE), female (FMLE) breakdowns. Values with 95% CI. CC BY 4.0.",
+    },
+    "who-diabetes-prevalence.json": {
+        "domain": "epidemiology",
+        "tier": "A",
+        "description": "Age-standardized diabetes prevalence (raised fasting glucose ≥7.0 mmol/L or on medication) by country, year, sex, and age group — 41,580 records (210 countries, 1990–2022)",
+        "sources": ["who-gho"],
+        "extraction_script": "data/extract-who-gho.py",
+        "notes": "WHO GHO age-standardized estimates. Age groups: 18+ and 30+. Sex breakdowns: BTSX, MLE, FMLE. Values with 95% CI. CC BY 4.0.",
+    },
     "sources-final.json": {
         "domain": "manifest",
         "tier": "A",
         "description": "Unified source manifest — definitive reference for all dietology data sources (15 sources, 5 tier levels)",
-        "sources": ["iom-dri-1997", "iom-dri-2011", "lpi-mic-minerals", "msd-consumer-minerals", "msd-macronutrients-per-kg", "msd-manual-dri", "nas-dri-2019", "usda-fdc-2026-04", "who-2024-hb", "wikipedia-lab-ranges"],
+        "sources": ["iom-dri-1997", "iom-dri-2011", "lpi-mic-minerals", "msd-consumer-minerals", "msd-macronutrients-per-kg", "msd-manual-dri", "nas-dri-2019", "usda-fdc-2026-04", "who-2024-hb", "who-gho", "wikipedia-lab-ranges"],
         "build_script": "data/build-sources-overlay.py",
         "notes": "Merges sources.json (base) + sources-overlay.json (DRI overlay) + data-index.json (catalog). Single authoritative source reference — model loads ONLY this file. Supersedes sources.json.",
     },
@@ -91,6 +115,9 @@ def count_dataset(path):
     elif "diagnostic_thresholds" in d:
         n = len(d["diagnostic_thresholds"])
         return n, f"{n} diagnostic thresholds"
+    elif "data" in d and isinstance(d["data"], list):
+        n = len(d["data"])
+        return n, f"{n} records"
     elif "sources" in d and "_meta" in d:
         n = len(d["sources"])
         return n, f"{n} sources"
@@ -105,6 +132,7 @@ def main():
     datasets = {}
     stats = {"total_dri_nutrients": 0, "total_dri_groups": 0, "total_foods": 0,
              "total_lab_tests": 0, "total_diagnostic_thresholds": 0,
+             "total_epi_records": 0,
              "fabrication": 0, "recalculation": 0}
 
     for filename, info in DATASETS.items():
@@ -133,6 +161,8 @@ def main():
             stats["total_lab_tests"] += count
         elif info["domain"] == "deficiency_thresholds":
             stats["total_diagnostic_thresholds"] += count
+        elif info["domain"] == "epidemiology":
+            stats["total_epi_records"] += count
 
     all_sources = sorted(set(
         s for ds in datasets.values() for s in ds["sources"]
@@ -160,6 +190,7 @@ def main():
     print(f"  Foods: {stats['total_foods']}")
     print(f"  Lab tests: {stats['total_lab_tests']}")
     print(f"  Diagnostic thresholds: {stats['total_diagnostic_thresholds']}")
+    print(f"  Epidemiology records: {stats['total_epi_records']}")
     print(f"  Fabrication: {stats['fabrication']}, Recalculation: {stats['recalculation']}")
     print(f"  Sources: {', '.join(all_sources)}")
 

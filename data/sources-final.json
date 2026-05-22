@@ -3,7 +3,7 @@
     "schema": "sources-final-v1",
     "description": "Unified source manifest — definitive reference for all dietology data sources. Merges base sources.json with overlay-specific metadata from sources-overlay.json and dataset catalog from data-index.json.",
     "build_script": "data/build-sources-overlay.py",
-    "build_date": "2026-05-21T23:57:48Z",
+    "build_date": "2026-05-22T20:48:11Z",
     "input_files": [
       "data/sources.json (base manifest — all sources)",
       "data/sources-overlay.json (DRI overlay metadata)",
@@ -32,23 +32,23 @@
       "extraction_date": "2026-05-19"
     },
     "who-gho": {
-      "name": "WHO Global Health Observatory",
+      "name": "WHO Global Health Observatory — Epidemiological Indicators",
       "tier": "A",
-      "category": "population_norms",
+      "category": "epidemiology",
       "url": "https://www.who.int/data/gho",
       "license": "CC BY 4.0",
       "mit_compatible": true,
-      "format": "JSON/CSV via OData API",
+      "format": "OData JSON API dump. Parser: extract-who-gho.py",
       "authority": "primary",
-      "update_frequency": "live API",
-      "description": "Population-level nutrition indicators for 194 countries. Anaemia prevalence, BMI (overweight/obesity), diabetes prevalence, child growth standards, malnutrition, breastfeeding, micronutrient deficiencies. 1000+ indicators available.",
+      "update_frequency": "periodic (per-indicator, 2022–2024)",
+      "description": "Epidemiological statistics: anaemia prevalence in non-pregnant women (242 countries, 1995–2019), overweight/BMI≥25 prevalence (210 countries, 1990–2022), diabetes prevalence age-standardized (210 countries, 1990–2022). All values are modelled estimates with 95% CI — not raw survey data. Statistical modelling ensures cross-country comparability.",
       "data_files": [
-        "external/who-NUTRITION_ANAEMIA_NONPREGNANT_PREV.json",
-        "external/who-NCD_BMI_25A.json",
-        "external/who-NCD_DIABETES_PREVALENCE_AGESTD.json"
+        "who-anaemia-nonpregnant-prevalence.json",
+        "who-bmi-overweight-prevalence.json",
+        "who-diabetes-prevalence.json"
       ],
-      "extraction_script": "curl + OData API (manual)",
-      "extraction_date": "2026-05-19"
+      "extraction_script": "data/extract-who-gho.py",
+      "extraction_date": null
     },
     "msd-manual-dri": {
       "name": "MSD Manual Professional — DRI Tables",
@@ -464,7 +464,7 @@
       ],
       "extraction_script": null,
       "build_script": "data/build-data-index.py",
-      "build_date": "2026-05-21T23:57:48Z"
+      "build_date": "2026-05-22T20:48:11Z"
     }
   },
   "gaps": {
@@ -533,6 +533,39 @@
       ],
       "per_nutrient_source_id": true,
       "convention": "All values in mg/kg of body weight. Multiply by individual body weight. Infants: AI. Children and adults: RDA."
+    },
+    "who-anaemia-nonpregnant-prevalence.json": {
+      "description": "Anaemia prevalence in non-pregnant women (15–49) by country, year, and severity — 20,950 records (242 countries, 1995–2019)",
+      "schema": "who-gho-epidemiology-v1",
+      "sources_merged": [
+        "who-gho"
+      ],
+      "extraction_script": "data/extract-who-gho.py",
+      "input_files": [
+        "data/external/who-NUTRITION_ANAEMIA_NONPREGNANT_PREV.json"
+      ]
+    },
+    "who-bmi-overweight-prevalence.json": {
+      "description": "Prevalence of overweight (BMI ≥25) among adults 18+ by country, year, and sex — 20,790 records (210 countries, 1990–2022)",
+      "schema": "who-gho-epidemiology-v1",
+      "sources_merged": [
+        "who-gho"
+      ],
+      "extraction_script": "data/extract-who-gho.py",
+      "input_files": [
+        "data/external/who-NCD_BMI_25A.json"
+      ]
+    },
+    "who-diabetes-prevalence.json": {
+      "description": "Age-standardized diabetes prevalence by country, year, sex, and age group — 41,580 records (210 countries, 1990–2022)",
+      "schema": "who-gho-epidemiology-v1",
+      "sources_merged": [
+        "who-gho"
+      ],
+      "extraction_script": "data/extract-who-gho.py",
+      "input_files": [
+        "data/external/who-NCD_DIABETES_PREVALENCE_AGESTD.json"
+      ]
     }
   },
   "datasets": {
@@ -618,6 +651,45 @@
       "count": 9,
       "detail": "9 diagnostic thresholds"
     },
+    "who-anaemia-nonpregnant-prevalence.json": {
+      "domain": "epidemiology",
+      "tier": "A",
+      "description": "Anaemia prevalence in non-pregnant women (15–49) by country, year, and severity — 20,950 records (242 countries, 1995–2019)",
+      "sources": [
+        "who-gho"
+      ],
+      "extraction_script": "data/extract-who-gho.py",
+      "notes": "WHO GHO modelled estimates. Not raw survey data — statistical modelling for cross-country comparability. Values with 95% CI. CC BY 4.0.",
+      "file": "data/who-anaemia-nonpregnant-prevalence.json",
+      "count": 20950,
+      "detail": "20950 records"
+    },
+    "who-bmi-overweight-prevalence.json": {
+      "domain": "epidemiology",
+      "tier": "A",
+      "description": "Prevalence of overweight (BMI ≥25) among adults 18+ by country, year, and sex — 20,790 records (210 countries, 1990–2022)",
+      "sources": [
+        "who-gho"
+      ],
+      "extraction_script": "data/extract-who-gho.py",
+      "notes": "WHO GHO age-standardized estimates. Both-sex (BTSX), male (MLE), female (FMLE) breakdowns. Values with 95% CI. CC BY 4.0.",
+      "file": "data/who-bmi-overweight-prevalence.json",
+      "count": 20790,
+      "detail": "20790 records"
+    },
+    "who-diabetes-prevalence.json": {
+      "domain": "epidemiology",
+      "tier": "A",
+      "description": "Age-standardized diabetes prevalence (raised fasting glucose ≥7.0 mmol/L or on medication) by country, year, sex, and age group — 41,580 records (210 countries, 1990–2022)",
+      "sources": [
+        "who-gho"
+      ],
+      "extraction_script": "data/extract-who-gho.py",
+      "notes": "WHO GHO age-standardized estimates. Age groups: 18+ and 30+. Sex breakdowns: BTSX, MLE, FMLE. Values with 95% CI. CC BY 4.0.",
+      "file": "data/who-diabetes-prevalence.json",
+      "count": 41580,
+      "detail": "41580 records"
+    },
     "sources-final.json": {
       "domain": "manifest",
       "tier": "A",
@@ -632,6 +704,7 @@
         "nas-dri-2019",
         "usda-fdc-2026-04",
         "who-2024-hb",
+        "who-gho",
         "wikipedia-lab-ranges"
       ],
       "build_script": "data/build-sources-overlay.py",

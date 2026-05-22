@@ -3,7 +3,7 @@
     "schema": "dietology-data-index-v1",
     "description": "Unified manifest of all dietology knowledge base files. Each dataset entry includes domain, tier, sources, and provenance metadata.",
     "build_script": "data/build-data-index.py",
-    "build_date": "2026-05-21T23:57:48Z",
+    "build_date": "2026-05-22T20:48:11Z",
     "sources": [
       "iom-dri-1997",
       "iom-dri-2011",
@@ -14,6 +14,7 @@
       "nas-dri-2019",
       "usda-fdc-2026-04",
       "who-2024-hb",
+      "who-gho",
       "wikipedia-lab-ranges"
     ],
     "provenance_guarantee": "All values are from-source (numeric facts extraction from public sources). 0 fabrication, 0 recalculation. Every value traceable to original source document in data/external/."
@@ -101,6 +102,45 @@
       "count": 9,
       "detail": "9 diagnostic thresholds"
     },
+    "who-anaemia-nonpregnant-prevalence.json": {
+      "domain": "epidemiology",
+      "tier": "A",
+      "description": "Anaemia prevalence in non-pregnant women (15–49) by country, year, and severity — 20,950 records (242 countries, 1995–2019)",
+      "sources": [
+        "who-gho"
+      ],
+      "extraction_script": "data/extract-who-gho.py",
+      "notes": "WHO GHO modelled estimates. Not raw survey data — statistical modelling for cross-country comparability. Values with 95% CI. CC BY 4.0.",
+      "file": "data/who-anaemia-nonpregnant-prevalence.json",
+      "count": 20950,
+      "detail": "20950 records"
+    },
+    "who-bmi-overweight-prevalence.json": {
+      "domain": "epidemiology",
+      "tier": "A",
+      "description": "Prevalence of overweight (BMI ≥25) among adults 18+ by country, year, and sex — 20,790 records (210 countries, 1990–2022)",
+      "sources": [
+        "who-gho"
+      ],
+      "extraction_script": "data/extract-who-gho.py",
+      "notes": "WHO GHO age-standardized estimates. Both-sex (BTSX), male (MLE), female (FMLE) breakdowns. Values with 95% CI. CC BY 4.0.",
+      "file": "data/who-bmi-overweight-prevalence.json",
+      "count": 20790,
+      "detail": "20790 records"
+    },
+    "who-diabetes-prevalence.json": {
+      "domain": "epidemiology",
+      "tier": "A",
+      "description": "Age-standardized diabetes prevalence (raised fasting glucose ≥7.0 mmol/L or on medication) by country, year, sex, and age group — 41,580 records (210 countries, 1990–2022)",
+      "sources": [
+        "who-gho"
+      ],
+      "extraction_script": "data/extract-who-gho.py",
+      "notes": "WHO GHO age-standardized estimates. Age groups: 18+ and 30+. Sex breakdowns: BTSX, MLE, FMLE. Values with 95% CI. CC BY 4.0.",
+      "file": "data/who-diabetes-prevalence.json",
+      "count": 41580,
+      "detail": "41580 records"
+    },
     "sources-final.json": {
       "domain": "manifest",
       "tier": "A",
@@ -115,6 +155,7 @@
         "nas-dri-2019",
         "usda-fdc-2026-04",
         "who-2024-hb",
+        "who-gho",
         "wikipedia-lab-ranges"
       ],
       "build_script": "data/build-sources-overlay.py",
@@ -130,6 +171,7 @@
     "total_foods": 363,
     "total_lab_tests": 254,
     "total_diagnostic_thresholds": 9,
+    "total_epi_records": 83320,
     "fabrication": 0,
     "recalculation": 0
   }
