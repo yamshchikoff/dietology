@@ -122,24 +122,34 @@ Dietology организует данные в шесть слоёв. Кажды
 
 ---
 
-## Что модель НЕ загружает
-
-- **Слой 1** (`external/`) — исходные документы, toolchain
-- **Слой 2** (`*-parsed.json`, manual `*.json`) — промежуточные, consumed by build scripts
-- **`sources.json`** — заменён на `sources-final.json`
-- **`sources-overlay.json`** — consumed by `build-sources-overlay.py`
-
 ## Файлы, которые модель загружает
 
-Порядок загрузки:
-1. `sources-final.json` — манифест источников (17 источников, tiers, gaps)
-2. `data-index.json` — манифест datasets (7 datasets, domains, stats)
-3. `dri-minerals-overlay.json` — 14 минералов, 254 группы
-4. `dri-vitamins-overlay.json` — 11 витаминов, 154 группы
-5. `dri-macronutrients-per-kg-overlay.json` — 3 per-kg, 51 группа
-6. `usda-foundation-foods-essential.json` — 363 продукта
-7. `who-hb-thresholds.json` — 9 diagnostic thresholds
-8. `lab-reference-ranges.json` — 254 lab tests
+Восемь production-файлов. Порядок загрузки важен: сначала манифесты (источники → datasets), затем данные.
+
+| # | Файл | Слой | Содержание | Tier | Источник |
+|---|------|------|-----------|------|----------|
+| 1 | `sources-final.json` | 5 | Манифест: 17 источников, tiers, лицензии, gaps | A | Сборка из sources.json + sources-overlay.json + data-index.json |
+| 2 | `data-index.json` | 4 | Каталог: 7 datasets, domains, статистика | A | build-data-index.py |
+| 3 | `dri-minerals-overlay.json` | 3 | 14 минералов × 254 группы | A | 5 источников (IOM 2011, IOM 1997/NCBI, MSD, NAS 2019, LPI) |
+| 4 | `dri-vitamins-overlay.json` | 3 | 11 витаминов × 154 группы | A | MSD Manual Professional |
+| 5 | `dri-macronutrients-per-kg-overlay.json` | 3 | 3 per-kg нутриента × 51 группа | A | MSD Manual / IOM 1997 |
+| 6 | `usda-foundation-foods-essential.json` | — | 363 продукта × 27 nutrients | A | USDA FoodData Central (CC0) |
+| 7 | `who-hb-thresholds.json` | — | 9 diagnostic thresholds + 9 severity groups | B | WHO 2024 Hb Guideline (pdfplumber) |
+| 8 | `lab-reference-ranges.json` | — | 254 lab tests × 16 категорий | C | Wikipedia |
+
+**Консолидированная статистика:**
+- 28 DRI нутриентов, 459 групп
+- 363 food items
+- 254 lab reference ranges
+- 9 anemia diagnostic thresholds
+- Fabrication: 0, Recalculation: 0
+- Все значения machine-extracted из source documents в `data/external/`
+
+**Остальные файлы в `data/` — toolchain,** модель их не загружает:
+- `external/` — 14 source documents (HTML, PDF, ZIP)
+- `*.py` — 13 extraction + build scripts
+- `*-parsed.json`, `*-crosscheck.json` — 7 промежуточных файлов (потребляются build-скриптами)
+- `sources.json`, `sources-overlay.json` — входные манифесты для `build-sources-overlay.py`
 
 ---
 
