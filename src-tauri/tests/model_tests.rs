@@ -201,14 +201,14 @@ fn test_lab_range_deserialization() {
         "category": "ions_and_trace_metals",
         "test": "total serum iron - female",
         "type": "26, 50",
-        "low": null,
-        "high": "170",
+        "lower": null,
+        "upper": "170",
         "unit": "µg/dL"
     }"#;
     let lr: datasets::LabRange = serde_json::from_str(json).unwrap();
     assert_eq!(lr.category, "ions_and_trace_metals");
     assert_eq!(lr.unit, "µg/dL");
-    assert!(lr.low.is_none());
+    assert!(lr.lower.is_none());
 }
 
 #[test]

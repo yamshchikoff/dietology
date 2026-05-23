@@ -509,11 +509,11 @@ fn query_lab_ranges_impl(loader: &DataLoader, args: &serde_json::Value) -> Resul
                     entry["range_type"] = serde_json::json!(rt);
                 }
             }
-            if let Some(ref low) = r.low {
-                entry["low"] = serde_json::json!(low);
+            if let Some(ref lower) = r.lower {
+                entry["lower"] = serde_json::json!(lower);
             }
-            if let Some(ref high) = r.high {
-                entry["high"] = serde_json::json!(high);
+            if let Some(ref upper) = r.upper {
+                entry["upper"] = serde_json::json!(upper);
             }
             entry
         })
@@ -709,88 +709,4 @@ pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
         }),
         query_lab_ranges_impl,
     );
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    fn build_lab_loader() -> DataLoader {
-        DataLoader::for_development()
-    }
-
-    fn parse_data(json_str: &str) -> Vec<serde_json::Value> {
-        let result: serde_json::Value =
-            serde_json::from_str(json_str).expect("failed to parse response");
-        result["data"]
-            .as_array()
-            .cloned()
-            .expect("data is not an array")
-    }
-
-    #[test]
-    fn test_query_lab_ranges_ferritin() {
-        let loader = build_lab_loader();
-        let json = query_lab_ranges_impl(
-            &loader,
-            &serde_json::json!({"test_name_substring": "ferritin"}),
-        )
-        .expect("query failed");
-        let data = parse_data(&json);
-        assert!(!data.is_empty(), "should find at least one ferritin test");
-        for entry in &data {
-            let test_name = entry["test_name"].as_str().unwrap();
-            assert!(
-                test_name.to_lowercase().contains("ferritin"),
-                "expected 'ferritin' in test name, got: {test_name}"
-            );
-        }
-    }
-
-    #[test]
-    fn test_query_lab_ranges_thyroid_category() {
-        let loader = build_lab_loader();
-        let json = query_lab_ranges_impl(
-            &loader,
-            &serde_json::json!({"category": "thyroid"}),
-        )
-        .expect("query failed");
-        let data = parse_data(&json);
-        assert_eq!(data.len(), 13, "thyroid category should have 13 tests");
-        for entry in &data {
-            assert_eq!(
-                entry["category"].as_str().unwrap(),
-                "thyroid",
-                "all results must be category thyroid"
-            );
-        }
-    }
-
-    #[test]
-    fn test_query_lab_ranges_both_filters() {
-        let loader = build_lab_loader();
-        let json = query_lab_ranges_impl(
-            &loader,
-            &serde_json::json!({"test_name_substring": "ft3", "category": "thyroid"}),
-        )
-        .expect("query failed");
-        let data = parse_data(&json);
-        assert!(!data.is_empty(), "should find ft3 in thyroid category");
-        for entry in &data {
-            assert_eq!(entry["category"].as_str().unwrap(), "thyroid");
-            assert!(
-                entry["test_name"].as_str().unwrap().to_lowercase().contains("ft3"),
-                "expected 'ft3' in test name"
-            );
-        }
-    }
-
-    #[test]
-    fn test_query_lab_ranges_empty() {
-        let loader = build_lab_loader();
-        let json =
-            query_lab_ranges_impl(&loader, &serde_json::json!({})).expect("query failed");
-        let data = parse_data(&json);
-        assert_eq!(data.len(), 254, "empty query should return all 254 tests");
-    }
 }

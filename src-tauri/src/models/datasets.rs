@@ -89,9 +89,9 @@ pub struct LabRange {
     #[serde(rename = "type")]
     pub range_type: Option<String>,
     #[serde(default)]
-    pub low: Option<String>,
+    pub lower: Option<String>,
     #[serde(default)]
-    pub high: Option<String>,
+    pub upper: Option<String>,
     pub unit: String,
 }
 
