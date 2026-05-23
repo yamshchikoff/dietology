@@ -238,7 +238,7 @@ pub fn register_describe_tools(registry: &mut ToolRegistry, loader: &DataLoader)
         let l = loader.clone();
         registry.register(
             "describe_who_anaemia",
-            "Return valid enum values for WHO anaemia data (countries, years, severities)",
+            "Return valid enum values for WHO anaemia data (countries, years, sexes, severities)",
             empty_schema.clone(),
             Box::new(move |_args: &serde_json::Value| -> Result<String, String> {
                 let data: WhoEpiData = l
