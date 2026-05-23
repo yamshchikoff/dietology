@@ -6,10 +6,12 @@
       "https://nap.nationalacademies.org/catalog/25353",
       "https://nap.nationalacademies.org/resource/25353/030519DRISodiumPotassium.pdf"
     ],
-    "extraction_date": "2026-05-23T21:14:07Z",
+    "extraction_date": "2026-05-23T21:42:01Z",
     "extraction_script": "data/extract-nas-dri-2019.py",
     "extraction_method": "pdfplumber-text-strategy",
     "extracted_by": "agent",
+    "auto_generated": true,
+    "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
     "source_claims": {
       "presumed_date": "2019",
       "presumed_author": "National Academies of Sciences, Engineering, and Medicine"

@@ -5,10 +5,12 @@
       "https://www.who.int/data/gho/data/indicators/indicator-details/GHO/prevalence-of-anaemia-in-non-pregnant-women-estimates-technical-brief-(-)",
       "https://ghoapi.azureedge.net/api/NUTRITION_ANAEMIA_NONPREGNANT_PREV"
     ],
-    "extraction_date": "2026-05-22T19:55:01Z",
+    "extraction_date": "2026-05-23T21:42:13Z",
     "extraction_script": "data/extract-who-gho.py",
     "extraction_method": "OData API JSON dump → structured extraction",
     "extracted_by": "agent",
+    "auto_generated": true,
+    "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
     "license": "CC BY 4.0",
     "license_note": "WHO GHO data is published under CC BY 4.0. Attribution: World Health Organization, Global Health Observatory.",
     "source_claims": {

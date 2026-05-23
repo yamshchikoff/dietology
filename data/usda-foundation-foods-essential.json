@@ -1,9 +1,11 @@
 {
   "_meta": {
     "source_id": "usda-fdc-2026-04",
-    "extraction_date": "2026-05-23T20:58:58Z",
+    "extraction_date": "2026-05-23T21:44:27Z",
     "extraction_script": "data/extract-usda.py",
     "extracted_by": "agent",
+    "auto_generated": true,
+    "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
     "source_claims": {
       "presumed_date": "2026-04",
       "presumed_author": "USDA FoodData Central, Agricultural Research Service"

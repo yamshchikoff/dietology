@@ -3,7 +3,7 @@
     "schema": "dri-minerals-overlay-v1",
     "description": "Merged DRI values for 14 minerals: all values machine-parsed from IOM/NCBI/MSD/NAS/LPI sources at finest available granularity. All UL/UL_unit/UL_note machine-verified. 0 manual_transcription, 0 manual source file dependencies.",
     "build_script": "data/build-minerals-overlay.py",
-    "build_date": "2026-05-23T21:14:14Z",
+    "build_date": "2026-05-23T21:42:24Z",
     "sources": [
       "iom-dri-1997",
       "iom-dri-2011",
@@ -148,7 +148,6 @@
           "type": "RDA"
         }
       ],
-      "ul_unit": "mcg",
       "ul_note": "No UL established",
       "note": "Essentiality questioned by recent research (Vincent, J Nutr 2017). Values are AI."
     },

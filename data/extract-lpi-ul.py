@@ -153,6 +153,8 @@ def main():
             "extraction_script": "data/extract-lpi-ul.py",
             "extraction_method": "html-table-parser",
             "extracted_by": "agent",
+            "auto_generated": True,
+            "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
             "source_claims": {
                 "presumed_date": "2025",
                 "presumed_author": "Linus Pauling Institute, Oregon State University",

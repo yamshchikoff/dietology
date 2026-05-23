@@ -369,6 +369,8 @@ def main():
             "extraction_date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "extraction_script": "data/extract-wiki-lab-ranges.py",
             "extracted_by": "agent",
+            "auto_generated": True,
+            "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
             "source_claims": {
                 "presumed_date": "2026-05",
                 "presumed_author": "Wikipedia contributors. Reference ranges for blood tests. Wikipedia, The Free Encyclopedia."

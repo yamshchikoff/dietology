@@ -530,7 +530,7 @@ fn query_lab_ranges_impl(loader: &DataLoader, args: &serde_json::Value) -> Resul
     Ok(build_response(&data, data.len(), filters))
 }
 
-fn register_dri_query(
+fn register_query_tool(
     registry: &mut ToolRegistry,
     loader: &DataLoader,
     name: &str,
@@ -552,7 +552,7 @@ fn register_dri_query(
 /// Register all query tools (Phase 1 DRI + Phase 2 USDA Foods/WHO Hb + Phase 3 WHO GHO epidemiology).
 pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
     // Phase 1: DRI
-    register_dri_query(
+    register_query_tool(
         registry,
         loader,
         "query_dri_minerals",
@@ -571,7 +571,7 @@ pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
         query_dri_minerals_impl,
     );
 
-    register_dri_query(
+    register_query_tool(
         registry,
         loader,
         "query_dri_vitamins",
@@ -588,7 +588,7 @@ pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
         query_dri_vitamins_impl,
     );
 
-    register_dri_query(
+    register_query_tool(
         registry,
         loader,
         "query_dri_per_kg",
@@ -605,7 +605,7 @@ pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
     );
 
     // Phase 2: USDA Foods
-    register_dri_query(
+    register_query_tool(
         registry,
         loader,
         "query_usda_foods",
@@ -623,7 +623,7 @@ pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
     );
 
     // Phase 2: WHO Hb thresholds
-    register_dri_query(
+    register_query_tool(
         registry,
         loader,
         "query_who_hb",
@@ -641,7 +641,7 @@ pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
     );
 
     // Phase 3: WHO GHO epidemiology
-    register_dri_query(
+    register_query_tool(
         registry,
         loader,
         "query_who_anaemia",
@@ -658,7 +658,7 @@ pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
         query_who_anaemia_impl,
     );
 
-    register_dri_query(
+    register_query_tool(
         registry,
         loader,
         "query_who_bmi",
@@ -675,7 +675,7 @@ pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
         query_who_bmi_impl,
     );
 
-    register_dri_query(
+    register_query_tool(
         registry,
         loader,
         "query_who_diabetes",
@@ -694,7 +694,7 @@ pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
     );
 
     // Phase 4: Lab reference ranges
-    register_dri_query(
+    register_query_tool(
         registry,
         loader,
         "query_lab_ranges",

@@ -9,21 +9,12 @@
 
 ### TD-001: `register_dri_query` — обманчивое имя хелпера
 
-- **Статус:** open
+- **Статус:** resolved (2026-05-24)
 - **Создан:** 2026-05-23 (ревью Phase 4 query)
-- **Серьёзность:** low (не влияет на поведение, только на читаемость)
+- **Серьёзность:** low
 - **Источник:** [query.rs:533](src-tauri/src/tools/query.rs#L533)
 
-**Описание:** Функция `register_dri_query` создана в Phase 1 для регистрации трёх DRI query-инструментов. Но она полностью generic (принимает `handler_fn`) и используется для регистрации всех 9 query-инструментов: DRI, USDA Foods, WHO Hb, WHO GHO, Lab ranges.
-
-Имя вводит в заблуждение: читатель ожидает, что функция специфична для DRI, но это общий хелпер регистрации query.
-
-**Что переименовать:** `register_dri_query` → `register_query_tool` (единственное число, регистрирует один инструмент).
-
-**Затронутые файлы:**
-- `src-tauri/src/tools/query.rs` — определение функции (строка 533) + 9 мест вызова (строки 555, 574, 591, 608, 626, 644, 661, 678, 697)
-
-**Оценка:** 15 минут (поиск-и-замена в одном файле, 10 вхождений).
+**Исправление:** `register_dri_query` → `register_query_tool` — 1 определение + 9 мест вызова в `query.rs`.
 
 ### TD-002: Age range format fragmentation in DRI minerals overlay
 
@@ -38,14 +29,14 @@
 
 ### TD-003: Chromium `ul_unit` без `ul` ключа
 
-- **Статус:** open
+- **Статус:** resolved (2026-05-24)
 - **Создан:** 2026-05-23 (data quality audit, Phase 1)
 - **Серьёзность:** low (структурный крайний случай, Rust-модель обрабатывает)
-- **Источник:** `data/dri-minerals-overlay.json`
+- **Источник:** `data/dri-minerals-overlay.json`, extraction-скрипт `extract-msd-dri-parser.py:519`
 
-**Описание:** Chromium имеет `ul_unit: "mcg"` и `ul_note: "No UL established"`, но ключ `ul` отсутствует. Potassium и Sodium в той же ситуации не имеют ни `ul`, ни `ul_unit`. Несогласованность: Chromium имеет ul_unit без ul, K/Na не имеют обоих.
+**Описание:** Chromium имел `ul_unit: "mcg"` при `ul: null` — потому что extraction-скрипт всегда ставил `ul_unit` из `TRACE_MINERAL_UNITS`, игнорируя отсутствие UL. K/Na были консистентны (нет обоих). Витамины уже использовали правильный паттерн (строка 357: `ul_unit` только при `ul`).
 
-**Что сделать:** привести к единообразию — либо добавить `ul_unit` к K/Na, либо убрать у Chromium.
+**Исправление:** `extract-msd-dri-parser.py:519` — `ul_unit` теперь ставится только если `ul` не None (как в витаминной секции того же скрипта, строка 357). Перегенерированы `dri-minerals-parsed.json` и `dri-minerals-overlay.json`. Для Chromium: `ul: null`, `ul_unit: null`, `ul_note: "No UL established"` — соответствует источнику (MSD: UL not established).
 
 ### TD-004: Per-kg overlay без UL-данных
 

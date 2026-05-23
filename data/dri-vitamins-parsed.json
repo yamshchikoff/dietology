@@ -2,10 +2,12 @@
   "_meta": {
     "source_id": "msd-manual-dri",
     "source_file": "data/external/msd-manual-vitamins-2026-05.html",
-    "extraction_date": "2026-05-23T21:18:48Z",
+    "extraction_date": "2026-05-23T21:42:00Z",
     "extraction_script": "data/extract-msd-dri-parser.py",
     "extraction_method": "html-parser",
     "extracted_by": "agent",
+    "auto_generated": true,
+    "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
     "source_claims": {
       "presumed_date": "2024",
       "presumed_author": "Merck & Co., Inc., based on National Academies of Sciences, Engineering, and Medicine DRI reports"

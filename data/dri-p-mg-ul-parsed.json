@@ -6,10 +6,12 @@
       "https://lpi.oregonstate.edu/mic/minerals/phosphorus",
       "https://lpi.oregonstate.edu/mic/minerals/magnesium"
     ],
-    "extraction_date": "2026-05-21T23:57:47Z",
+    "extraction_date": "2026-05-23T21:42:00Z",
     "extraction_script": "data/extract-lpi-ul.py",
     "extraction_method": "html-table-parser",
     "extracted_by": "agent",
+    "auto_generated": true,
+    "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
     "source_claims": {
       "presumed_date": "2025",
       "presumed_author": "Linus Pauling Institute, Oregon State University",

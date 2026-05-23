@@ -37,8 +37,8 @@ ESSENTIAL_NUTRIENTS = [
     "Cholesterol",
 ]
 
-SRC = "external/usda-foundation-foods-2026-04.zip"
-DST = "usda-foundation-foods-essential.json"
+SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "external", "usda-foundation-foods-2026-04.zip")
+DST = os.path.join(os.path.dirname(os.path.abspath(__file__)), "usda-foundation-foods-essential.json")
 
 with zipfile.ZipFile(SRC) as zf:
     name = zf.namelist()[0]
@@ -75,6 +75,8 @@ wrapped = {
         "extraction_date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "extraction_script": "data/extract-usda.py",
         "extracted_by": "agent",
+        "auto_generated": True,
+        "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
         "source_claims": {
             "presumed_date": "2026-04",
             "presumed_author": "USDA FoodData Central, Agricultural Research Service"

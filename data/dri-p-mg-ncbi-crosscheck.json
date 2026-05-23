@@ -6,10 +6,12 @@
       "https://www.ncbi.nlm.nih.gov/books/NBK222881/table/ttt00057_1/"
     ],
     "source_note": "Machine-readable HTML version of IOM 1997 DRI summary tables hosted on NCBI Bookshelf. Parsed P and Mg values for dri-minerals-overlay assembly.",
-    "extraction_date": "2026-05-23T21:18:48Z",
+    "extraction_date": "2026-05-23T21:42:00Z",
     "extraction_script": "data/extract-msd-dri-parser.py",
     "extraction_method": "html-parser (NCBI Bookshelf ?report=objectonly)",
     "extracted_by": "agent",
+    "auto_generated": true,
+    "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
     "source_claims": {
       "presumed_date": "2000",
       "presumed_author": "Institute of Medicine, National Academies Press (via NCBI Bookshelf)"

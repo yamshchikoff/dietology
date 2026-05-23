@@ -349,6 +349,8 @@ def main():
             "extraction_script": "data/extract-who-hb.py",
             "extraction_method": "pdfplumber — machine extraction from WHO 2024 PDF Tables 2 and 3",
             "extracted_by": "agent",
+            "auto_generated": True,
+            "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
             "source_claims": {
                 "presumed_date": "2024",
                 "presumed_author": "World Health Organization, Geneva",

@@ -246,6 +246,8 @@ def main():
             "extraction_script": "data/extract-iom-dri.py",
             "extraction_method": "pdfplumber-text-strategy",
             "extracted_by": "agent",
+            "auto_generated": True,
+            "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
             "source_claims": {
                 "presumed_date": "2011",
                 "presumed_author": "Institute of Medicine, National Academies Press"

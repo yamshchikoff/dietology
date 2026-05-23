@@ -3,7 +3,7 @@
     "schema": "dri-vitamins-overlay-v1",
     "description": "DRI values for 11 vitamins: machine-parsed values and metadata from MSD Manual Professional HTML table. 0 manual transcription dependencies.",
     "build_script": "data/build-vitamins-overlay.py",
-    "build_date": "2026-05-21T23:57:47Z",
+    "build_date": "2026-05-23T21:42:24Z",
     "sources": [
       "msd-manual-dri"
     ],

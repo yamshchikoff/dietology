@@ -516,7 +516,7 @@ def parse_trace_minerals(rows):
                     "unit": TRACE_MINERAL_UNITS.get(name, ""),
                     "category": "trace_mineral",
                     "ul": TRACE_MINERAL_UL.get(name),
-                    "ul_unit": TRACE_MINERAL_UNITS.get(name, ""),
+                    "ul_unit": TRACE_MINERAL_UNITS.get(name, "") if TRACE_MINERAL_UL.get(name) else None,
                     "groups": [],
                 }
                 if TRACE_MINERAL_UL.get(name) is None:
@@ -901,6 +901,8 @@ def build_meta(source_id, source_file, html_filename, source_url=None, note=None
         "extraction_script": "data/extract-msd-dri-parser.py",
         "extraction_method": "html-parser",
         "extracted_by": "agent",
+        "auto_generated": True,
+        "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
         "source_claims": {
             "presumed_date": "2024",
             "presumed_author": "Merck & Co., Inc., based on National Academies of Sciences, Engineering, and Medicine DRI reports"
@@ -1015,6 +1017,8 @@ def main():
             "extraction_script": "data/extract-msd-dri-parser.py",
             "extraction_method": "html-parser (NCBI Bookshelf ?report=objectonly)",
             "extracted_by": "agent",
+            "auto_generated": True,
+            "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
             "source_claims": {
                 "presumed_date": "2000",
                 "presumed_author": "Institute of Medicine, National Academies Press (via NCBI Bookshelf)"

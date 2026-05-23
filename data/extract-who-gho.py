@@ -104,6 +104,8 @@ def extract_dataset(config):
             "extraction_script": "data/extract-who-gho.py",
             "extraction_method": "OData API JSON dump → structured extraction",
             "extracted_by": "agent",
+            "auto_generated": True,
+            "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
             "license": "CC BY 4.0",
             "license_note": "WHO GHO data is published under CC BY 4.0. Attribution: World Health Organization, Global Health Observatory.",
             "source_claims": {

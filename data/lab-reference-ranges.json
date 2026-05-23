@@ -2,9 +2,11 @@
   "_meta": {
     "source_id": "wikipedia-lab-ranges",
     "source_file": "data/external/wikipedia-lab-ranges-2026-05.html",
-    "extraction_date": "2026-05-23T20:33:41Z",
+    "extraction_date": "2026-05-23T21:42:13Z",
     "extraction_script": "data/extract-wiki-lab-ranges.py",
     "extracted_by": "agent",
+    "auto_generated": true,
+    "warning": "AUTO-GENERATED FILE. DO NOT EDIT MANUALLY. Run the extraction script to regenerate.",
     "source_claims": {
       "presumed_date": "2026-05",
       "presumed_author": "Wikipedia contributors. Reference ranges for blood tests. Wikipedia, The Free Encyclopedia."
