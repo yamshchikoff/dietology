@@ -198,3 +198,165 @@ fn test_query_dri_minerals_calcium_male_19_30yr() {
     assert_eq!(entry["unit"], "mg");
     assert_eq!(entry["age_range"], "19\u{2013}30y");
 }
+
+// ---- Phase 2: USDA Foods ----
+
+#[test]
+fn test_query_usda_foods_apple() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_usda_foods",
+        json!({"food_name_substring": "apple"}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert!(v["total_count"].as_u64().unwrap() >= 1);
+    assert_eq!(v["filters_applied"]["food_name_substring"], "apple");
+
+    let data = v["data"].as_array().unwrap();
+    for entry in data {
+        let name = entry["food_name"].as_str().unwrap().to_lowercase();
+        assert!(name.contains("apple"), "food_name must contain 'apple': {name}");
+    }
+}
+
+#[test]
+fn test_query_usda_foods_sort_by_iron() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_usda_foods",
+        json!({"nutrient": "Iron, Fe", "max_results": 5}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 5);
+    assert_eq!(v["filters_applied"]["nutrient"], "Iron, Fe");
+    assert_eq!(v["filters_applied"]["max_results"], 5);
+
+    let data = v["data"].as_array().unwrap();
+    assert_eq!(data.len(), 5);
+
+    // Verify sorted descending: first entry must have highest Iron
+    let first_iron = data[0]["Iron, Fe"].as_f64().unwrap_or(0.0);
+    let last_iron = data[4]["Iron, Fe"].as_f64().unwrap_or(0.0);
+    assert!(first_iron >= last_iron, "first Iron {first_iron} >= last Iron {last_iron}");
+}
+
+#[test]
+fn test_query_usda_foods_empty_filters() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_usda_foods",
+        json!({}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    let total = v["total_count"].as_u64().unwrap();
+    assert!(total <= 50, "default max_results=50, got {total}");
+    let data = v["data"].as_array().unwrap();
+    assert_eq!(data.len() as u64, total);
+}
+
+// ---- Phase 2: WHO Hb thresholds ----
+
+#[test]
+fn test_query_who_hb_children() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_who_hb",
+        json!({"age_group": "children"}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 4);
+    assert_eq!(v["filters_applied"]["age_group"], "children");
+
+    let data = v["data"].as_array().unwrap();
+    assert_eq!(data.len(), 4);
+
+    let groups: Vec<&str> = data.iter().map(|g| g["group"].as_str().unwrap()).collect();
+    assert!(groups.contains(&"children_6_23_months"));
+    assert!(groups.contains(&"children_24_59_months"));
+    assert!(groups.contains(&"children_5_11_years"));
+    assert!(groups.contains(&"children_12_14_years"));
+
+    for entry in data {
+        assert_eq!(entry["sex"], "any");
+        assert!(!entry["pregnant"].as_bool().unwrap());
+        assert!(entry["diagnostic_threshold_g_per_l"].is_number());
+        assert!(entry["diagnostic_threshold_g_per_dl"].is_number());
+        assert!(entry["severity_mild_low"].is_number());
+        assert!(entry["severity_mild_high"].is_number());
+        assert!(entry["severity_moderate_low"].is_number());
+        assert!(entry["severity_moderate_high"].is_number());
+        assert!(entry["severity_severe_below"].is_number());
+    }
+}
+
+#[test]
+fn test_query_who_hb_pregnant() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_who_hb",
+        json!({"pregnant": true}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 3);
+    assert_eq!(v["filters_applied"]["pregnant"], true);
+
+    let data = v["data"].as_array().unwrap();
+    assert_eq!(data.len(), 3);
+
+    let groups: Vec<&str> = data.iter().map(|g| g["group"].as_str().unwrap()).collect();
+    assert!(groups.contains(&"pregnant_first_trimester"));
+    assert!(groups.contains(&"pregnant_second_trimester"));
+    assert!(groups.contains(&"pregnant_third_trimester"));
+
+    for entry in data {
+        assert_eq!(entry["sex"], "female");
+        assert!(entry["pregnant"].as_bool().unwrap());
+        assert!(entry["diagnostic_threshold_g_per_l"].is_number());
+    }
+}
+
+#[test]
+fn test_query_who_hb_male() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_who_hb",
+        json!({"sex": "male"}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 1);
+    assert_eq!(v["filters_applied"]["sex"], "male");
+
+    let data = v["data"].as_array().unwrap();
+    assert_eq!(data.len(), 1);
+    assert_eq!(data[0]["group"], "men_15_plus");
+    assert_eq!(data[0]["sex"], "male");
+    assert_eq!(data[0]["diagnostic_threshold_g_per_l"], 130.0);
+}
+
+#[test]
+fn test_query_who_hb_all() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_who_hb",
+        json!({}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 9);
+
+    let data = v["data"].as_array().unwrap();
+    assert_eq!(data.len(), 9);
+}
