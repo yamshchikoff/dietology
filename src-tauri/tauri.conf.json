@@ -31,6 +31,18 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": []
+    "resources": [
+      "../data/sources-final.json",
+      "../data/data-index.json",
+      "../data/dri-minerals-overlay.json",
+      "../data/dri-vitamins-overlay.json",
+      "../data/dri-macronutrients-per-kg-overlay.json",
+      "../data/usda-foundation-foods-essential.json",
+      "../data/who-hb-thresholds.json",
+      "../data/who-anaemia-nonpregnant-prevalence.json",
+      "../data/who-bmi-overweight-prevalence.json",
+      "../data/who-diabetes-prevalence.json",
+      "../data/lab-reference-ranges.json"
+    ]
   }
 }
