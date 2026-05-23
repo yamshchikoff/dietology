@@ -11,8 +11,15 @@ pub struct ToolDefinition {
 /// Represents a tool invocation from the LLM
 #[derive(Debug, Clone, Deserialize)]
 pub struct ToolCall {
+    pub id: String,
+    #[serde(default = "default_tool_type")]
+    pub r#type: String,
     pub name: String,
     pub arguments: serde_json::Value,
+}
+
+fn default_tool_type() -> String {
+    "tool_use".to_string()
 }
 
 /// Result returned to the LLM

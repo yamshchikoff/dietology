@@ -33,6 +33,8 @@ fn test_dispatch_calls_correct_handler() {
         |args| Ok(args.to_string()),
     );
     let call = ToolCall {
+        id: "call_1".to_string(),
+        r#type: "tool_use".to_string(),
         name: "echo".to_string(),
         arguments: json!({"msg": "hello"}),
     };
@@ -44,6 +46,8 @@ fn test_dispatch_calls_correct_handler() {
 fn test_dispatch_unknown_tool_returns_error() {
     let registry = ToolRegistry::new();
     let call = ToolCall {
+        id: "call_1".to_string(),
+        r#type: "tool_use".to_string(),
         name: "nonexistent".to_string(),
         arguments: json!({}),
     };
@@ -76,6 +80,8 @@ fn test_describe_tool_returns_not_implemented() {
     let mut registry = ToolRegistry::new();
     dietology_lib::tools::registry::register_describe_tools(&mut registry);
     let call = ToolCall {
+        id: "call_1".to_string(),
+        r#type: "tool_use".to_string(),
         name: "describe_dri_minerals".to_string(),
         arguments: json!({}),
     };

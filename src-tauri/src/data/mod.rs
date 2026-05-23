@@ -1,3 +1,4 @@
+use crate::error::AppResult;
 use std::path::PathBuf;
 
 /// Registry of all 11 production JSON files (logical name → relative path from data/).
@@ -37,7 +38,7 @@ impl DataLoader {
     pub fn read_json<T: serde::de::DeserializeOwned>(
         &self,
         relative_path: &str,
-    ) -> Result<T, Box<dyn std::error::Error>> {
+    ) -> AppResult<T> {
         let bytes = self.read_bytes(relative_path)?;
         let value = serde_json::from_slice(&bytes)?;
         Ok(value)
@@ -45,14 +46,11 @@ impl DataLoader {
 }
 
 /// Verify all 11 production files are readable. Returns a Vec of missing file names.
-pub fn verify_all_production_files(
-    loader: &DataLoader,
-) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+pub fn verify_all_production_files(loader: &DataLoader) -> AppResult<Vec<String>> {
     let mut missing = Vec::new();
     for (_name, path) in PRODUCTION_FILES {
-        match loader.read_bytes(path) {
-            Ok(_) => {}
-            Err(_) => missing.push(path.to_string()),
+        if loader.read_bytes(path).is_err() {
+            missing.push(path.to_string());
         }
     }
     Ok(missing)

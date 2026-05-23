@@ -84,6 +84,38 @@ fn test_dri_invalid_json_returns_error() {
     assert!(result.is_err());
 }
 
+#[test]
+fn test_dri_overlay_from_file_reads_production_json() {
+    let loader = dietology_lib::data::DataLoader::for_development();
+    let overlay =
+        dri::DriOverlay::from_file(&loader, "dri-minerals-overlay.json").unwrap();
+    assert!(!overlay.nutrients.is_empty(), "DRI minerals overlay should have nutrients");
+    let calcium = overlay.nutrients.iter().find(|n| n.name == "Calcium");
+    assert!(calcium.is_some(), "should contain Calcium");
+    assert_eq!(calcium.unwrap().unit, "mg");
+}
+
+#[test]
+fn test_dri_overlay_from_file_nonexistent_returns_error() {
+    let loader = dietology_lib::data::DataLoader::for_development();
+    let result = dri::DriOverlay::from_file(&loader, "nonexistent.json");
+    assert!(result.is_err());
+}
+
+#[test]
+fn test_food_invalid_json_returns_error() {
+    let json = r#"{"not_food": true}"#;
+    let result: Result<datasets::Food, _> = serde_json::from_str(json);
+    assert!(result.is_err());
+}
+
+#[test]
+fn test_lab_range_invalid_json_returns_error() {
+    let json = r#"{"not_lab": true}"#;
+    let result: Result<datasets::LabRange, _> = serde_json::from_str(json);
+    assert!(result.is_err());
+}
+
 // ============ USDA Foods tests ============
 
 #[test]

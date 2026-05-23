@@ -3,7 +3,18 @@ use std::path::PathBuf;
 #[test]
 fn test_data_loader_new_resolves_explicit_path() {
     let path = PathBuf::from("/tmp/test-data");
-    let _loader = dietology_lib::data::DataLoader::new(path.clone());
+    let loader = dietology_lib::data::DataLoader::new(path.clone());
+    let result = loader.read_bytes("any-file.json");
+    assert!(result.is_err());
+}
+
+#[test]
+fn test_data_loader_read_json_deserializes_manifest() {
+    let loader = dietology_lib::data::DataLoader::for_development();
+    let index: dietology_lib::models::manifest::DataIndex =
+        loader.read_json("data-index.json").unwrap();
+    assert!(!index.datasets.is_empty(), "data-index should have datasets");
+    assert!(index.stats.total_dri_nutrients > 0);
 }
 
 #[test]
