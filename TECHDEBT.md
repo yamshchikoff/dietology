@@ -57,3 +57,38 @@
 **Описание:** Все 3 нутриента (Ca, P, Mg per-kg) не имеют UL-полей. LPI предоставляет UL для Phosphorus (4000 mg) и Magnesium (350 mg supplemental), но не для Calcium per-kg.
 
 **Что сделать:** добавить UL для P и Mg per-kg из LPI, задокументировать отсутствие UL для Ca per-kg.
+
+### TD-005: Energy unit inconsistency in USDA foods
+
+- **Статус:** open
+- **Создан:** 2026-05-23 (data quality audit, Phase 2)
+- **Серьёзность:** low (не баг, данные из источника)
+- **Источник:** `data/usda-foundation-foods-essential.json`
+
+**Описание:** Из 363 foods, 95 имеют поле Energy. Из них 59 используют `kJ`, 36 — `kcal`. Нет ни одного food с обоими unit. Потребитель должен проверять unit перед сравнением — простое сравнение "amount > 500" без учёта unit даст ошибочный результат для kJ.
+
+**Что сделать:** добавить конвертацию в унифицированный unit в query-слое, либо задокументировать в `dataset-4-usda-foods.md` с предупреждением.
+
+### TD-006: WHO Hb group name mismatch diagnostic vs severity
+
+- **Статус:** open
+- **Создан:** 2026-05-23 (data quality audit, Phase 2)
+- **Серьёзность:** low (обрабатывается в query.rs через `find_severity`)
+- **Источник:** `data/who-hb-thresholds.json`
+
+**Описание:** Группы в diagnostic_thresholds используют `men_15_plus` и `non_pregnant_women_15_plus`, а в severity_classification — `men_15_65` и `non_pregnant_women_15_65`. Различие отражает исходный PDF: Table 2 (diagnostic) покрывает 15+ лет, Table 3 (severity) — 15–65 лет. Но для кросс-референсинга это создаёт неоднозначность.
+
+**Как обрабатывается:** `query_who_hb` в `query.rs` использует `find_severity` fallback: если `group_id == "men_15_plus"` → ищет severity для `"men_15_65"`. Аналогично для non_pregnant_women.
+
+**Что сделать:** унифицировать имена групп (добавить `_15_plus` severity-группы как алиасы) либо оставить как есть с документированием.
+
+### TD-007: WHO Hb severity boundary overlap (moderate_low == severe_below)
+
+- **Статус:** open
+- **Создан:** 2026-05-23 (data quality audit, Phase 2)
+- **Серьёзность:** low (по дизайну WHO)
+- **Источник:** `data/who-hb-thresholds.json`
+
+**Описание:** Для всех 9 severity-групп `moderate_low == severe_below` (70 или 80 g/L). WHO определяет severe anaemia как строго меньше (<) порога, moderate — как ≥ moderate_low. Значение точно на пороге (70 или 80) попадает в moderate, не в severe. Это корректно по дизайну WHO, но может сбивать с толку при автоматической обработке.
+
+**Что сделать:** задокументировать в `dataset-5-who-hb-thresholds.md`, что границы inclusive/exclusive различаются для moderate (≥ low) и severe (< below).

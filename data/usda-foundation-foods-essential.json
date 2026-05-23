@@ -1,7 +1,7 @@
 {
   "_meta": {
     "source_id": "usda-fdc-2026-04",
-    "extraction_date": "2026-05-21T23:57:47Z",
+    "extraction_date": "2026-05-23T20:58:58Z",
     "extraction_script": "data/extract-usda.py",
     "extracted_by": "agent",
     "source_claims": {
@@ -20618,7 +20618,7 @@
           "unit": "g"
         },
         "Carbohydrate, by difference": {
-          "amount": -0.475,
+          "amount": 0.0,
           "unit": "g"
         }
       }
@@ -20669,7 +20669,7 @@
           "unit": "g"
         },
         "Carbohydrate, by difference": {
-          "amount": -0.173,
+          "amount": 0.0,
           "unit": "g"
         }
       }
@@ -20720,7 +20720,7 @@
           "unit": "g"
         },
         "Carbohydrate, by difference": {
-          "amount": -0.459,
+          "amount": 0.0,
           "unit": "g"
         }
       }
@@ -20771,7 +20771,7 @@
           "unit": "g"
         },
         "Carbohydrate, by difference": {
-          "amount": -0.428,
+          "amount": 0.0,
           "unit": "g"
         }
       }
@@ -20822,7 +20822,7 @@
           "unit": "g"
         },
         "Carbohydrate, by difference": {
-          "amount": -0.251,
+          "amount": 0.0,
           "unit": "g"
         }
       }
@@ -20873,7 +20873,7 @@
           "unit": "g"
         },
         "Carbohydrate, by difference": {
-          "amount": -0.15,
+          "amount": 0.0,
           "unit": "g"
         }
       }
@@ -21073,7 +21073,7 @@
           "unit": "mg"
         },
         "Carbohydrate, by difference": {
-          "amount": -0.562,
+          "amount": 0.0,
           "unit": "g"
         },
         "Protein": {
@@ -21128,7 +21128,7 @@
           "unit": "g"
         },
         "Carbohydrate, by difference": {
-          "amount": -0.705,
+          "amount": 0.0,
           "unit": "g"
         }
       }
@@ -22034,7 +22034,7 @@
           "unit": "mg"
         },
         "Carbohydrate, by difference": {
-          "amount": -0.06,
+          "amount": 0.0,
           "unit": "g"
         },
         "Protein": {
@@ -22981,7 +22981,7 @@
           "unit": "g"
         },
         "Carbohydrate, by difference": {
-          "amount": -0.104,
+          "amount": 0.0,
           "unit": "g"
         }
       }

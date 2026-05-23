@@ -59,8 +59,11 @@ for food in foods:
     for n in food.get("foodNutrients", []):
         name = n["nutrient"]["name"]
         if name in ESSENTIAL_NUTRIENTS:
+            amount = n.get("amount")
+            if amount is not None and isinstance(amount, (int, float)) and amount < 0:
+                amount = 0.0
             item["nutrients"][name] = {
-                "amount": n.get("amount"),
+                "amount": amount,
                 "unit": n["nutrient"].get("unitName", ""),
             }
     if item["nutrients"]:
