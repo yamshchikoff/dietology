@@ -21,7 +21,7 @@ Tauri shell (tauri v2)
        data/*.json      11 production JSON-файлов (bundled as Tauri resources)
 ```
 
-**Принцип:** модели — чистые serde-структуры. Данные читаются через `DataLoader::read_json::<T>(path)`, который десериализует JSON напрямую в типизированную модель (serde игнорирует `_meta` по умолчанию). Describe/query инструменты вызывают DataLoader и возвращают результаты через ToolRegistry.
+**Принцип:** модель (DeepSeek) не видит файлы напрямую — только через инструменты. Все вызовы `query_*` и `describe_*` идут через ToolRegistry → DataLoader → JSON на диске. Serde-структуры в `models/` — чистое описание формы данных, десериализуются через `DataLoader::read_json::<T>(path)` (serde игнорирует `_meta` по умолчанию).
 
 ## 2. Дерево модулей
 
@@ -113,7 +113,7 @@ let result = registry.dispatch(&tool_call);  // → ToolResult
 | `describe_who_diabetes` | 3 | placeholder |
 | `describe_lab_ranges` | 4 | placeholder |
 
-## 5. Serde-модели и паттерн игнорирования `_meta`
+## 5. Serde-структуры и паттерн игнорирования `_meta`
 
 **Проблема:** все production JSON содержат `_meta` на верхнем уровне, но схема `_meta` разная у разных файлов.
 
