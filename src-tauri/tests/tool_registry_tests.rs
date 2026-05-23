@@ -76,22 +76,70 @@ fn test_register_describe_tools_registers_nine() {
     assert!(names.contains(&"describe_lab_ranges"));
 }
 
-#[test]
-fn test_describe_tool_returns_not_implemented() {
-    let mut registry = ToolRegistry::new();
-    let loader = dietology_lib::data::DataLoader::for_development();
-    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
+fn call_describe(registry: &ToolRegistry, name: &str) -> serde_json::Value {
     let call = ToolCall {
         id: "call_1".to_string(),
         r#type: "tool_use".to_string(),
-        name: "describe_dri_minerals".to_string(),
+        name: name.to_string(),
         arguments: json!({}),
     };
     let result = registry.dispatch(&call).unwrap();
-    assert!(
-        result.content.contains("not_implemented"),
-        "describe placeholder should return not_implemented status"
-    );
+    serde_json::from_str(&result.content).unwrap()
+}
+
+#[test]
+fn test_describe_dri_minerals() {
+    let mut registry = ToolRegistry::new();
+    let loader = dietology_lib::data::DataLoader::for_development();
+    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
+
+    let v = call_describe(&registry, "describe_dri_minerals");
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["nutrients"].as_array().unwrap().len(), 14);
+    assert!(v["nutrients"].as_array().unwrap().iter().any(|n| n == "Calcium"));
+    assert!(v["nutrients"].as_array().unwrap().iter().any(|n| n == "Zinc"));
+    assert!(v["groups"].as_array().unwrap().len() > 0);
+    assert_eq!(v["sexes"].as_array().unwrap().len(), 2);
+    assert!(v["sexes"].as_array().unwrap().iter().any(|s| s == "male"));
+    assert!(v["sexes"].as_array().unwrap().iter().any(|s| s == "female"));
+    assert_eq!(v["total_groups"], 254);
+}
+
+#[test]
+fn test_describe_dri_vitamins() {
+    let mut registry = ToolRegistry::new();
+    let loader = dietology_lib::data::DataLoader::for_development();
+    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
+
+    let v = call_describe(&registry, "describe_dri_vitamins");
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["nutrients"].as_array().unwrap().len(), 11);
+    assert!(v["nutrients"].as_array().unwrap().iter().any(|n| n == "Folate"));
+    assert!(v["nutrients"].as_array().unwrap().iter().any(|n| n == "Vitamin C"));
+    assert!(v["groups"].as_array().unwrap().len() > 0);
+    assert_eq!(v["sexes"].as_array().unwrap().len(), 2);
+    assert!(v["sexes"].as_array().unwrap().iter().any(|s| s == "male"));
+    assert!(v["sexes"].as_array().unwrap().iter().any(|s| s == "female"));
+    assert_eq!(v["total_groups"], 154);
+}
+
+#[test]
+fn test_describe_dri_per_kg() {
+    let mut registry = ToolRegistry::new();
+    let loader = dietology_lib::data::DataLoader::for_development();
+    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
+
+    let v = call_describe(&registry, "describe_dri_per_kg");
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["nutrients"].as_array().unwrap().len(), 3);
+    assert!(v["nutrients"].as_array().unwrap().iter().any(|n| n == "Calcium"));
+    assert!(v["groups"].as_array().unwrap().len() > 0);
+    assert_eq!(v["total_groups"], 51);
+    assert_eq!(v["unit"], "mg/kg");
+    assert!(!v["note"].as_str().unwrap().is_empty());
 }
 
 #[test]
