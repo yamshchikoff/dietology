@@ -81,3 +81,18 @@ pub enum LlmError {
     MaxToolRounds(u8),
     MissingApiKey,
 }
+
+impl std::fmt::Display for LlmError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Network(msg) => write!(f, "network error: {msg}"),
+            Self::Api { status, body } => write!(f, "API error {status}: {body}"),
+            Self::Parse(msg) => write!(f, "parse error: {msg}"),
+            Self::ToolDispatch(msg) => write!(f, "tool dispatch error: {msg}"),
+            Self::MaxToolRounds(n) => write!(f, "exceeded max tool rounds ({n})"),
+            Self::MissingApiKey => write!(f, "DEEPSEEK_API_KEY not set"),
+        }
+    }
+}
+
+impl std::error::Error for LlmError {}
