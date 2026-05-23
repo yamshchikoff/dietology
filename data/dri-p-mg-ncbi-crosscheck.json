@@ -5,8 +5,8 @@
     "source_urls": [
       "https://www.ncbi.nlm.nih.gov/books/NBK222881/table/ttt00057_1/"
     ],
-    "source_note": "Machine-readable HTML version of IOM 1997 DRI summary tables hosted on NCBI Bookshelf. Same Tier A source as IOM 1997 PDF but machine-parseable. Used for cross-verification of P and Mg values.",
-    "extraction_date": "2026-05-23T21:14:07Z",
+    "source_note": "Machine-readable HTML version of IOM 1997 DRI summary tables hosted on NCBI Bookshelf. Parsed P and Mg values for dri-minerals-overlay assembly.",
+    "extraction_date": "2026-05-23T21:18:48Z",
     "extraction_script": "data/extract-msd-dri-parser.py",
     "extraction_method": "html-parser (NCBI Bookshelf ?report=objectonly)",
     "extracted_by": "agent",
@@ -14,16 +14,6 @@
       "presumed_date": "2000",
       "presumed_author": "Institute of Medicine, National Academies Press (via NCBI Bookshelf)"
     }
-  },
-  "crosscheck_summary": {
-    "total_groups": 0,
-    "match": 0,
-    "partial_match": 0,
-    "mismatch": 0,
-    "unknown_group": 0,
-    "not_in_ncbi": 0,
-    "all_match": null,
-    "note": "Cross-verification skipped — dri-minerals.json (manual reference) not available."
   },
   "ncbi_entries": [
     {
@@ -422,6 +412,5 @@
       "is_ai": false,
       "ncbi_raw": "320"
     }
-  ],
-  "crosscheck_results": null
+  ]
 }

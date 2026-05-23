@@ -29,9 +29,6 @@ MACRONUTRIENTS_PER_KG_OUT = os.path.join(SCRIPT_DIR, "dri-macronutrients-per-kg-
 NCBI_HTML = os.path.join(EXTERNAL_DIR, "ncbi-iom1997-dri-rda-ai.html")
 NCBI_CROSSCHECK_OUT = os.path.join(SCRIPT_DIR, "dri-p-mg-ncbi-crosscheck.json")
 
-VITAMINS_EXISTING = os.path.join(SCRIPT_DIR, "dri-vitamins.json")
-MINERALS_EXISTING = os.path.join(SCRIPT_DIR, "dri-minerals.json")
-
 # Real MSD Manual URLs for each source HTML file
 SOURCE_URLS = {
     "msd-manual-vitamins-2026-05.html":
@@ -891,166 +888,6 @@ def _parse_ncbi_value(raw):
             return None
 
 
-def crosscheck_ncbi(ncbi_entries, dri_file):
-    """Cross-verify NCBI-extracted P and Mg values against dri-minerals.json.
-
-    Returns (crosscheck_report, all_match).
-    """
-    with open(dri_file) as f:
-        dri = json.load(f)
-
-    dri_lookup = {}
-    for n in dri["nutrients"]:
-        if n["name"] not in ("Phosphorus", "Magnesium"):
-            continue
-        for g in n.get("groups", []):
-            key = (n["name"], g["group"])
-            dri_lookup[key] = {
-                "value": g["value"],
-                "type": g.get("type", "RDA"),
-                "sex": g.get("sex", "any"),
-                "age_range": g.get("age_range", ""),
-            }
-
-    # Group NCBI entries by (nutrient, group_id)
-    from collections import defaultdict
-    ncbi_by_group = defaultdict(list)
-    for e in ncbi_entries:
-        ncbi_by_group[(e["nutrient"], e["group_id"])].append(e)
-
-    results = []
-    all_match = True
-
-    for (nutrient, group_id), entries in ncbi_by_group.items():
-        dri_entry = dri_lookup.get((nutrient, group_id))
-        if not dri_entry:
-            results.append({
-                "nutrient": nutrient,
-                "group_id": group_id,
-                "status": "UNKNOWN_GROUP",
-                "ncbi_values": [e["value"] for e in entries],
-                "ncbi_details": [f"{e['category']} {e['age_label']}: {e['value']}" for e in entries],
-                "dri_value": None,
-            })
-            all_match = False
-            continue
-
-        dri_val = dri_entry["value"]
-        ncbi_values = [e["value"] for e in entries]
-
-        # Check if all NCBI values for this group equal the DRI value
-        all_equal = all(v == dri_val for v in ncbi_values)
-
-        if all_equal:
-            results.append({
-                "nutrient": nutrient,
-                "group_id": group_id,
-                "status": "MATCH",
-                "ncbi_values": ncbi_values,
-                "ncbi_details": [f"{e['category']} {e['age_label']}: {e['value']}" for e in entries],
-                "dri_value": dri_val,
-            })
-        else:
-            all_match = False
-            # Check if any matches
-            any_match = any(v == dri_val for v in ncbi_values)
-            results.append({
-                "nutrient": nutrient,
-                "group_id": group_id,
-                "status": "PARTIAL_MATCH" if any_match else "MISMATCH",
-                "ncbi_values": ncbi_values,
-                "ncbi_details": [f"{e['category']} {e['age_label']}: {e['value']}" for e in entries],
-                "dri_value": dri_val,
-            })
-
-    # Also check for DRI groups not in NCBI
-    ncbi_group_ids = set((e["nutrient"], e["group_id"]) for e in ncbi_entries)
-    for (nutrient, group_id), dri_entry in dri_lookup.items():
-        if (nutrient, group_id) not in ncbi_group_ids:
-            results.append({
-                "nutrient": nutrient,
-                "group_id": group_id,
-                "status": "NOT_IN_NCBI",
-                "ncbi_values": [],
-                "ncbi_details": [],
-                "dri_value": dri_entry["value"],
-            })
-
-    return results, all_match
-
-
-# ── Comparison ─────────────────────────────────────────────────────
-
-def compare(parsed_file, existing_file, label):
-    """Compare parsed vs existing JSON. Match groups by nutrient + age_range + sex (semantic), not group_id."""
-    with open(parsed_file) as f:
-        parsed = json.load(f)
-    with open(existing_file) as f:
-        existing = json.load(f)
-
-    parsed_nutrients = {n["name"]: n for n in parsed.get("nutrients", [])}
-    existing_nutrients = {n["name"]: n for n in existing.get("nutrients", [])}
-
-    print(f"\n{'='*60}")
-    print(f"Comparison: {label}")
-    print(f"{'='*60}")
-
-    total_parsed = sum(len(n.get("groups", [])) for n in parsed.get("nutrients", []))
-    total_existing = sum(len(n.get("groups", [])) for n in existing.get("nutrients", []))
-    print(f"  Parsed: {len(parsed.get('nutrients',[]))} nutrients, {total_parsed} groups")
-    print(f"  Existing: {len(existing.get('nutrients',[]))} nutrients, {total_existing} groups")
-
-    all_values_match = True
-    value_mismatches = []
-
-    for name in sorted(set(parsed_nutrients) & set(existing_nutrients)):
-        pn = parsed_nutrients[name]
-        en = existing_nutrients[name]
-
-        # Build lookup by (age_range, sex) for semantic comparison
-        p_by_key = {(g["age_range"], g["sex"]): g["value"] for g in pn.get("groups", [])}
-        e_by_key = {(g["age_range"], g["sex"]): g["value"] for g in en.get("groups", [])}
-
-        # Check matching keys
-        common = set(p_by_key) & set(e_by_key)
-        for key in sorted(common):
-            if p_by_key[key] != e_by_key[key]:
-                value_mismatches.append((name, key, p_by_key[key], e_by_key[key]))
-                all_values_match = False
-
-        # Keys in parsed but not in existing (different granularity — expected)
-        only_parsed = set(p_by_key) - set(e_by_key)
-        only_existing = set(e_by_key) - set(p_by_key)
-
-    if all_values_match:
-        print("  ALL OVERLAPPING VALUES MATCH — no numeric discrepancies.")
-    else:
-        print(f"  {len(value_mismatches)} VALUE MISMATCHES (same age/sex, different numbers):")
-        for name, key, pv, ev in value_mismatches:
-            delta = pv - ev if isinstance(pv, (int, float)) and isinstance(ev, (int, float)) else ""
-            print(f"    {name} {key}: parsed={pv}, existing={ev} Δ={delta}")
-
-    # Report structural differences (group granularity)
-    only_in_parsed = set(parsed_nutrients) - set(existing_nutrients)
-    only_in_existing = set(existing_nutrients) - set(parsed_nutrients)
-    if only_in_parsed:
-        print(f"  Only in parsed: {sorted(only_in_parsed)}")
-    if only_in_existing:
-        print(f"  Only in existing: {sorted(only_in_existing)}")
-
-    # Count groups with different granularity
-    granularity_diff = 0
-    for name in set(parsed_nutrients) & set(existing_nutrients):
-        pg = len(parsed_nutrients[name].get("groups", []))
-        eg = len(existing_nutrients[name].get("groups", []))
-        if pg != eg:
-            granularity_diff += 1
-    if granularity_diff:
-        print(f"  Nutrients with different group count: {granularity_diff} (parser preserves MSD granularity)")
-
-    return all_values_match
-
-
 # ── Main ───────────────────────────────────────────────────────────
 
 def build_meta(source_id, source_file, html_filename, source_url=None, note=None):
@@ -1158,7 +995,7 @@ def main():
         json.dump(output, f, ensure_ascii=False, indent=2)
     print(f"  Written to {MACRONUTRIENTS_PER_KG_OUT}")
 
-    # ── NCBI IOM 1997 Cross-verification (P and Mg) ──
+    # ── NCBI IOM 1997 (P and Mg raw data for overlay) ──
     print()
     print("Parsing NCBI Bookshelf IOM 1997 RDA/AI table...")
     ncbi_entries = parse_ncbi_dri_table(NCBI_HTML)
@@ -1166,69 +1003,6 @@ def main():
     mg_count = sum(1 for e in ncbi_entries if e["nutrient"] == "Magnesium")
     print(f"  Extracted {p_count} P entries, {mg_count} Mg entries from NCBI table")
 
-    if os.path.exists(MINERALS_EXISTING):
-        print()
-        print("Cross-verifying NCBI values against dri-minerals.json...")
-        ncbi_results, ncbi_all_match = crosscheck_ncbi(ncbi_entries, MINERALS_EXISTING)
-
-        match_count = sum(1 for r in ncbi_results if r["status"] == "MATCH")
-        partial_count = sum(1 for r in ncbi_results if r["status"] == "PARTIAL_MATCH")
-        mismatch_count = sum(1 for r in ncbi_results if r["status"] == "MISMATCH")
-        unknown_count = sum(1 for r in ncbi_results if r["status"] == "UNKNOWN_GROUP")
-        not_in_ncbi = sum(1 for r in ncbi_results if r["status"] == "NOT_IN_NCBI")
-
-        print(f"  MATCH: {match_count}")
-        if partial_count:
-            print(f"  PARTIAL_MATCH: {partial_count}")
-            for r in ncbi_results:
-                if r["status"] == "PARTIAL_MATCH":
-                    print(f"    {r['nutrient']} / {r['group_id']}:")
-                    print(f"      NCBI: {', '.join(r['ncbi_details'])}")
-                    print(f"      DRI:  {r['dri_value']}")
-        if mismatch_count:
-            print(f"  MISMATCH: {mismatch_count}")
-            for r in ncbi_results:
-                if r["status"] == "MISMATCH":
-                    print(f"    {r['nutrient']} / {r['group_id']}:")
-                    print(f"      NCBI: {', '.join(r['ncbi_details'])}")
-                    print(f"      DRI:  {r['dri_value']}")
-        if unknown_count:
-            print(f"  UNKNOWN_GROUP: {unknown_count}")
-        if not_in_ncbi:
-            print(f"  NOT_IN_NCBI: {not_in_ncbi} (groups in dri-minerals.json not in NCBI table)")
-            for r in ncbi_results:
-                if r["status"] == "NOT_IN_NCBI":
-                    print(f"    {r['nutrient']} / {r['group_id']}: DRI value = {r['dri_value']}")
-
-        crosscheck_summary = {
-            "total_groups": len(ncbi_results),
-            "match": match_count,
-            "partial_match": partial_count,
-            "mismatch": mismatch_count,
-            "unknown_group": unknown_count,
-            "not_in_ncbi": not_in_ncbi,
-            "all_match": ncbi_all_match,
-        }
-
-        if ncbi_all_match:
-            print("  NCBI CROSSCHECK: 100% match — all P and Mg values confirmed.")
-        else:
-            print("  NCBI CROSSCHECK: discrepancies found — review crosscheck_results in output.")
-    else:
-        print("  Skipping cross-verification: dri-minerals.json not found (validation-only, results already committed).")
-        ncbi_results = None
-        crosscheck_summary = {
-            "total_groups": 0,
-            "match": 0,
-            "partial_match": 0,
-            "mismatch": 0,
-            "unknown_group": 0,
-            "not_in_ncbi": 0,
-            "all_match": None,
-            "note": "Cross-verification skipped — dri-minerals.json (manual reference) not available.",
-        }
-
-    # Write crosscheck
     ncbi_output = {
         "_meta": {
             "source_id": "ncbi-iom1997-summary",
@@ -1236,7 +1010,7 @@ def main():
             "source_urls": [
                 "https://www.ncbi.nlm.nih.gov/books/NBK222881/table/ttt00057_1/"
             ],
-            "source_note": "Machine-readable HTML version of IOM 1997 DRI summary tables hosted on NCBI Bookshelf. Same Tier A source as IOM 1997 PDF but machine-parseable. Used for cross-verification of P and Mg values.",
+            "source_note": "Machine-readable HTML version of IOM 1997 DRI summary tables hosted on NCBI Bookshelf. Parsed P and Mg values for dri-minerals-overlay assembly.",
             "extraction_date": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "extraction_script": "data/extract-msd-dri-parser.py",
             "extraction_method": "html-parser (NCBI Bookshelf ?report=objectonly)",
@@ -1246,7 +1020,6 @@ def main():
                 "presumed_author": "Institute of Medicine, National Academies Press (via NCBI Bookshelf)"
             },
         },
-        "crosscheck_summary": crosscheck_summary,
         "ncbi_entries": [
             {
                 "nutrient": e["nutrient"],
@@ -1259,30 +1032,10 @@ def main():
             }
             for e in ncbi_entries
         ],
-        "crosscheck_results": ncbi_results,
     }
     with open(NCBI_CROSSCHECK_OUT, "w") as f:
         json.dump(ncbi_output, f, ensure_ascii=False, indent=2)
     print(f"  Written to {NCBI_CROSSCHECK_OUT}")
-
-    # ── Compare with existing (validation-only, skipped if reference files absent) ──
-    if os.path.exists(VITAMINS_EXISTING):
-        vitamins_ok = compare(VITAMINS_OUT, VITAMINS_EXISTING, "Vitamins")
-    else:
-        print("\n  Skipping vitamins comparison: dri-vitamins.json not found (validation-only, parser output is production).")
-        vitamins_ok = True
-
-    if os.path.exists(MINERALS_EXISTING):
-        minerals_ok = compare(MINERALS_OUT, MINERALS_EXISTING, "Trace Minerals")
-    else:
-        print("  Skipping minerals comparison: dri-minerals.json not found (validation-only, parser output is production).")
-        minerals_ok = True
-
-    print()
-    if vitamins_ok and minerals_ok:
-        print("RESULT: All parsed values match existing data.")
-    else:
-        print("RESULT: Discrepancies found — review above.")
 
 
 if __name__ == "__main__":
