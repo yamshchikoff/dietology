@@ -4,6 +4,18 @@ use crate::tools::registry::{ToolCall, ToolRegistry};
 
 use super::types::{ApiRequest, ApiResponse, ContentBlock, LlmError, LlmResponse, Message, Usage};
 
+fn extract_text(response: &ApiResponse) -> String {
+    response
+        .content
+        .iter()
+        .filter_map(|block| match block {
+            ContentBlock::Text { text } => Some(text.clone()),
+            _ => None,
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
 pub struct LlmClient {
     pub api_base_url: String,
     pub api_key: String,
@@ -139,19 +151,9 @@ impl LlmClient {
 
             match response.stop_reason.as_str() {
                 "end_turn" => {
-                    let final_text = response
-                        .content
-                        .iter()
-                        .filter_map(|block| match block {
-                            ContentBlock::Text { text } => Some(text.clone()),
-                            _ => None,
-                        })
-                        .collect::<Vec<_>>()
-                        .join("\n");
-
                     return Ok(LlmResponse {
                         messages: messages.clone(),
-                        final_text,
+                        final_text: extract_text(&response),
                         visualization_json: None,
                         usage: total_usage,
                     });
@@ -164,19 +166,9 @@ impl LlmClient {
                         .collect();
 
                     if tool_uses.is_empty() {
-                        let final_text = response
-                            .content
-                            .iter()
-                            .filter_map(|block| match block {
-                                ContentBlock::Text { text } => Some(text.clone()),
-                                _ => None,
-                            })
-                            .collect::<Vec<_>>()
-                            .join("\n");
-
                         return Ok(LlmResponse {
                             messages: messages.clone(),
-                            final_text,
+                            final_text: extract_text(&response),
                             visualization_json: None,
                             usage: total_usage,
                         });
@@ -198,23 +190,10 @@ impl LlmClient {
                         content: tool_results,
                     });
                 }
-                _ => {
-                    let final_text = response
-                        .content
-                        .iter()
-                        .filter_map(|block| match block {
-                            ContentBlock::Text { text } => Some(text.clone()),
-                            _ => None,
-                        })
-                        .collect::<Vec<_>>()
-                        .join("\n");
-
-                    return Ok(LlmResponse {
-                        messages: messages.clone(),
-                        final_text,
-                        visualization_json: None,
-                        usage: total_usage,
-                    });
+                other => {
+                    return Err(LlmError::Parse(format!(
+                        "unexpected stop_reason: {other}"
+                    )));
                 }
             }
         }
