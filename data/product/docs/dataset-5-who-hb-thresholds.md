@@ -33,10 +33,14 @@
 - `group` — диагностическая группа (строка)
 - `sex` — "male", "female" или "any"
 - `pregnant` — bool или null
-- `diagnostic_threshold_g_per_l` — порог анемии (число)
-- `severity_mild_g_per_l` — нижняя граница лёгкой анемии (число или null)
-- `severity_moderate_g_per_l` — нижняя граница средней анемии (число или null)
-- `severity_severe_g_per_l` — нижняя граница тяжёлой анемии (число или null)
+- `diagnostic_threshold_g_per_l` — порог анемии в г/л (число)
+- `diagnostic_threshold_g_per_dl` — порог анемии в г/дл (число)
+- `severity_mild_low` — нижняя граница лёгкой анемии (число или null)
+- `severity_mild_high` — верхняя граница лёгкой анемии (число или null)
+- `severity_moderate_low` — нижняя граница средней анемии (число или null)
+- `severity_moderate_high` — верхняя граница средней анемии (число или null)
+- `severity_severe_below` — ниже этого значения — тяжёлая анемия (число или null)
+- `note` — примечание к порогу (строка или null)
 
 ## Клинические примечания
 

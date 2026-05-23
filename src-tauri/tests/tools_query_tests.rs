@@ -260,6 +260,21 @@ fn test_query_usda_foods_empty_filters() {
     assert_eq!(data.len() as u64, total);
 }
 
+#[test]
+fn test_query_usda_foods_unknown_substring() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_usda_foods",
+        json!({"food_name_substring": "xyznonexistent"}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 0);
+    let data = v["data"].as_array().unwrap();
+    assert!(data.is_empty());
+}
+
 // ---- Phase 2: WHO Hb thresholds ----
 
 #[test]
@@ -340,9 +355,18 @@ fn test_query_who_hb_male() {
 
     let data = v["data"].as_array().unwrap();
     assert_eq!(data.len(), 1);
-    assert_eq!(data[0]["group"], "men_15_plus");
-    assert_eq!(data[0]["sex"], "male");
-    assert_eq!(data[0]["diagnostic_threshold_g_per_l"], 130.0);
+    let entry = &data[0];
+    assert_eq!(entry["group"], "men_15_plus");
+    assert_eq!(entry["sex"], "male");
+    assert_eq!(entry["diagnostic_threshold_g_per_l"], 130.0);
+    assert_eq!(entry["diagnostic_threshold_g_per_dl"], 13.0);
+
+    // Severity fields via find_severity fallback (men_15_plus → men_15_65)
+    assert!(entry["severity_mild_low"].is_number());
+    assert!(entry["severity_mild_high"].is_number());
+    assert!(entry["severity_moderate_low"].is_number());
+    assert!(entry["severity_moderate_high"].is_number());
+    assert!(entry["severity_severe_below"].is_number());
 }
 
 #[test]
