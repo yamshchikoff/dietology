@@ -1,0 +1,31 @@
+# Rust
+src-tauri/target/
+
+# Node (if/when frontend tooling is added)
+node_modules/
+dist/
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+*.deb
+*.rpm
+*.AppImage
+*.msi
+*.exe
+*.apk
+*.aab
+*.ipa
