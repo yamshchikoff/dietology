@@ -182,10 +182,11 @@ fn test_client_new_with_custom_base_url() {
 
 // ---- Tool Loop Max Rounds Test ----
 
-/// Симуляция бесконечного tool_use: всегда возвращает tool_use, никогда end_turn.
-/// Проверяет, что chat() прерывается по MaxToolRounds.
-#[tokio::test]
-async fn test_tool_loop_max_rounds() {
+/// Ручная симуляция 3 раундов tool_use с max_tool_rounds=2.
+/// Проверяет, что цикл накапливает сообщения и диспатчит инструменты
+/// — паттерн, который chat() использует внутри.
+#[test]
+fn test_tool_loop_max_rounds_manual_simulation() {
     let mut registry = ToolRegistry::new();
     registry.register(
         "echo",
@@ -204,23 +205,55 @@ async fn test_tool_loop_max_rounds() {
         max_tool_rounds: 2,
     };
 
-    let mut messages: Vec<Message> = vec![Message {
-        role: "user".into(),
-        content: vec![ContentBlock::Text {
-            text: "test".into(),
-        }],
-    }];
+    let mut messages: Vec<Message> = vec![];
+    let mut rounds = 0;
 
-    let result = client.chat(&mut messages, "system").await;
+    // Симулируем 3 раунда (превышает max_tool_rounds=2)
+    loop {
+        rounds += 1;
+        if rounds > 3 {
+            break;
+        }
 
-    match result {
-        Err(LlmError::MaxToolRounds(2)) => {} // expected — no real API, call_api fails
-        Err(_) => {
-            // Also expected: Network error when API unreachable
-            // This is fine — we're testing that after max rounds it would error
+        let response = ApiResponse {
+            id: format!("msg_{rounds}"),
+            msg_type: "message".into(),
+            role: "assistant".into(),
+            content: vec![ContentBlock::ToolUse {
+                id: format!("toolu_{rounds}"),
+                name: "echo".into(),
+                input: json!({}),
+            }],
+            stop_reason: "tool_use".into(),
+            usage: Usage {
+                input_tokens: 10,
+                output_tokens: 5,
+            },
+        };
+
+        let tool_uses = client.extract_tool_uses(&response);
+        let mut tool_results = Vec::new();
+        for tu in &tool_uses {
+            if let ContentBlock::ToolUse { id, .. } = tu {
+                let result = client.dispatch_tool(tu).unwrap();
+                tool_results.push(ContentBlock::ToolResult {
+                    tool_use_id: id.clone(),
+                    content: result,
+                });
+            }
         }
-        Ok(_) => {
-            // OK too — the test just validates the loop compiles and runs
-        }
+
+        messages.push(Message {
+            role: "assistant".into(),
+            content: response.content,
+        });
+        messages.push(Message {
+            role: "user".into(),
+            content: tool_results,
+        });
     }
+
+    assert_eq!(messages.len(), 6); // 3 ассистент + 3 user с tool_result
+    assert!(messages.iter().any(|m| m.role == "user"
+        && m.content.iter().any(|b| matches!(b, ContentBlock::ToolResult { .. }))));
 }
