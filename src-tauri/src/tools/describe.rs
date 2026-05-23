@@ -1,6 +1,7 @@
 use std::collections::BTreeSet;
 
 use crate::data::DataLoader;
+use crate::models::datasets::{UsdaFoods, WhoHbThresholds};
 use crate::models::dri::DriOverlay;
 use crate::tools::registry::{ToolFn, ToolRegistry};
 
@@ -50,6 +51,53 @@ fn describe_dri_impl(loader: &DataLoader, path: &str, include_sexes: bool) -> Re
         .read_json(path)
         .map_err(|e| format!("failed to read {path}: {e}"))?;
     Ok(build_dri_describe(&overlay, include_sexes).to_string())
+}
+
+fn build_usda_foods_describe(foods: &UsdaFoods) -> serde_json::Value {
+    let nutrients: BTreeSet<&str> = foods
+        .foods
+        .iter()
+        .flat_map(|f| f.nutrients.keys().map(|k| k.as_str()))
+        .collect();
+
+    let food_categories: BTreeSet<&str> =
+        foods.foods.iter().map(|f| f.category.as_str()).collect();
+
+    serde_json::json!({
+        "status": "ok",
+        "nutrients": nutrients.iter().collect::<Vec<_>>(),
+        "food_categories": food_categories.iter().collect::<Vec<_>>(),
+        "total_foods": foods.foods.len(),
+    })
+}
+
+fn build_who_hb_describe(hb: &WhoHbThresholds) -> serde_json::Value {
+    let diagnostic_groups: Vec<&str> = hb
+        .diagnostic_thresholds
+        .iter()
+        .map(|t| t.group.as_str())
+        .collect();
+
+    let sexes: BTreeSet<&str> = hb
+        .diagnostic_thresholds
+        .iter()
+        .map(|t| t.sex.as_str())
+        .collect();
+
+    let pregnant_options: BTreeSet<bool> = hb
+        .diagnostic_thresholds
+        .iter()
+        .map(|t| t.pregnant)
+        .collect();
+
+    serde_json::json!({
+        "status": "ok",
+        "diagnostic_groups": diagnostic_groups,
+        "severity_levels": ["normal", "mild", "moderate", "severe"],
+        "sexes": sexes.iter().collect::<Vec<_>>(),
+        "pregnant_options": pregnant_options.iter().collect::<Vec<_>>(),
+        "total_thresholds": hb.diagnostic_thresholds.len(),
+    })
 }
 
 /// Register all 9 describe tools. Each handler captures a DataLoader clone.
@@ -107,23 +155,33 @@ pub fn register_describe_tools(registry: &mut ToolRegistry, loader: &DataLoader)
         );
     }
 
-    // Phase 2: placeholders
+    // Phase 2: USDA Foods + WHO Hb thresholds (real implementations)
     {
         let l = loader.clone();
         registry.register(
             "describe_usda_foods",
             "Return valid enum values for USDA foods dataset filters (nutrients, food_categories)",
             empty_schema.clone(),
-            placeholder(l, "2"),
+            Box::new(move |_args: &serde_json::Value| -> Result<String, String> {
+                let foods: UsdaFoods = l
+                    .read_json("usda-foundation-foods-essential.json")
+                    .map_err(|e| format!("failed to read USDA foods: {e}"))?;
+                Ok(build_usda_foods_describe(&foods).to_string())
+            }),
         );
     }
     {
         let l = loader.clone();
         registry.register(
             "describe_who_hb",
-            "Return valid enum values for WHO Hb thresholds (diagnostic_groups, severity_levels)",
+            "Return valid enum values for WHO Hb thresholds (diagnostic_groups, severity_levels, sexes, pregnant_options)",
             empty_schema.clone(),
-            placeholder(l, "2"),
+            Box::new(move |_args: &serde_json::Value| -> Result<String, String> {
+                let hb: WhoHbThresholds = l
+                    .read_json("who-hb-thresholds.json")
+                    .map_err(|e| format!("failed to read WHO Hb thresholds: {e}"))?;
+                Ok(build_who_hb_describe(&hb).to_string())
+            }),
         );
     }
 

@@ -143,6 +143,48 @@ fn test_describe_dri_per_kg() {
 }
 
 #[test]
+fn test_describe_usda_foods() {
+    let mut registry = ToolRegistry::new();
+    let loader = dietology_lib::data::DataLoader::for_development();
+    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
+
+    let v = call_describe(&registry, "describe_usda_foods");
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_foods"], 363);
+    assert_eq!(v["nutrients"].as_array().unwrap().len(), 25);
+    assert!(v["nutrients"].as_array().unwrap().iter().any(|n| n == "Calcium, Ca"));
+    assert!(v["nutrients"].as_array().unwrap().iter().any(|n| n == "Protein"));
+    assert_eq!(v["food_categories"].as_array().unwrap().len(), 19);
+    assert!(v["food_categories"].as_array().unwrap().iter().any(|c| c == "Dairy and Egg Products"));
+}
+
+#[test]
+fn test_describe_who_hb() {
+    let mut registry = ToolRegistry::new();
+    let loader = dietology_lib::data::DataLoader::for_development();
+    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
+
+    let v = call_describe(&registry, "describe_who_hb");
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_thresholds"], 9);
+    assert_eq!(v["diagnostic_groups"].as_array().unwrap().len(), 9);
+    assert!(v["diagnostic_groups"].as_array().unwrap().iter().any(|g| g == "children_6_23_months"));
+    assert!(v["diagnostic_groups"].as_array().unwrap().iter().any(|g| g == "pregnant_first_trimester"));
+    assert_eq!(v["severity_levels"].as_array().unwrap().len(), 4);
+    assert!(v["severity_levels"].as_array().unwrap().iter().any(|s| s == "mild"));
+    assert!(v["severity_levels"].as_array().unwrap().iter().any(|s| s == "severe"));
+    assert_eq!(v["sexes"].as_array().unwrap().len(), 3);
+    assert!(v["sexes"].as_array().unwrap().iter().any(|s| s == "male"));
+    assert!(v["sexes"].as_array().unwrap().iter().any(|s| s == "female"));
+    assert!(v["sexes"].as_array().unwrap().iter().any(|s| s == "any"));
+    assert_eq!(v["pregnant_options"].as_array().unwrap().len(), 2);
+    assert!(v["pregnant_options"].as_array().unwrap().iter().any(|p| p == true));
+    assert!(v["pregnant_options"].as_array().unwrap().iter().any(|p| p == false));
+}
+
+#[test]
 fn test_tool_definition_has_input_schema() {
     let mut registry = ToolRegistry::new();
     let schema =
