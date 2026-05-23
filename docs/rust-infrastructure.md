@@ -103,15 +103,15 @@ let result = registry.dispatch(&tool_call);  // → ToolResult
 
 | Инструмент | Фаза | Статус |
 |-----------|------|--------|
-| `describe_dri_minerals` | 1 | placeholder |
-| `describe_dri_vitamins` | 1 | placeholder |
-| `describe_dri_per_kg` | 1 | placeholder |
-| `describe_usda_foods` | 2 | placeholder |
-| `describe_who_hb` | 2 | placeholder |
-| `describe_who_anaemia` | 3 | placeholder |
-| `describe_who_bmi` | 3 | placeholder |
-| `describe_who_diabetes` | 3 | placeholder |
-| `describe_lab_ranges` | 4 | placeholder |
+| `describe_dri_minerals` | 1 | done |
+| `describe_dri_vitamins` | 1 | done |
+| `describe_dri_per_kg` | 1 | done |
+| `describe_usda_foods` | 2 | done |
+| `describe_who_hb` | 2 | done |
+| `describe_who_anaemia` | 3 | done |
+| `describe_who_bmi` | 3 | done |
+| `describe_who_diabetes` | 3 | done |
+| `describe_lab_ranges` | 4 | done |
 
 ## 5. Serde-структуры и паттерн игнорирования `_meta`
 
@@ -184,4 +184,4 @@ make fmt       # cd src-tauri && cargo fmt
 - Git commit automation, user-map, investigation mode
 - Полноценного CI/CD
 
-**Следующий шаг:** Фаза 1 — реализовать `describe_dri_minerals`, `describe_dri_vitamins`, `describe_dri_per_kg` на Rust.
+**Следующий шаг:** реализовать 9 query-инструментов (парные к describe, фазы 1-5 завершены).
