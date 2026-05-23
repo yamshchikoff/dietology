@@ -77,6 +77,13 @@ fn test_content_block_tool_result_roundtrip() {
     }
 }
 
+#[test]
+fn test_content_block_unknown_type_is_error() {
+    let json = json!({"type": "unknown_variant", "text": "x"});
+    let result: Result<ContentBlock, _> = serde_json::from_value(json);
+    assert!(result.is_err());
+}
+
 // ---- Message Tests ----
 
 #[test]
