@@ -1278,7 +1278,7 @@
           "sex": "female",
           "age_range": "14–18y",
           "value": 1300,
-          "type": "RDA",
+          "type": "AI",
           "note": "AI for pregnant ≤18 yr: 1300 mg"
         },
         {
@@ -1300,7 +1300,7 @@
           "sex": "female",
           "age_range": "14–18y",
           "value": 1300,
-          "type": "RDA",
+          "type": "AI",
           "note": "AI for breastfeeding ≤18 yr: 1300 mg"
         },
         {
@@ -2029,7 +2029,7 @@
         {
           "group": "male_51_70yr",
           "sex": "male",
-          "age_range": "51-70 years",
+          "age_range": "51–70 years",
           "value": 3400,
           "type": "AI"
         },

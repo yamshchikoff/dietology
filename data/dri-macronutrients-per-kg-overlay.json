@@ -137,7 +137,7 @@
         {
           "group": "pregnant",
           "sex": "female",
-          "age_range": "—",
+          "age_range": null,
           "value": 18.5,
           "type": "RDA"
         },
@@ -267,7 +267,7 @@
         {
           "group": "pregnant",
           "sex": "female",
-          "age_range": "—",
+          "age_range": null,
           "value": 18.5,
           "type": "RDA"
         },
@@ -397,7 +397,7 @@
         {
           "group": "pregnant",
           "sex": "female",
-          "age_range": "—",
+          "age_range": null,
           "value": 4.9,
           "type": "RDA"
         },
