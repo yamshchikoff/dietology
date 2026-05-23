@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use crate::tools::registry::{ToolCall, ToolRegistry};
 
-use super::types::{ApiRequest, ApiResponse, ContentBlock, LlmError, Message};
+use super::types::{ApiRequest, ApiResponse, ContentBlock, LlmError, LlmResponse, Message, Usage};
 
 pub struct LlmClient {
     pub api_base_url: String,
@@ -110,5 +110,115 @@ impl LlmClient {
                 "extract_tool_uses should filter non-ToolUse blocks".into(),
             )),
         }
+    }
+
+    /// Главный entry point: пользовательское сообщение → полный ответ с tool dispatch.
+    ///
+    /// Принимает `messages` как in/out параметр — накапливает историю диалога.
+    /// Возвращает `LlmResponse` с финальным текстом и суммарным использованием токенов.
+    pub async fn chat(
+        &self,
+        messages: &mut Vec<Message>,
+        system_prompt: &str,
+    ) -> Result<LlmResponse, LlmError> {
+        let mut total_usage = Usage {
+            input_tokens: 0,
+            output_tokens: 0,
+        };
+
+        for _round in 0..self.max_tool_rounds {
+            let response = self.call_api(messages, system_prompt).await?;
+
+            total_usage.input_tokens += response.usage.input_tokens;
+            total_usage.output_tokens += response.usage.output_tokens;
+
+            messages.push(Message {
+                role: "assistant".into(),
+                content: response.content.clone(),
+            });
+
+            match response.stop_reason.as_str() {
+                "end_turn" => {
+                    let final_text = response
+                        .content
+                        .iter()
+                        .filter_map(|block| match block {
+                            ContentBlock::Text { text } => Some(text.clone()),
+                            _ => None,
+                        })
+                        .collect::<Vec<_>>()
+                        .join("\n");
+
+                    return Ok(LlmResponse {
+                        messages: messages.clone(),
+                        final_text,
+                        visualization_json: None,
+                        usage: total_usage,
+                    });
+                }
+                "tool_use" => {
+                    let tool_uses: Vec<_> = self
+                        .extract_tool_uses(&response)
+                        .into_iter()
+                        .cloned()
+                        .collect();
+
+                    if tool_uses.is_empty() {
+                        let final_text = response
+                            .content
+                            .iter()
+                            .filter_map(|block| match block {
+                                ContentBlock::Text { text } => Some(text.clone()),
+                                _ => None,
+                            })
+                            .collect::<Vec<_>>()
+                            .join("\n");
+
+                        return Ok(LlmResponse {
+                            messages: messages.clone(),
+                            final_text,
+                            visualization_json: None,
+                            usage: total_usage,
+                        });
+                    }
+
+                    let mut tool_results = Vec::new();
+                    for tu in &tool_uses {
+                        if let ContentBlock::ToolUse { id, .. } = tu {
+                            let result = self.dispatch_tool(tu)?;
+                            tool_results.push(ContentBlock::ToolResult {
+                                tool_use_id: id.clone(),
+                                content: result,
+                            });
+                        }
+                    }
+
+                    messages.push(Message {
+                        role: "user".into(),
+                        content: tool_results,
+                    });
+                }
+                _ => {
+                    let final_text = response
+                        .content
+                        .iter()
+                        .filter_map(|block| match block {
+                            ContentBlock::Text { text } => Some(text.clone()),
+                            _ => None,
+                        })
+                        .collect::<Vec<_>>()
+                        .join("\n");
+
+                    return Ok(LlmResponse {
+                        messages: messages.clone(),
+                        final_text,
+                        visualization_json: None,
+                        usage: total_usage,
+                    });
+                }
+            }
+        }
+
+        Err(LlmError::MaxToolRounds(self.max_tool_rounds))
     }
 }
