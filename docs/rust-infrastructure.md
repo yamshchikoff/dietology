@@ -186,7 +186,7 @@ make fmt       # cd src-tauri && cargo fmt
 - Serde-модели для всех 11 production JSON
 - Бандлинг JSON-файлов через Tauri resources
 - ToolRegistry с Anthropic-совместимым API
-- 9 describe-плейсхолдеров
+- 18 инструментов (9 describe + 9 query)
 - Dev-тулинг (.gitignore, Makefile, CI placeholder)
 - 66 тестов, clippy clean
 
