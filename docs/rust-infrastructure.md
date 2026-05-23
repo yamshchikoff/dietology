@@ -113,6 +113,20 @@ let result = registry.dispatch(&tool_call);  // → ToolResult
 | `describe_who_diabetes` | 3 | done |
 | `describe_lab_ranges` | 4 | done |
 
+### 9 зарегистрированных query-инструментов
+
+| Инструмент | Фаза | Статус |
+|-----------|------|--------|
+| `query_dri_minerals` | 1 | done |
+| `query_dri_vitamins` | 1 | done |
+| `query_dri_per_kg` | 1 | done |
+| `query_usda_foods` | 2 | done |
+| `query_who_hb` | 2 | done |
+| `query_who_anaemia` | 3 | done |
+| `query_who_bmi` | 3 | done |
+| `query_who_diabetes` | 3 | done |
+| `query_lab_ranges` | 4 | done |
+
 ## 5. Serde-структуры и паттерн игнорирования `_meta`
 
 **Проблема:** все production JSON содержат `_meta` на верхнем уровне, но схема `_meta` разная у разных файлов.
@@ -174,14 +188,12 @@ make fmt       # cd src-tauri && cargo fmt
 - ToolRegistry с Anthropic-совместимым API
 - 9 describe-плейсхолдеров
 - Dev-тулинг (.gitignore, Makefile, CI placeholder)
-- 27 тестов, clippy clean
+- 66 тестов, clippy clean
 
 **Ещё нет:**
-- Реализации describe-инструментов (фазы 1-4)
-- Query-инструментов
 - Фронтенда (кроме placeholder `dist/index.html`)
 - MVVM-реализации
 - Git commit automation, user-map, investigation mode
 - Полноценного CI/CD
 
-**Следующий шаг:** реализовать 9 query-инструментов согласно [docs/plan-query-implementation.md](plan-query-implementation.md) (фазы 1-5).
+**Следующий шаг:** реализовать фронтенд и MVVM-слой.

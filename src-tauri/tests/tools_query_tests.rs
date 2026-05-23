@@ -615,3 +615,66 @@ fn test_query_lab_ranges_wrong_case_category() {
     let data = v["data"].as_array().unwrap();
     assert!(data.is_empty());
 }
+
+// ---- Phase 5: full registration ----
+
+#[test]
+fn test_query_tools_register_all_eighteen() {
+    let mut registry = ToolRegistry::new();
+    let loader = dietology_lib::data::DataLoader::for_development();
+    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
+    dietology_lib::tools::query::register_query_tools(&mut registry, &loader);
+
+    let defs = registry.definitions();
+    assert_eq!(defs.len(), 18, "expected 18 tools (9 describe + 9 query)");
+
+    let names: Vec<&str> = defs.iter().map(|d| d.name.as_str()).collect();
+
+    // Describe tools
+    assert!(names.contains(&"describe_dri_minerals"));
+    assert!(names.contains(&"describe_dri_vitamins"));
+    assert!(names.contains(&"describe_dri_per_kg"));
+    assert!(names.contains(&"describe_usda_foods"));
+    assert!(names.contains(&"describe_who_hb"));
+    assert!(names.contains(&"describe_who_anaemia"));
+    assert!(names.contains(&"describe_who_bmi"));
+    assert!(names.contains(&"describe_who_diabetes"));
+    assert!(names.contains(&"describe_lab_ranges"));
+
+    // Query tools
+    assert!(names.contains(&"query_dri_minerals"));
+    assert!(names.contains(&"query_dri_vitamins"));
+    assert!(names.contains(&"query_dri_per_kg"));
+    assert!(names.contains(&"query_usda_foods"));
+    assert!(names.contains(&"query_who_hb"));
+    assert!(names.contains(&"query_who_anaemia"));
+    assert!(names.contains(&"query_who_bmi"));
+    assert!(names.contains(&"query_who_diabetes"));
+    assert!(names.contains(&"query_lab_ranges"));
+
+    // All query tools must have non-empty input_schema with type=object
+    let query_tool_names: Vec<&str> = names
+        .iter()
+        .filter(|n| n.starts_with("query_"))
+        .copied()
+        .collect();
+    assert_eq!(query_tool_names.len(), 9);
+
+    for def in &defs {
+        if def.name.starts_with("query_") {
+            let schema_type = def.input_schema.get("type").and_then(|v| v.as_str());
+            assert_eq!(
+                schema_type,
+                Some("object"),
+                "query tool {} must have input_schema.type=object",
+                def.name,
+            );
+            let properties = def.input_schema.get("properties");
+            assert!(
+                properties.is_some(),
+                "query tool {} must have input_schema.properties",
+                def.name,
+            );
+        }
+    }
+}
