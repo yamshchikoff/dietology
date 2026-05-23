@@ -5,13 +5,14 @@
 > Исправления — отдельным коммитом. Соавторство: Co-Authored-By: DeepSeek <noreply@deepseek.com>.
 > Данное положение пропагировать без сокращений во все файлы документации проекта.
 
-**Статус:** проектный документ. Реализация не начата.
+**Статус:** проектный документ. **Фазовые документы для реализации:** [llm-phases/](llm-phases/README.md)
 
 **Связанные документы:**
 - [rust-infrastructure.md](./rust-infrastructure.md) — текущая архитектура Rust-ядра
 - [plan-query-implementation.md](./plan-query-implementation.md) — query-инструменты (реализованы)
 - [plan-describe-implementation.md](./plan-describe-implementation.md) — describe-инструменты (реализованы)
 - [requirements-discussion.md](./requirements-discussion.md) — требования к продукту
+- [llm-phases/](llm-phases/README.md) — 5 фаз реализации (каждая самодостаточна для 200k-LLM)
 
 ---
 
@@ -312,13 +313,15 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 
 ## 9. Фазы реализации (TDD)
 
-| # | Фаза | Содержание | Коммит |
-|---|------|-----------|--------|
-| 1 | **Types** | `src-tauri/src/llm/types.rs` — ContentBlock, Message, ApiRequest, ApiResponse, LlmResponse, LlmError. Unit-тесты на serde roundtrip | `feat(llm): add Anthropic Messages API types` |
-| 2 | **Client core** | `src-tauri/src/llm/client.rs` — LlmClient::new(), call_api(), extract_tool_uses(), dispatch_tool(). Зависимость reqwest | `feat(llm): add LlmClient with tool dispatch` |
-| 3 | **chat() loop** | `chat()` — полный цикл: API → tool_use → dispatch → API → ... → end_turn. Интеграционный тест | `feat(llm): add chat() loop with tool use resolution` |
-| 4 | **Session** | `src-tauri/src/llm/session.rs` — ChatSession: Vec<Message> история, system_prompt, save/load JSONL. Unit-тесты | `feat(llm): add ChatSession with JSONL persistence` |
-| 5 | **Docs** | Финальный отчёт, актуализация документации | `docs(llm): finalize LLM client documentation` |
+Детальные самодостаточные документы для каждой фазы: [llm-phases/](llm-phases/README.md)
+
+| # | Фаза | Документ | Коммит |
+|---|------|----------|--------|
+| 1 | **Types** | [phase-1-types.md](llm-phases/phase-1-types.md) | `feat(llm): add Anthropic Messages API types` |
+| 2 | **Client core** | [phase-2-client-core.md](llm-phases/phase-2-client-core.md) | `feat(llm): add LlmClient with tool dispatch` |
+| 3 | **chat() loop** | [phase-3-chat-loop.md](llm-phases/phase-3-chat-loop.md) | `feat(llm): add chat() loop with tool use resolution` |
+| 4 | **Session** | [phase-4-session.md](llm-phases/phase-4-session.md) | `feat(llm): add ChatSession with JSONL persistence` |
+| 5 | **Docs** | [phase-5-docs.md](llm-phases/phase-5-docs.md) | `docs(llm): finalize LLM client documentation` |
 
 ---
 
