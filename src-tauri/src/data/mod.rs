@@ -30,9 +30,9 @@ impl DataLoader {
         Self::new(manifest_dir.join("..").join("data"))
     }
 
-    pub fn read_bytes(&self, relative_path: &str) -> Result<Vec<u8>, std::io::Error> {
+    pub fn read_bytes(&self, relative_path: &str) -> AppResult<Vec<u8>> {
         let full_path = self.base_path.join(relative_path);
-        std::fs::read(&full_path)
+        Ok(std::fs::read(&full_path)?)
     }
 
     pub fn read_json<T: serde::de::DeserializeOwned>(
@@ -45,13 +45,13 @@ impl DataLoader {
     }
 }
 
-/// Verify all 11 production files are readable. Returns a Vec of missing file names.
-pub fn verify_all_production_files(loader: &DataLoader) -> AppResult<Vec<String>> {
+/// Verify all 11 production files are readable. Returns the list of missing file names.
+pub fn verify_all_production_files(loader: &DataLoader) -> Vec<String> {
     let mut missing = Vec::new();
     for (_name, path) in PRODUCTION_FILES {
         if loader.read_bytes(path).is_err() {
             missing.push(path.to_string());
         }
     }
-    Ok(missing)
+    missing
 }

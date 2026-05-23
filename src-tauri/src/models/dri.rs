@@ -1,4 +1,3 @@
-use crate::error::AppResult;
 use serde::{Deserialize, Serialize};
 
 /// Single demographic group within a nutrient (e.g., "male_19_30yr", RDA=1000mg)
@@ -44,13 +43,4 @@ pub struct DriNutrient {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DriOverlay {
     pub nutrients: Vec<DriNutrient>,
-}
-
-impl DriOverlay {
-    /// Read a DRI overlay file via DataLoader, extracting nutrients and ignoring _meta
-    pub fn from_file(loader: &crate::data::DataLoader, path: &str) -> AppResult<Self> {
-        let mut value: serde_json::Value = loader.read_json(path)?;
-        let nutrients: Vec<DriNutrient> = serde_json::from_value(value["nutrients"].take())?;
-        Ok(Self { nutrients })
-    }
 }

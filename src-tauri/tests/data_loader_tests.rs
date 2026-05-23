@@ -36,13 +36,9 @@ fn test_all_production_files_accessible() {
     let loader = dietology_lib::data::DataLoader::for_development();
     let missing = dietology_lib::data::verify_all_production_files(&loader);
     assert!(
-        missing.is_ok(),
-        "Production files missing: {:?}",
-        missing.err()
-    );
-    assert!(
-        missing.unwrap().is_empty(),
-        "Some production files are missing"
+        missing.is_empty(),
+        "Some production files are missing: {:?}",
+        missing
     );
 }
 

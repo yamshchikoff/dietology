@@ -21,7 +21,7 @@ Tauri shell (tauri v2)
        data/*.json      11 production JSON-файлов (bundled as Tauri resources)
 ```
 
-**Принцип:** модель не видит файлы напрямую — только через инструменты. Все вызовы `query_*` и `describe_*` идут через ToolRegistry → DataLoader → JSON на диске.
+**Принцип:** модели — чистые serde-структуры. Данные читаются через `DataLoader::read_json::<T>(path)`, который десериализует JSON напрямую в типизированную модель (serde игнорирует `_meta` по умолчанию). Describe/query инструменты вызывают DataLoader и возвращают результаты через ToolRegistry.
 
 ## 2. Дерево модулей
 
@@ -131,7 +131,7 @@ let nutrients: Vec<DriNutrient> = serde_json::from_value(value["nutrients"].clon
 
 | Модель | Production JSON | Структура |
 |--------|----------------|-----------|
-| `DriOverlay` | 3 DRI overlay файла | `{nutrients: [{name, unit, groups: [{group, sex, value, type}]}]}` |
+| `DriOverlay` | 3 DRI overlay файла | `{nutrients: [{name, unit, groups: [{group, sex, value, type}]}]}` (читается через `read_json`) |
 | `UsdaFoods` | `usda-foundation-foods-essential.json` | `{foods: [{name, category, fdcId, nutrients: {}}]}` |
 | `WhoHbThresholds` | `who-hb-thresholds.json` | `{diagnostic_thresholds[], severity_classification[]}` |
 | `WhoEpiData` | 3 WHO GHO файла | `{data: [{country_code, year, value, low, high, sex}]}` |
