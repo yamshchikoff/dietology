@@ -23,7 +23,10 @@ impl LlmClient {
         let model =
             std::env::var("DEEPSEEK_MODEL").unwrap_or_else(|_| "deepseek-chat".into());
 
-        let http = reqwest::Client::new();
+        let http = reqwest::Client::builder()
+            .timeout(std::time::Duration::from_secs(30))
+            .build()
+            .map_err(|e| LlmError::Network(e.to_string()))?;
 
         Ok(Self {
             api_base_url,

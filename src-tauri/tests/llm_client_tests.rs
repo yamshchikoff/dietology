@@ -145,7 +145,10 @@ fn test_dispatch_tool_with_text_block_returns_error() {
         text: "not a tool".into(),
     };
     let result = client.dispatch_tool(&text_block);
-    assert!(result.is_err());
+    match result {
+        Err(LlmError::ToolDispatch(_)) => {} // expected
+        other => panic!("expected ToolDispatch error, got {other:?}"),
+    }
 }
 
 // ---- Client Construction Tests ----
