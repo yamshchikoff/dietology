@@ -40,7 +40,7 @@ data/
 │   └── iom-dri-ca-p-mg-vitd-f-1997.pdf    # IOM DRI Ca/P/Mg/Vitamin D/Fluoride 1997
 ├── data-index.json                        # Tier A | Единый манифест всех knowledge base файлов
 ├── extract-usda.py                        # Скрипт: USDA → foods JSON (+ _meta)
-├── usda-foundation-foods-essential.json   # Tier A | 363 продукта, 27 nutrients
+├── usda-foundation-foods-essential.json   # Tier A | 363 продукта, 25 nutrients
 ├── extract-msd-dri-parser.py              # Скрипт: парсинг MSD HTML → JSON
 ├── extract-iom-dri.py                     # Скрипт: парсинг IOM 2011 PDF → JSON
 │
@@ -163,15 +163,13 @@ data/
 
 ## Эссенциальные нутриенты (USDA)
 
-Из полного списка USDA (~119 nutrients) отобраны 27 для MVP:
+Из полного списка USDA (~119 nutrients) отобраны 25 для MVP:
 
-**Проксиматы:** Energy, Protein, Total lipid (fat), Saturated fat, Trans fat, Carbohydrate, Fiber, Sugars
+**Проксиматы (8):** Energy, Protein, Total lipid (fat), Saturated fat, Trans fat, Carbohydrate, Fiber, Cholesterol
 
-**Минералы:** Calcium, Iron, Magnesium, Phosphorus, Potassium, Sodium, Zinc
+**Минералы (7):** Calcium, Iron, Magnesium, Phosphorus, Potassium, Sodium, Zinc
 
-**Витамины:** A, C, D, E, K, B1 (Thiamin), B2 (Riboflavin), B3 (Niacin), B6, B12, Folate
-
-**Другое:** Cholesterol
+**Витамины (10):** C, D, E, K, B1 (Thiamin), B2 (Riboflavin), B3 (Niacin), B6, B12, Folate
 
 ## Лицензирование данных
 

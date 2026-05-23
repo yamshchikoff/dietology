@@ -9,20 +9,20 @@
 
 363 наименования — сырые ингредиенты: овощи, фрукты, злаки, мясо, молочные продукты, бобовые, орехи, масла. Не брендированные продукты.
 
-## Нутриенты (27)
+## Нутриенты (25)
 
-**Проксиматы (9):** Energy (kcal), Protein, Total lipid (fat), Saturated fat, Trans fat, Carbohydrate, Fiber (total dietary), Sugars (total), Cholesterol
+**Проксиматы (8):** Energy, Protein, Total lipid (fat), Fatty acids (total saturated), Fatty acids (total trans), Carbohydrate (by difference), Fiber (total dietary), Cholesterol
 
-**Минералы (7):** Calcium, Iron, Magnesium, Phosphorus, Potassium, Sodium, Zinc
+**Минералы (7):** Calcium (Ca), Iron (Fe), Magnesium (Mg), Phosphorus (P), Potassium (K), Sodium (Na), Zinc (Zn)
 
-**Витамины (11):** Vitamin A, C, D, E, K, B1 (Thiamin), B2 (Riboflavin), B3 (Niacin), B6, B12, Folate
+**Витамины (10):** Vitamin C (total ascorbic acid), Vitamin D (D2+D3 IU), Vitamin E (alpha-tocopherol), Vitamin K (phylloquinone), Thiamin, Riboflavin, Niacin, Vitamin B-6, Vitamin B-12, Folate (total)
 
 ## Возвращаемые поля
 
 Для каждого продукта — объект с полями:
 - `food_name` — название продукта (строка)
 - `food_category` — категория (строка, например "Vegetables", "Fruits", "Dairy")
-- Плюс 27 числовых полей с именами нутриентов (см. выше). Отсутствующие значения — null.
+- Плюс 25 числовых полей с именами нутриентов (см. выше). Отсутствующие значения — null.
 
 ## Соглашение о единицах
 
@@ -33,7 +33,7 @@
 
 ## Describe-инструмент
 
-**`describe_usda_foods()`** — без параметров. Возвращает: `nutrients[]` (27 имён), `food_categories[]`, `total_foods` (363). Вызови, если не знаешь точное имя nutrient или какие категории доступны.
+**`describe_usda_foods()`** — без параметров. Возвращает: `nutrients[]` (25 имён), `food_categories[]`, `total_foods` (363). Вызови, если не знаешь точное имя nutrient или какие категории доступны.
 
 ## Инструмент
 
