@@ -184,4 +184,4 @@ make fmt       # cd src-tauri && cargo fmt
 - Git commit automation, user-map, investigation mode
 - Полноценного CI/CD
 
-**Следующий шаг:** реализовать 9 query-инструментов (парные к describe, фазы 1-5 завершены).
+**Следующий шаг:** реализовать 9 query-инструментов согласно [docs/plan-query-implementation.md](plan-query-implementation.md) (фазы 1-5).

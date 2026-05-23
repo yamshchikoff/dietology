@@ -22,6 +22,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **TDD:** каждый production-коммит проходит цикл Red → Green → Refactor
 - **Документация инфраструктуры:** [docs/rust-infrastructure.md](docs/rust-infrastructure.md)
 - **Describe-план:** [docs/plan-describe-implementation.md](docs/plan-describe-implementation.md)
+- **Query-план:** [docs/plan-query-implementation.md](docs/plan-query-implementation.md)
 
 ## Git remotes
 
