@@ -9,7 +9,19 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Персональный ассистент по питанию (dietology). Стек уточняется.
+Персональный ассистент по питанию (dietology).
+
+**Стек:** Tauri v2 (Rust-ядро + Web UI HTML/CSS/JS). MVVM-архитектура.
+**LLM:** DeepSeek API via Anthropic-совместимый протокол.
+
+## Rust-ядро (`src-tauri/`)
+
+- **Крейт:** `dietology` (бинарный + библиотека `dietology_lib`)
+- **Сборка:** `make build`, тесты: `make test`, линтер: `make lint`
+- **Модули:** `data` (DataLoader, PRODUCTION_FILES), `models` (serde для 11 JSON), `tools` (ToolRegistry + describe/query)
+- **TDD:** каждый production-коммит проходит цикл Red → Green → Refactor
+- **Документация инфраструктуры:** [docs/rust-infrastructure.md](docs/rust-infrastructure.md)
+- **Describe-план:** [docs/plan-describe-implementation.md](docs/plan-describe-implementation.md)
 
 ## Git remotes
 

@@ -1,6 +1,5 @@
 /// Describe tool placeholders — return not_implemented until phases 1-4.
 /// Each function signature: fn(&serde_json::Value) -> Result<String, String>
-
 pub fn describe_dri_minerals(_args: &serde_json::Value) -> Result<String, String> {
     Ok(r#"{"status": "not_implemented", "message": "Phase 1 task"}"#.to_string())
 }
