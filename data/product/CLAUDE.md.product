@@ -20,7 +20,7 @@
 | 2 | DRI Витамины | 11 витаминов, 154 группы (RDA, AI, UL) | [docs/dataset-2-dri-vitamins.md](docs/dataset-2-dri-vitamins.md) |
 | 3 | DRI на кг массы | Ca, P, Mg в мг/кг, 51 группа | [docs/dataset-3-dri-per-kg.md](docs/dataset-3-dri-per-kg.md) |
 | 4 | USDA Состав продуктов | 363 продукта, 25 нутриентов на 100 г | [docs/dataset-4-usda-foods.md](docs/dataset-4-usda-foods.md) |
-| 5 | WHO Пороги Hb | 9 диагн. порогов + 9 групп тяжести анемии | [docs/dataset-5-who-hb-thresholds.md](docs/dataset-5-who-hb-thresholds.md) |
+| 5 | WHO Пороги Hb | 9 диагн. групп, 4 уровня тяжести анемии | [docs/dataset-5-who-hb-thresholds.md](docs/dataset-5-who-hb-thresholds.md) |
 | 6 | WHO Анемия | 20 950 записей, 242 страны, 1995–2019 | [docs/dataset-6-who-anaemia.md](docs/dataset-6-who-anaemia.md) |
 | 7 | WHO Избыточный вес | 20 790 записей, 210 стран, 1990–2022 | [docs/dataset-7-who-bmi.md](docs/dataset-7-who-bmi.md) |
 | 8 | WHO Диабет | 41 580 записей, 210 стран, 1990–2022 | [docs/dataset-8-who-diabetes.md](docs/dataset-8-who-diabetes.md) |
