@@ -503,3 +503,85 @@ fn test_query_who_anaemia_unknown_country() {
     let data = v["data"].as_array().unwrap();
     assert!(data.is_empty());
 }
+
+// ---- Phase 4: Lab reference ranges ----
+
+#[test]
+fn test_query_lab_ranges_ferritin() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_lab_ranges",
+        json!({"test_name_substring": "ferritin"}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["filters_applied"]["test_name_substring"], "ferritin");
+
+    let data = v["data"].as_array().unwrap();
+    assert!(!data.is_empty(), "should find at least one ferritin test");
+    for entry in data {
+        let test_name = entry["test_name"].as_str().unwrap();
+        assert!(
+            test_name.to_lowercase().contains("ferritin"),
+            "expected 'ferritin' in test name"
+        );
+    }
+}
+
+#[test]
+fn test_query_lab_ranges_thyroid_category() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_lab_ranges",
+        json!({"category": "thyroid"}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 13);
+    assert_eq!(v["filters_applied"]["category"], "thyroid");
+
+    let data = v["data"].as_array().unwrap();
+    assert_eq!(data.len(), 13);
+    for entry in data {
+        assert_eq!(entry["category"].as_str().unwrap(), "thyroid");
+    }
+}
+
+#[test]
+fn test_query_lab_ranges_both_filters() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_lab_ranges",
+        json!({"test_name_substring": "ft3", "category": "thyroid"}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["filters_applied"]["test_name_substring"], "ft3");
+    assert_eq!(v["filters_applied"]["category"], "thyroid");
+
+    let data = v["data"].as_array().unwrap();
+    assert!(!data.is_empty(), "should find ft3 in thyroid category");
+    for entry in data {
+        assert_eq!(entry["category"].as_str().unwrap(), "thyroid");
+        assert!(entry["test_name"].as_str().unwrap().to_lowercase().contains("ft3"));
+    }
+}
+
+#[test]
+fn test_query_lab_ranges_empty() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_lab_ranges",
+        json!({}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 254);
+
+    let data = v["data"].as_array().unwrap();
+    assert_eq!(data.len(), 254);
+}

@@ -1,5 +1,5 @@
 use crate::data::DataLoader;
-use crate::models::datasets::{EpiRecord, Food, HbDiagnosticThreshold, HbSeverityRange, UsdaFoods, WhoEpiData, WhoHbThresholds};
+use crate::models::datasets::{EpiRecord, Food, HbDiagnosticThreshold, HbSeverityRange, LabReferenceRanges, UsdaFoods, WhoEpiData, WhoHbThresholds};
 use crate::models::dri::{DriNutrient, DriOverlay};
 use crate::tools::registry::ToolRegistry;
 
@@ -471,6 +471,65 @@ fn query_who_diabetes_impl(loader: &DataLoader, args: &serde_json::Value) -> Res
     Ok(build_response(&data, data.len(), filters))
 }
 
+// ---- Phase 4: Lab reference ranges ----
+
+fn query_lab_ranges_impl(loader: &DataLoader, args: &serde_json::Value) -> Result<String, String> {
+    let lab_data: LabReferenceRanges = loader
+        .read_json("lab-reference-ranges.json")
+        .map_err(|e| format!("failed to read lab reference ranges: {e}"))?;
+
+    let test_name_substring = get_str_arg(args, "test_name_substring");
+    let category = get_str_arg(args, "category");
+
+    let data: Vec<serde_json::Value> = lab_data
+        .ranges
+        .iter()
+        .filter(|r| {
+            if let Some(ref needle) = test_name_substring {
+                let needle_lower = needle.to_lowercase();
+                if !r.test.to_lowercase().contains(&needle_lower) {
+                    return false;
+                }
+            }
+            if let Some(ref cat) = category {
+                if &r.category != cat {
+                    return false;
+                }
+            }
+            true
+        })
+        .map(|r| {
+            let mut entry = serde_json::json!({
+                "test_name": r.test,
+                "category": r.category,
+                "unit": r.unit,
+            });
+            if let Some(ref rt) = r.range_type {
+                if !rt.is_empty() {
+                    entry["range_type"] = serde_json::json!(rt);
+                }
+            }
+            if let Some(ref low) = r.low {
+                entry["low"] = serde_json::json!(low);
+            }
+            if let Some(ref high) = r.high {
+                entry["high"] = serde_json::json!(high);
+            }
+            entry
+        })
+        .collect();
+
+    let mut filters = serde_json::json!({});
+    if let Some(ref n) = test_name_substring {
+        filters["test_name_substring"] = serde_json::json!(n);
+    }
+    if let Some(ref c) = category {
+        filters["category"] = serde_json::json!(c);
+    }
+
+    Ok(build_response(&data, data.len(), filters))
+}
+
 fn register_dri_query(
     registry: &mut ToolRegistry,
     loader: &DataLoader,
@@ -633,4 +692,105 @@ pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
         }),
         query_who_diabetes_impl,
     );
+
+    // Phase 4: Lab reference ranges
+    register_dri_query(
+        registry,
+        loader,
+        "query_lab_ranges",
+        "Query lab reference ranges by test name substring and/or category filter",
+        serde_json::json!({
+            "type": "object",
+            "properties": {
+                "test_name_substring": {"type": "string", "description": "Case-insensitive substring search on test name (e.g., 'ferritin')."},
+                "category": {"type": "string", "description": "Exact category filter. Use describe_lab_ranges() for valid categories."}
+            },
+            "required": []
+        }),
+        query_lab_ranges_impl,
+    );
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn build_lab_loader() -> DataLoader {
+        DataLoader::for_development()
+    }
+
+    fn parse_data(json_str: &str) -> Vec<serde_json::Value> {
+        let result: serde_json::Value =
+            serde_json::from_str(json_str).expect("failed to parse response");
+        result["data"]
+            .as_array()
+            .cloned()
+            .expect("data is not an array")
+    }
+
+    #[test]
+    fn test_query_lab_ranges_ferritin() {
+        let loader = build_lab_loader();
+        let json = query_lab_ranges_impl(
+            &loader,
+            &serde_json::json!({"test_name_substring": "ferritin"}),
+        )
+        .expect("query failed");
+        let data = parse_data(&json);
+        assert!(!data.is_empty(), "should find at least one ferritin test");
+        for entry in &data {
+            let test_name = entry["test_name"].as_str().unwrap();
+            assert!(
+                test_name.to_lowercase().contains("ferritin"),
+                "expected 'ferritin' in test name, got: {test_name}"
+            );
+        }
+    }
+
+    #[test]
+    fn test_query_lab_ranges_thyroid_category() {
+        let loader = build_lab_loader();
+        let json = query_lab_ranges_impl(
+            &loader,
+            &serde_json::json!({"category": "thyroid"}),
+        )
+        .expect("query failed");
+        let data = parse_data(&json);
+        assert_eq!(data.len(), 13, "thyroid category should have 13 tests");
+        for entry in &data {
+            assert_eq!(
+                entry["category"].as_str().unwrap(),
+                "thyroid",
+                "all results must be category thyroid"
+            );
+        }
+    }
+
+    #[test]
+    fn test_query_lab_ranges_both_filters() {
+        let loader = build_lab_loader();
+        let json = query_lab_ranges_impl(
+            &loader,
+            &serde_json::json!({"test_name_substring": "ft3", "category": "thyroid"}),
+        )
+        .expect("query failed");
+        let data = parse_data(&json);
+        assert!(!data.is_empty(), "should find ft3 in thyroid category");
+        for entry in &data {
+            assert_eq!(entry["category"].as_str().unwrap(), "thyroid");
+            assert!(
+                entry["test_name"].as_str().unwrap().to_lowercase().contains("ft3"),
+                "expected 'ft3' in test name"
+            );
+        }
+    }
+
+    #[test]
+    fn test_query_lab_ranges_empty() {
+        let loader = build_lab_loader();
+        let json =
+            query_lab_ranges_impl(&loader, &serde_json::json!({})).expect("query failed");
+        let data = parse_data(&json);
+        assert_eq!(data.len(), 254, "empty query should return all 254 tests");
+    }
 }
