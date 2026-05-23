@@ -257,6 +257,23 @@ fn test_describe_who_diabetes() {
 }
 
 #[test]
+fn test_describe_lab_ranges() {
+    let mut registry = ToolRegistry::new();
+    let loader = dietology_lib::data::DataLoader::for_development();
+    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
+
+    let v = call_describe(&registry, "describe_lab_ranges");
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_tests"], 254);
+    let categories = v["categories"].as_array().unwrap();
+    assert_eq!(categories.len(), 16);
+    assert!(categories.iter().any(|c| c["name"] == "blood_gases" && c["count"] == 62));
+    assert!(categories.iter().any(|c| c["name"] == "sex_hormones" && c["count"] == 37));
+    assert!(categories.iter().any(|c| c["name"] == "vitamins" && c["count"] == 13));
+}
+
+#[test]
 fn test_tool_definition_has_input_schema() {
     let mut registry = ToolRegistry::new();
     let schema =

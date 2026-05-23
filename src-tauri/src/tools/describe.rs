@@ -1,19 +1,9 @@
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
 use crate::data::DataLoader;
-use crate::models::datasets::{UsdaFoods, WhoEpiData, WhoHbThresholds};
+use crate::models::datasets::{LabReferenceRanges, UsdaFoods, WhoEpiData, WhoHbThresholds};
 use crate::models::dri::DriOverlay;
-use crate::tools::registry::{ToolFn, ToolRegistry};
-
-fn placeholder(loader: DataLoader, phase: &'static str) -> ToolFn {
-    Box::new(move |_args: &serde_json::Value| -> Result<String, String> {
-        let _ = &loader;
-        Ok(format!(
-            r#"{{"status": "not_implemented", "message": "Phase {} task"}}"#,
-            phase
-        ))
-    })
-}
+use crate::tools::registry::ToolRegistry;
 
 fn build_dri_describe(overlay: &DriOverlay, include_sexes: bool) -> serde_json::Value {
     let nutrients: Vec<&str> = overlay.nutrients.iter().map(|n| n.name.as_str()).collect();
@@ -148,6 +138,21 @@ fn build_epi_describe(data: &WhoEpiData) -> serde_json::Value {
     result
 }
 
+fn build_lab_ranges_describe(lr: &LabReferenceRanges) -> serde_json::Value {
+    let mut category_counts: BTreeMap<&str, usize> = BTreeMap::new();
+    for r in &lr.ranges {
+        *category_counts.entry(r.category.as_str()).or_insert(0) += 1;
+    }
+
+    serde_json::json!({
+        "status": "ok",
+        "categories": category_counts.iter().map(|(name, count)| {
+            serde_json::json!({"name": name, "count": count})
+        }).collect::<Vec<_>>(),
+        "total_tests": lr.ranges.len(),
+    })
+}
+
 /// Register all 9 describe tools. Each handler captures a DataLoader clone.
 pub fn register_describe_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
     let empty_schema = serde_json::json!({
@@ -277,11 +282,19 @@ pub fn register_describe_tools(registry: &mut ToolRegistry, loader: &DataLoader)
         );
     }
 
-    // Phase 4: placeholder
-    registry.register(
-        "describe_lab_ranges",
-        "Return valid enum values for lab reference ranges (categories, tests)",
-        empty_schema.clone(),
-        placeholder(loader.clone(), "4"),
-    );
+    // Phase 4: Lab reference ranges (real implementation)
+    {
+        let l = loader.clone();
+        registry.register(
+            "describe_lab_ranges",
+            "Return valid enum values for lab reference ranges (categories with test counts, total_tests)",
+            empty_schema.clone(),
+            Box::new(move |_args: &serde_json::Value| -> Result<String, String> {
+                let lr: LabReferenceRanges = l
+                    .read_json("lab-reference-ranges.json")
+                    .map_err(|e| format!("failed to read lab reference ranges: {e}"))?;
+                Ok(build_lab_ranges_describe(&lr).to_string())
+            }),
+        );
+    }
 }
