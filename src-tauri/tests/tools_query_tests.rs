@@ -142,3 +142,59 @@ fn test_query_dri_per_kg_calcium() {
         assert!(entry["value"].is_number());
     }
 }
+
+#[test]
+fn test_query_dri_minerals_calcium_all() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_dri_minerals",
+        json!({"nutrient": "Calcium"}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 22);
+    assert_eq!(v["filters_applied"]["nutrient"], "Calcium");
+
+    let data = v["data"].as_array().unwrap();
+    assert_eq!(data.len(), 22);
+
+    // All 22 groups: infants, children, males(6), females(6), pregnant(3), breastfeeding(3)
+    let groups: Vec<&str> = data.iter().map(|g| g["group"].as_str().unwrap()).collect();
+    assert!(groups.contains(&"infants_0_6mo"));
+    assert!(groups.contains(&"male_gt70yr"));
+    assert!(groups.contains(&"female_gt70yr"));
+    assert!(groups.contains(&"pregnant_14_18yr"));
+    assert!(groups.contains(&"breastfeeding_31_50yr"));
+
+    for entry in data {
+        assert_eq!(entry["unit"], "mg");
+        assert!(entry["value"].is_number());
+    }
+}
+
+#[test]
+fn test_query_dri_minerals_calcium_male_19_30yr() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_dri_minerals",
+        json!({"nutrient": "Calcium", "group": "male_19_30yr"}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 1);
+    assert_eq!(v["filters_applied"]["nutrient"], "Calcium");
+    assert_eq!(v["filters_applied"]["group"], "male_19_30yr");
+
+    let data = v["data"].as_array().unwrap();
+    assert_eq!(data.len(), 1);
+
+    let entry = &data[0];
+    assert_eq!(entry["group"], "male_19_30yr");
+    assert_eq!(entry["sex"], "male");
+    assert_eq!(entry["value"], 1000.0);
+    assert_eq!(entry["type"], "RDA");
+    assert_eq!(entry["unit"], "mg");
+    assert_eq!(entry["age_range"], "19\u{2013}30y");
+}

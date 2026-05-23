@@ -4,11 +4,11 @@ use crate::tools::registry::ToolRegistry;
 
 // ---- helpers ----
 
-fn build_response(data: &[serde_json::Value], filters: serde_json::Value) -> String {
+fn build_response(data: &[serde_json::Value], total_count: usize, filters: serde_json::Value) -> String {
     let result = serde_json::json!({
         "status": "ok",
         "data": data,
-        "total_count": data.len(),
+        "total_count": total_count,
         "filters_applied": filters,
     });
     result.to_string()
@@ -134,7 +134,7 @@ fn query_dri_minerals_impl(loader: &DataLoader, args: &serde_json::Value) -> Res
         filters["breastfeeding"] = serde_json::json!(bf);
     }
 
-    Ok(build_response(&data, filters))
+    Ok(build_response(&data, data.len(), filters))
 }
 
 fn query_dri_vitamins_impl(loader: &DataLoader, args: &serde_json::Value) -> Result<String, String> {
@@ -158,7 +158,7 @@ fn query_dri_vitamins_impl(loader: &DataLoader, args: &serde_json::Value) -> Res
         filters["sex"] = serde_json::json!(s);
     }
 
-    Ok(build_response(&data, filters))
+    Ok(build_response(&data, data.len(), filters))
 }
 
 fn query_dri_per_kg_impl(loader: &DataLoader, args: &serde_json::Value) -> Result<String, String> {
@@ -178,72 +178,79 @@ fn query_dri_per_kg_impl(loader: &DataLoader, args: &serde_json::Value) -> Resul
         filters["group"] = serde_json::json!(g);
     }
 
-    Ok(build_response(&data, filters))
+    Ok(build_response(&data, data.len(), filters))
+}
+
+fn register_dri_query(
+    registry: &mut ToolRegistry,
+    loader: &DataLoader,
+    name: &str,
+    description: &str,
+    input_schema: serde_json::Value,
+    handler_fn: fn(&DataLoader, &serde_json::Value) -> Result<String, String>,
+) {
+    let l = loader.clone();
+    registry.register(
+        name,
+        description,
+        input_schema,
+        Box::new(move |args: &serde_json::Value| -> Result<String, String> {
+            handler_fn(&l, args)
+        }),
+    );
 }
 
 /// Register all query tools for Phase 1 (DRI: minerals, vitamins, per-kg).
 pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
-    // query_dri_minerals
-    {
-        let l = loader.clone();
-        registry.register(
-            "query_dri_minerals",
-            "Query DRI mineral values by nutrient name with optional filters (group, sex, pregnant, breastfeeding)",
-            serde_json::json!({
-                "type": "object",
-                "properties": {
-                    "nutrient": {"type": "string", "description": "Mineral name (required). Use describe_dri_minerals() for valid names."},
-                    "group": {"type": "string", "description": "Exact group key."},
-                    "sex": {"type": "string", "enum": ["male", "female"]},
-                    "pregnant": {"type": "boolean"},
-                    "breastfeeding": {"type": "boolean"}
-                },
-                "required": ["nutrient"]
-            }),
-            Box::new(move |args: &serde_json::Value| -> Result<String, String> {
-                query_dri_minerals_impl(&l, args)
-            }),
-        );
-    }
+    register_dri_query(
+        registry,
+        loader,
+        "query_dri_minerals",
+        "Query DRI mineral values by nutrient name with optional filters (group, sex, pregnant, breastfeeding)",
+        serde_json::json!({
+            "type": "object",
+            "properties": {
+                "nutrient": {"type": "string", "description": "Mineral name (required). Use describe_dri_minerals() for valid names."},
+                "group": {"type": "string", "description": "Exact group key."},
+                "sex": {"type": "string", "enum": ["male", "female"]},
+                "pregnant": {"type": "boolean"},
+                "breastfeeding": {"type": "boolean"}
+            },
+            "required": ["nutrient"]
+        }),
+        query_dri_minerals_impl,
+    );
 
-    // query_dri_vitamins
-    {
-        let l = loader.clone();
-        registry.register(
-            "query_dri_vitamins",
-            "Query DRI vitamin values by nutrient name with optional filters (group, sex)",
-            serde_json::json!({
-                "type": "object",
-                "properties": {
-                    "nutrient": {"type": "string", "description": "Vitamin name (required). Use describe_dri_vitamins() for valid names."},
-                    "group": {"type": "string", "description": "Exact group key."},
-                    "sex": {"type": "string", "enum": ["male", "female"]}
-                },
-                "required": ["nutrient"]
-            }),
-            Box::new(move |args: &serde_json::Value| -> Result<String, String> {
-                query_dri_vitamins_impl(&l, args)
-            }),
-        );
-    }
+    register_dri_query(
+        registry,
+        loader,
+        "query_dri_vitamins",
+        "Query DRI vitamin values by nutrient name with optional filters (group, sex)",
+        serde_json::json!({
+            "type": "object",
+            "properties": {
+                "nutrient": {"type": "string", "description": "Vitamin name (required). Use describe_dri_vitamins() for valid names."},
+                "group": {"type": "string", "description": "Exact group key."},
+                "sex": {"type": "string", "enum": ["male", "female"]}
+            },
+            "required": ["nutrient"]
+        }),
+        query_dri_vitamins_impl,
+    );
 
-    // query_dri_per_kg
-    {
-        let l = loader.clone();
-        registry.register(
-            "query_dri_per_kg",
-            "Query DRI per-kg values by nutrient name with optional group filter",
-            serde_json::json!({
-                "type": "object",
-                "properties": {
-                    "nutrient": {"type": "string", "description": "Nutrient name (required). Use describe_dri_per_kg() for valid names."},
-                    "group": {"type": "string", "description": "Exact group key."}
-                },
-                "required": ["nutrient"]
-            }),
-            Box::new(move |args: &serde_json::Value| -> Result<String, String> {
-                query_dri_per_kg_impl(&l, args)
-            }),
-        );
-    }
+    register_dri_query(
+        registry,
+        loader,
+        "query_dri_per_kg",
+        "Query DRI per-kg values by nutrient name with optional group filter",
+        serde_json::json!({
+            "type": "object",
+            "properties": {
+                "nutrient": {"type": "string", "description": "Nutrient name (required). Use describe_dri_per_kg() for valid names."},
+                "group": {"type": "string", "description": "Exact group key."}
+            },
+            "required": ["nutrient"]
+        }),
+        query_dri_per_kg_impl,
+    );
 }
