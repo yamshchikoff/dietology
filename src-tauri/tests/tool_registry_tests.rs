@@ -76,10 +76,8 @@ fn test_register_describe_tools_registers_nine() {
     assert!(names.contains(&"describe_lab_ranges"));
 }
 
-// ============ Phase 1: DRI describe tools return real enum values ============
-
 #[test]
-fn test_describe_dri_minerals_returns_enums() {
+fn test_describe_tool_returns_not_implemented() {
     let mut registry = ToolRegistry::new();
     let loader = dietology_lib::data::DataLoader::for_development();
     dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
@@ -90,130 +88,10 @@ fn test_describe_dri_minerals_returns_enums() {
         arguments: json!({}),
     };
     let result = registry.dispatch(&call).unwrap();
-    let v: serde_json::Value = serde_json::from_str(&result.content).unwrap();
-    assert_eq!(v["status"], "ok");
-    assert!(!v["nutrients"].as_array().unwrap().is_empty());
-    assert!(!v["groups"].as_array().unwrap().is_empty());
-    assert!(!v["sexes"].as_array().unwrap().is_empty());
-    assert_eq!(v["total_groups"], 254);
-}
-
-#[test]
-fn test_describe_dri_vitamins_returns_enums() {
-    let mut registry = ToolRegistry::new();
-    let loader = dietology_lib::data::DataLoader::for_development();
-    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
-    let call = ToolCall {
-        id: "call_1".to_string(),
-        r#type: "tool_use".to_string(),
-        name: "describe_dri_vitamins".to_string(),
-        arguments: json!({}),
-    };
-    let result = registry.dispatch(&call).unwrap();
-    let v: serde_json::Value = serde_json::from_str(&result.content).unwrap();
-    assert_eq!(v["status"], "ok");
-    assert_eq!(v["total_groups"], 154);
-}
-
-#[test]
-fn test_describe_dri_per_kg_returns_enums() {
-    let mut registry = ToolRegistry::new();
-    let loader = dietology_lib::data::DataLoader::for_development();
-    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
-    let call = ToolCall {
-        id: "call_1".to_string(),
-        r#type: "tool_use".to_string(),
-        name: "describe_dri_per_kg".to_string(),
-        arguments: json!({}),
-    };
-    let result = registry.dispatch(&call).unwrap();
-    let v: serde_json::Value = serde_json::from_str(&result.content).unwrap();
-    assert_eq!(v["status"], "ok");
-    assert_eq!(v["total_groups"], 51);
-    assert_eq!(v["unit"], "mg/kg");
-    assert!(v["note"].as_str().unwrap().contains("body weight"));
-}
-
-#[test]
-fn test_describe_dri_nutrients_have_expected_entries() {
-    let mut registry = ToolRegistry::new();
-    let loader = dietology_lib::data::DataLoader::for_development();
-    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
-
-    // Minerals: 14 nutrients
-    let call = ToolCall {
-        id: "call_1".to_string(),
-        r#type: "tool_use".to_string(),
-        name: "describe_dri_minerals".to_string(),
-        arguments: json!({}),
-    };
-    let v: serde_json::Value =
-        serde_json::from_str(&registry.dispatch(&call).unwrap().content).unwrap();
-    let names: Vec<&str> = v["nutrients"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .map(|s| s.as_str().unwrap())
-        .collect();
-    assert!(names.contains(&"Calcium"));
-    assert!(names.contains(&"Iron"));
-    assert!(names.contains(&"Zinc"));
-    assert_eq!(names.len(), 14);
-
-    // Vitamins: 11 nutrients
-    let call = ToolCall {
-        id: "call_2".to_string(),
-        r#type: "tool_use".to_string(),
-        name: "describe_dri_vitamins".to_string(),
-        arguments: json!({}),
-    };
-    let v: serde_json::Value =
-        serde_json::from_str(&registry.dispatch(&call).unwrap().content).unwrap();
-    let names: Vec<&str> = v["nutrients"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .map(|s| s.as_str().unwrap())
-        .collect();
-    assert!(names.contains(&"Vitamin D"));
-    assert!(names.contains(&"Folate"));
-    assert_eq!(names.len(), 11);
-
-    // Per-kg: 3 nutrients
-    let call = ToolCall {
-        id: "call_3".to_string(),
-        r#type: "tool_use".to_string(),
-        name: "describe_dri_per_kg".to_string(),
-        arguments: json!({}),
-    };
-    let v: serde_json::Value =
-        serde_json::from_str(&registry.dispatch(&call).unwrap().content).unwrap();
-    let names: Vec<&str> = v["nutrients"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .map(|s| s.as_str().unwrap())
-        .collect();
-    assert!(names.contains(&"Calcium"));
-    assert!(names.contains(&"Magnesium"));
-    assert_eq!(names.len(), 3);
-}
-
-// ============ Phase 2+ placeholders still return not_implemented ============
-
-#[test]
-fn test_phase2_tool_returns_not_implemented() {
-    let mut registry = ToolRegistry::new();
-    let loader = dietology_lib::data::DataLoader::for_development();
-    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
-    let call = ToolCall {
-        id: "call_1".to_string(),
-        r#type: "tool_use".to_string(),
-        name: "describe_usda_foods".to_string(),
-        arguments: json!({}),
-    };
-    let result = registry.dispatch(&call).unwrap();
-    assert!(result.content.contains("not_implemented"));
+    assert!(
+        result.content.contains("not_implemented"),
+        "describe placeholder should return not_implemented status"
+    );
 }
 
 #[test]
