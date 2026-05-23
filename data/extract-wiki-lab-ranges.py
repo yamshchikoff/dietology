@@ -274,8 +274,8 @@ def extract_ranges(tables):
                     "category": category,
                     "test": test_name,
                     "type": type_str,
-                    "low": low,
-                    "high": high,
+                    "lower": low,
+                    "upper": high,
                     "unit": unit,
                 })
 
