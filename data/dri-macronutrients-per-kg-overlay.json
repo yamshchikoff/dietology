@@ -3,7 +3,7 @@
     "schema": "dri-macronutrients-per-kg-overlay-v1",
     "description": "Per-kg DRI values for Ca, P, Mg: machine-parsed values from MSD Manual Professional HTML table. 0 manual transcription dependencies.",
     "build_script": "data/build-macronutrients-per-kg-overlay.py",
-    "build_date": "2026-05-23T21:14:14Z",
+    "build_date": "2026-05-23T22:01:55Z",
     "sources": [
       "msd-macronutrients-per-kg"
     ],
@@ -137,7 +137,7 @@
         {
           "group": "pregnant",
           "sex": "female",
-          "age_range": null,
+          "age_range": "",
           "value": 18.5,
           "type": "RDA"
         },
@@ -267,7 +267,7 @@
         {
           "group": "pregnant",
           "sex": "female",
-          "age_range": null,
+          "age_range": "",
           "value": 18.5,
           "type": "RDA"
         },
@@ -397,7 +397,7 @@
         {
           "group": "pregnant",
           "sex": "female",
-          "age_range": null,
+          "age_range": "",
           "value": 4.9,
           "type": "RDA"
         },
