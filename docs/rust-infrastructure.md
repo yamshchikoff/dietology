@@ -135,7 +135,7 @@ let nutrients: Vec<DriNutrient> = serde_json::from_value(value["nutrients"].clon
 | `UsdaFoods` | `usda-foundation-foods-essential.json` | `{foods: [{name, category, fdcId, nutrients: {}}]}` |
 | `WhoHbThresholds` | `who-hb-thresholds.json` | `{diagnostic_thresholds[], severity_classification[]}` |
 | `WhoEpiData` | 3 WHO GHO файла | `{data: [{country_code, year, value, low, high, sex}]}` |
-| `LabReferenceRanges` | `lab-reference-ranges.json` | `{ranges: [{category, test, low, high, unit}]}` |
+| `LabReferenceRanges` | `lab-reference-ranges.json` | `{ranges: [{category, test, lower, upper, unit}]}` |
 | `DataIndex` | `data-index.json` | `{datasets: {}, stats: {}}` |
 | `SourcesFinal` | `sources-final.json` | `{schema_version, sources: {}, stats: {}}` |
 

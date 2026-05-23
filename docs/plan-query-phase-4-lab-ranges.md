@@ -49,13 +49,13 @@
 1. Читать `LabReferenceRanges` из `lab-reference-ranges.json`
 2. Если `test_name_substring` задан: case-insensitive substring по `r.test`
 3. Если `category` задан: точное совпадение с `r.category`
-4. Для каждого подходящего `LabRange` построить JSON: `test_name` (из `test`), `category`, `range_type`, `low`, `high`, `unit`
+4. Для каждого подходящего `LabRange` построить JSON: `test_name` (из `test`), `category`, `range_type`, `lower`, `upper`, `unit`
 
 **Краевые случаи:**
 - Оба фильтра пустые → все 254 теста
 - Подстрока не найдена → `data: []`
 - `category` с неверным регистром (напр. "Thyroid" вместо "thyroid") → `data: []` (точное совпадение)
-- `low`/`high` — строки, не числа (могут быть "<0.5", "negative"). Сериализуются как строки
+- `lower`/`upper` — строки, не числа (могут быть "<0.5", "negative"). Сериализуются как строки
 
 ---
 
