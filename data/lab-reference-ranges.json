@@ -2,7 +2,7 @@
   "_meta": {
     "source_id": "wikipedia-lab-ranges",
     "source_file": "data/external/wikipedia-lab-ranges-2026-05.html",
-    "extraction_date": "2026-05-23T19:52:56Z",
+    "extraction_date": "2026-05-23T20:33:41Z",
     "extraction_script": "data/extract-wiki-lab-ranges.py",
     "extracted_by": "agent",
     "source_claims": {
@@ -16,17 +16,105 @@
   "ranges": [
     {
       "category": "ions_and_trace_metals",
-      "test": "total serum iron (tsi) – female",
-      "type": "26, 50",
+      "test": "sodium (na)",
+      "type": "",
+      "lower": "135, 137",
+      "upper": "145, 147",
+      "unit": "mmol/L or mEq/L"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "sodium (na)",
+      "type": "",
+      "lower": "310, 320",
+      "upper": "330, 340",
+      "unit": "mg/dL"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "potassium (k)",
+      "type": "",
+      "lower": "3.5, 3.6",
+      "upper": "5.0, 5.1",
+      "unit": "mmol/L or mEq/L"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "potassium (k)",
+      "type": "",
+      "lower": "14",
+      "upper": "20",
+      "unit": "mg/dL"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "potassium (k)",
+      "type": "",
+      "lower": "340",
+      "upper": "370",
+      "unit": "mg/dL"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "ionized calcium (ca)",
+      "type": "",
+      "lower": "1.03, 1.10",
+      "upper": "1.23, 1.30",
+      "unit": "mmol/L"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "ionized calcium (ca)",
+      "type": "",
+      "lower": "4.1, 4.4",
+      "upper": "4.9, 5.2",
+      "unit": "mg/dL"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "total calcium (ca)",
+      "type": "",
       "lower": null,
+      "upper": "2.1, 2.2",
+      "unit": "mmol/L"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "total calcium (ca)",
+      "type": "",
+      "lower": "8.4, 8.5",
+      "upper": "10.2, 10.5",
+      "unit": "mg/dL"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "total serum iron (tsi) – male",
+      "type": "",
+      "lower": "65, 76",
+      "upper": "176, 198",
+      "unit": "μg/dL"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "total serum iron (tsi) – male",
+      "type": "",
+      "lower": null,
+      "upper": "11.6, 13.6",
+      "unit": "μmol/L"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "total serum iron (tsi) – female",
+      "type": "",
+      "lower": "26, 50",
       "upper": "170",
       "unit": "μg/dL"
     },
     {
       "category": "ions_and_trace_metals",
-      "test": "4.6, 8.9",
+      "test": "total serum iron (tsi) – female",
       "type": "",
-      "lower": null,
+      "lower": "4.6, 8.9",
       "upper": "30.4",
       "unit": "μmol/L"
     },
@@ -64,7 +152,23 @@
     },
     {
       "category": "ions_and_trace_metals",
-      "test": "total serum iron (tsi) – children",
+      "test": "total iron-binding capacity (tibc)",
+      "type": "",
+      "lower": "240, 262",
+      "upper": "450, 474",
+      "unit": "μg/dL"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "total iron-binding capacity (tibc)",
+      "type": "",
+      "lower": "43, 47",
+      "upper": "81, 85",
+      "unit": "μmol/L"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "total iron-binding capacity (tibc)",
       "type": "",
       "lower": "25",
       "upper": "45",
@@ -109,6 +213,22 @@
       "lower": "27",
       "upper": "330 – 440",
       "unit": "pmol/L"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "ammonia",
+      "type": "",
+      "lower": "10, 20",
+      "upper": "35, 65",
+      "unit": "μmol/L"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "ammonia",
+      "type": "",
+      "lower": "17, 34",
+      "upper": "60, 110",
+      "unit": "μg/dL"
     },
     {
       "category": "ions_and_trace_metals",
@@ -167,6 +287,46 @@
       "unit": "mg/dL"
     },
     {
+      "category": "ions_and_trace_metals",
+      "test": "zinc (zn)",
+      "type": "",
+      "lower": "60, 72",
+      "upper": "110, 130",
+      "unit": "μg/dL"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "zinc (zn)",
+      "type": "",
+      "lower": "9.2, 11",
+      "upper": "17, 20",
+      "unit": "μmol/L"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "magnesium",
+      "type": "",
+      "lower": "1.5, 1.7",
+      "upper": "2.0, 2.3",
+      "unit": "mEq/L or mg/dL"
+    },
+    {
+      "category": "ions_and_trace_metals",
+      "test": "magnesium",
+      "type": "",
+      "lower": "0.6, 0.7",
+      "upper": "0.82, 0.95",
+      "unit": "mmol/L"
+    },
+    {
+      "category": "blood_gases",
+      "test": "ph",
+      "type": "Arterial",
+      "lower": "7.34, 7.35",
+      "upper": "7.44, 7.45",
+      "unit": ""
+    },
+    {
       "category": "blood_gases",
       "test": "venous",
       "type": "",
@@ -192,6 +352,22 @@
     },
     {
       "category": "blood_gases",
+      "test": "oxygen partial pressure (po2)",
+      "type": "Arterial pO2",
+      "lower": "10, 11",
+      "upper": "13, 14",
+      "unit": "kPa"
+    },
+    {
+      "category": "blood_gases",
+      "test": "oxygen partial pressure (po2)",
+      "type": "",
+      "lower": "75, 83",
+      "upper": "100, 105",
+      "unit": "mmHg or torr"
+    },
+    {
+      "category": "blood_gases",
       "test": "venous",
       "type": "",
       "lower": "4.0",
@@ -213,6 +389,22 @@
       "lower": null,
       "upper": "100",
       "unit": "%"
+    },
+    {
+      "category": "blood_gases",
+      "test": "carbon dioxide partial pressure (pco2)",
+      "type": "Arterial PaCO2",
+      "lower": "4.4, 4.7",
+      "upper": "5.9, 6.0",
+      "unit": "kPa"
+    },
+    {
+      "category": "blood_gases",
+      "test": "carbon dioxide partial pressure (pco2)",
+      "type": "",
+      "lower": "33, 35",
+      "upper": "44, 45",
+      "unit": "mmHg or torr"
     },
     {
       "category": "blood_gases",
@@ -264,7 +456,15 @@
     },
     {
       "category": "blood_gases",
-      "test": "bicarbonate (hco3−)",
+      "test": "standard bicarbonate (sbce)",
+      "type": "Arterial & venous",
+      "lower": "21, 22",
+      "upper": "27, 28",
+      "unit": "mmol/L or mEq/L"
+    },
+    {
+      "category": "blood_gases",
+      "test": "standard bicarbonate (sbce)",
       "type": "",
       "lower": "134",
       "upper": "170",
@@ -272,19 +472,27 @@
     },
     {
       "category": "blood_gases",
-      "test": "albumin",
+      "test": "total protein (totpro)",
       "type": "",
       "lower": null,
-      "upper": "35",
-      "unit": "48, 55"
+      "upper": "60, 63",
+      "unit": "g/L"
     },
     {
       "category": "blood_gases",
       "test": "albumin",
       "type": "",
-      "lower": null,
-      "upper": "3.5",
-      "unit": "4.8, 5.5"
+      "lower": "35",
+      "upper": "48, 55",
+      "unit": "g/L"
+    },
+    {
+      "category": "blood_gases",
+      "test": "albumin",
+      "type": "",
+      "lower": "3.5",
+      "upper": "4.8, 5.5",
+      "unit": "U/L"
     },
     {
       "category": "blood_gases",
@@ -304,11 +512,19 @@
     },
     {
       "category": "blood_gases",
-      "test": "globulins",
-      "type": "",
+      "test": "direct/conjugated bilirubin",
+      "type": "0.0 or N/A",
       "lower": null,
-      "upper": "0",
-      "unit": "0.3, 0.4"
+      "upper": "5, 7",
+      "unit": "μmol/L"
+    },
+    {
+      "category": "blood_gases",
+      "test": "direct/conjugated bilirubin",
+      "type": "",
+      "lower": "0",
+      "upper": "0.3, 0.4",
+      "unit": "mg/dL"
     },
     {
       "category": "blood_gases",
@@ -324,7 +540,7 @@
       "type": "",
       "lower": "0.15",
       "upper": "1.1",
-      "unit": ""
+      "unit": "μkat/L"
     },
     {
       "category": "blood_gases",
@@ -332,7 +548,7 @@
       "type": "Female",
       "lower": "6",
       "upper": "34",
-      "unit": "IU/L"
+      "unit": "Also called serum glutamic oxaloacetic transaminase (SGOT)"
     },
     {
       "category": "blood_gases",
@@ -380,7 +596,15 @@
       "type": "",
       "lower": "53",
       "upper": "128",
-      "unit": ""
+      "unit": "U/L"
+    },
+    {
+      "category": "blood_gases",
+      "test": "gamma glutamyl transferase (ggt)",
+      "type": "",
+      "lower": "5, 8",
+      "upper": "40, 78",
+      "unit": "U/L"
     },
     {
       "category": "blood_gases",
@@ -400,7 +624,15 @@
     },
     {
       "category": "cardiac",
-      "test": "male",
+      "test": "creatine kinase (ck)",
+      "type": "Male | 24, 38, 60",
+      "lower": null,
+      "upper": "174, 320",
+      "unit": "U/L or ng/mL"
+    },
+    {
+      "category": "cardiac",
+      "test": "creatine kinase (ck)",
       "type": "",
       "lower": "0.42",
       "upper": "1.5",
@@ -408,7 +640,15 @@
     },
     {
       "category": "cardiac",
-      "test": "male",
+      "test": "female",
+      "type": "24, 38, 96",
+      "lower": null,
+      "upper": "140, 200",
+      "unit": "U/L or ng/mL"
+    },
+    {
+      "category": "cardiac",
+      "test": "female",
       "type": "",
       "lower": "0.17",
       "upper": "1.17",
@@ -420,7 +660,7 @@
       "type": "",
       "lower": null,
       "upper": "0",
-      "unit": "3, 3.8, 5"
+      "unit": "ng/mL or μg/L"
     },
     {
       "category": "cardiac",
@@ -436,7 +676,7 @@
       "type": "",
       "lower": "17",
       "upper": "106",
-      "unit": ""
+      "unit": "ng/mL or μg/L"
     },
     {
       "category": "cardiac",
@@ -444,7 +684,7 @@
       "type": "",
       "lower": null,
       "upper": "0.1",
-      "unit": "ng/mL"
+      "unit": "99th percentile cutoff"
     },
     {
       "category": "cardiac",
@@ -452,7 +692,7 @@
       "type": "",
       "lower": null,
       "upper": "0.03",
-      "unit": "ng/mL"
+      "unit": "99th percentile cutoff"
     },
     {
       "category": "cardiac",
@@ -460,7 +700,7 @@
       "type": "Male",
       "lower": null,
       "upper": "0.022",
-      "unit": "ng/mL"
+      "unit": "99th percentile cutoff"
     },
     {
       "category": "cardiac",
@@ -468,15 +708,15 @@
       "type": "",
       "lower": null,
       "upper": "0.014",
-      "unit": "ng/mL"
+      "unit": "99th percentile cutoff"
     },
     {
       "category": "cardiac",
       "test": "\"gray zone\"",
       "type": "",
       "lower": null,
-      "upper": "100–500 pg/mL",
-      "unit": ""
+      "upper": "100–500",
+      "unit": "pg/mL"
     },
     {
       "category": "lipids",
@@ -484,7 +724,7 @@
       "type": "",
       "lower": "10–39 years",
       "upper": "54",
-      "unit": "mg/dL"
+      "unit": "< 100 mg/dL or 1.1 mmol/L"
     },
     {
       "category": "lipids",
@@ -528,17 +768,33 @@
     },
     {
       "category": "lipids",
+      "test": "total cholesterol",
+      "type": "",
+      "lower": "3.0, 3.6",
+      "upper": "5.0, 6.5",
+      "unit": "< 3.9 mmol/L"
+    },
+    {
+      "category": "lipids",
+      "test": "total cholesterol",
+      "type": "",
+      "lower": "120, 140",
+      "upper": "200, 250",
+      "unit": "< 150 mg/dL"
+    },
+    {
+      "category": "lipids",
       "test": "hdl cholesterol",
       "type": "Female | 1.0, 1.2, 1.3",
       "lower": null,
       "upper": "2.2",
-      "unit": "mmol/L"
+      "unit": "> 1.0 or 1.6 mmol/L 40 or 60 mg/dL"
     },
     {
       "category": "lipids",
-      "test": "40, 50",
+      "test": "hdl cholesterol",
       "type": "",
-      "lower": null,
+      "lower": "40, 50",
       "upper": "86",
       "unit": "mg/dL"
     },
@@ -560,6 +816,22 @@
     },
     {
       "category": "lipids",
+      "test": "ldl cholesterol (not valid when triglycerides >5.0 mmol/l)",
+      "type": "",
+      "lower": "2.0, 2.4",
+      "upper": "3.0, 3.4",
+      "unit": "< 2.5 mmol/L"
+    },
+    {
+      "category": "lipids",
+      "test": "ldl cholesterol (not valid when triglycerides >5.0 mmol/l)",
+      "type": "",
+      "lower": "80, 94",
+      "upper": "120, 130",
+      "unit": "< 100 mg/dL"
+    },
+    {
+      "category": "lipids",
       "test": "ldl/hdl quotient",
       "type": "n/a",
       "lower": null,
@@ -572,7 +844,7 @@
       "type": "",
       "lower": null,
       "upper": "44",
-      "unit": "ng/mL or μg/L"
+      "unit": "Hepatocellular carcinoma or testicular cancer"
     },
     {
       "category": "tumour_markers",
@@ -580,7 +852,7 @@
       "type": "In males and non-pregnant females",
       "lower": null,
       "upper": "5",
-      "unit": "IU/L or mU/mL"
+      "unit": "choriocarcinoma"
     },
     {
       "category": "tumour_markers",
@@ -588,7 +860,23 @@
       "type": "",
       "lower": "CA19-9",
       "upper": "40",
-      "unit": "U/mL"
+      "unit": "Pancreatic cancer"
+    },
+    {
+      "category": "tumour_markers",
+      "test": "ca-125",
+      "type": "",
+      "lower": null,
+      "upper": "30, 35",
+      "unit": "kU/L or U/mL"
+    },
+    {
+      "category": "tumour_markers",
+      "test": "carcinoembryonic antigen (cea)",
+      "type": "Non-smokers, 50 years",
+      "lower": null,
+      "upper": "3.4, 3.6",
+      "unit": "μg/L"
     },
     {
       "category": "tumour_markers",
@@ -596,7 +884,7 @@
       "type": "",
       "lower": null,
       "upper": "4.1",
-      "unit": ""
+      "unit": "μg/L"
     },
     {
       "category": "tumour_markers",
@@ -604,7 +892,7 @@
       "type": "",
       "lower": null,
       "upper": "5",
-      "unit": ""
+      "unit": "μg/L"
     },
     {
       "category": "tumour_markers",
@@ -612,7 +900,7 @@
       "type": "",
       "lower": "40–49 years",
       "upper": "1.2–2.9",
-      "unit": "μg/L or ng/mL"
+      "unit": "More detailed cutoffs in PSA – Serum levels"
     },
     {
       "category": "tumour_markers",
@@ -620,7 +908,7 @@
       "type": "",
       "lower": "70–79 years, non-African-American",
       "upper": "4.0–9.0",
-      "unit": ""
+      "unit": "More detailed cutoffs in PSA – Serum levels"
     },
     {
       "category": "tumour_markers",
@@ -628,7 +916,7 @@
       "type": "",
       "lower": "70–79 years, African-American",
       "upper": "7.7–13",
-      "unit": ""
+      "unit": "More detailed cutoffs in PSA – Serum levels"
     },
     {
       "category": "tumour_markers",
@@ -639,12 +927,44 @@
       "unit": "units/dL (Bodansky units)"
     },
     {
+      "category": "tumour_markers",
+      "test": "calcitonin",
+      "type": "",
+      "lower": null,
+      "upper": "5, 15",
+      "unit": "Cutoff against medullary thyroid cancerMore detailed cutoffs in Calcitonin article"
+    },
+    {
+      "category": "thyroid",
+      "test": "adults – optimal range",
+      "type": "",
+      "lower": "0.3, 0.5",
+      "upper": "2.0, 3.0",
+      "unit": ""
+    },
+    {
       "category": "thyroid",
       "test": "infants",
       "type": "",
       "lower": "1.3",
       "upper": "19",
       "unit": ""
+    },
+    {
+      "category": "thyroid",
+      "test": "free thyroxine (ft4)-more detailed ranges in thyroid function tests article",
+      "type": "Normal adult",
+      "lower": null,
+      "upper": "0.7, 0.8",
+      "unit": "ng/dL"
+    },
+    {
+      "category": "thyroid",
+      "test": "9, 10, 12",
+      "type": "",
+      "lower": null,
+      "upper": "18, 23",
+      "unit": "pmol/L"
     },
     {
       "category": "thyroid",
@@ -680,11 +1000,19 @@
     },
     {
       "category": "thyroid",
-      "test": "pregnant",
+      "test": "total thyroxine",
       "type": "",
-      "lower": null,
-      "upper": "60",
-      "unit": "140, 160"
+      "lower": "4, 5.5",
+      "upper": "11, 12.3",
+      "unit": "μg/dL"
+    },
+    {
+      "category": "thyroid",
+      "test": "total thyroxine",
+      "type": "",
+      "lower": "60",
+      "upper": "140, 160",
+      "unit": "nmol/L"
     },
     {
       "category": "thyroid",
@@ -717,6 +1045,22 @@
       "lower": "1.5",
       "upper": "9.2",
       "unit": "pmol/L"
+    },
+    {
+      "category": "thyroid",
+      "test": "total triiodothyronine",
+      "type": "",
+      "lower": "60, 75",
+      "upper": "175, 181",
+      "unit": "ng/dL"
+    },
+    {
+      "category": "thyroid",
+      "test": "total triiodothyronine",
+      "type": "",
+      "lower": "0.9, 1.1",
+      "upper": "2.5, 2.7",
+      "unit": "nmol/L"
     },
     {
       "category": "thyroid",
@@ -760,9 +1104,17 @@
     },
     {
       "category": "sex_hormones",
-      "test": "230, 300",
+      "test": "testosterone",
+      "type": "Male, overall",
+      "lower": "8, 10",
+      "upper": "27, 35",
+      "unit": "nmol/L"
+    },
+    {
+      "category": "sex_hormones",
+      "test": "testosterone",
       "type": "",
-      "lower": null,
+      "lower": "230, 300",
       "upper": "780–1000",
       "unit": "ng/dL"
     },
@@ -860,7 +1212,7 @@
       "type": "",
       "lower": "1",
       "upper": "8",
-      "unit": ""
+      "unit": "IU/L"
     },
     {
       "category": "sex_hormones",
@@ -868,7 +1220,7 @@
       "type": "",
       "lower": "1",
       "upper": "11",
-      "unit": ""
+      "unit": "IU/L"
     },
     {
       "category": "sex_hormones",
@@ -876,7 +1228,7 @@
       "type": "",
       "lower": "30",
       "upper": "118",
-      "unit": ""
+      "unit": "IU/L"
     },
     {
       "category": "sex_hormones",
@@ -884,7 +1236,7 @@
       "type": "",
       "lower": "15",
       "upper": "60",
-      "unit": ""
+      "unit": "IU/L"
     },
     {
       "category": "sex_hormones",
@@ -892,7 +1244,7 @@
       "type": "",
       "lower": "2",
       "upper": "9",
-      "unit": ""
+      "unit": "IU/L"
     },
     {
       "category": "sex_hormones",
@@ -914,17 +1266,17 @@
       "category": "sex_hormones",
       "test": "adult female (day 5 of follicular phase, and luteal phase)",
       "type": "",
-      "lower": null,
-      "upper": "70",
-      "unit": "500, 600"
+      "lower": "70",
+      "upper": "500, 600",
+      "unit": "pmol/L"
     },
     {
       "category": "sex_hormones",
       "test": "adult female (day 5 of follicular phase, and luteal phase)",
       "type": "",
-      "lower": null,
-      "upper": "19",
-      "unit": "140, 160"
+      "lower": "19",
+      "upper": "140, 160",
+      "unit": "pg/mL"
     },
     {
       "category": "sex_hormones",
@@ -963,14 +1315,14 @@
       "test": "progesterone-more detailed ranges in progesterone article",
       "type": "",
       "lower": "Female in mid-luteal phase (day 21–23)",
-      "upper": "92",
+      "upper": "17, 35",
       "unit": "nmol/L"
     },
     {
       "category": "sex_hormones",
-      "test": "6, 11",
+      "test": "progesterone-more detailed ranges in progesterone article",
       "type": "",
-      "lower": null,
+      "lower": "6, 11",
       "upper": "29",
       "unit": "ng/mL"
     },
@@ -988,7 +1340,7 @@
       "type": "",
       "lower": null,
       "upper": "< 180",
-      "unit": ""
+      "unit": "ng/dL"
     },
     {
       "category": "sex_hormones",
@@ -996,7 +1348,7 @@
       "type": "",
       "lower": null,
       "upper": "< 60",
-      "unit": ""
+      "unit": "ng/dL"
     },
     {
       "category": "sex_hormones",
@@ -1020,7 +1372,7 @@
       "type": "",
       "lower": "20",
       "upper": "60",
-      "unit": ""
+      "unit": "nmol/L"
     },
     {
       "category": "sex_hormones",
@@ -1100,7 +1452,7 @@
       "type": "",
       "lower": null,
       "upper": "7",
-      "unit": "n/a"
+      "unit": "ng/mL"
     },
     {
       "category": "other_hormones",
@@ -1116,7 +1468,7 @@
       "type": "",
       "lower": "55",
       "upper": "220",
-      "unit": ""
+      "unit": "ng/mL"
     },
     {
       "category": "other_hormones",
@@ -1124,7 +1476,7 @@
       "type": "",
       "lower": "160",
       "upper": "390",
-      "unit": ""
+      "unit": "ng/mL"
     },
     {
       "category": "other_hormones",
@@ -1132,23 +1484,135 @@
       "type": "",
       "lower": "48",
       "upper": "200",
-      "unit": ""
+      "unit": "ng/mL"
+    },
+    {
+      "category": "other_hormones",
+      "test": "prolactin -more detailed ranges in prolactin article",
+      "type": "Female",
+      "lower": "71, 105",
+      "upper": "348, 548",
+      "unit": "mIU/L"
+    },
+    {
+      "category": "other_hormones",
+      "test": "prolactin -more detailed ranges in prolactin article",
+      "type": "",
+      "lower": "3.4, 3.9",
+      "upper": "16.4, 20.3",
+      "unit": "μg/L"
+    },
+    {
+      "category": "other_hormones",
+      "test": "male",
+      "type": "",
+      "lower": "58, 89",
+      "upper": "277, 365",
+      "unit": "mIU/L"
+    },
+    {
+      "category": "other_hormones",
+      "test": "male",
+      "type": "",
+      "lower": "2.7, 3.3",
+      "upper": "13.0, 13.5",
+      "unit": "μg/L"
+    },
+    {
+      "category": "other_hormones",
+      "test": "parathyroid hormone (pth)",
+      "type": "",
+      "lower": "10, 17",
+      "upper": "65, 70",
+      "unit": "pg/mL"
+    },
+    {
+      "category": "other_hormones",
+      "test": "parathyroid hormone (pth)",
+      "type": "",
+      "lower": "1.1, 1.8",
+      "upper": "6.9, 7.5",
+      "unit": "pmol/L"
+    },
+    {
+      "category": "other_hormones",
+      "test": "25-hydroxycholecalciferol (a vitamin d) – standard reference range",
+      "type": "",
+      "lower": "8, 9",
+      "upper": "40, 80",
+      "unit": "ng/mL"
+    },
+    {
+      "category": "other_hormones",
+      "test": "25-hydroxycholecalciferol (a vitamin d) – standard reference range",
+      "type": "",
+      "lower": "20, 23",
+      "upper": "95, 150",
+      "unit": "nmol/L"
+    },
+    {
+      "category": "other_hormones",
+      "test": "25-hydroxycholecalciferol – therapeutic target range",
+      "type": "",
+      "lower": "30, 40",
+      "upper": "65, 100",
+      "unit": "ng/mL"
+    },
+    {
+      "category": "other_hormones",
+      "test": "25-hydroxycholecalciferol – therapeutic target range",
+      "type": "",
+      "lower": "85, 100",
+      "upper": "120, 160",
+      "unit": "nmol/L"
     },
     {
       "category": "other_hormones",
       "test": "plasma renin activity",
-      "type": "0.29, 1.9",
-      "lower": null,
+      "type": "",
+      "lower": "0.29, 1.9",
       "upper": "3.7",
       "unit": "ng/(mL·h)"
     },
     {
       "category": "other_hormones",
       "test": "plasma renin activity",
-      "type": "3.3, 21",
-      "lower": null,
+      "type": "",
+      "lower": "3.3, 21",
       "upper": "41",
       "unit": "mcU/mL"
+    },
+    {
+      "category": "other_hormones",
+      "test": "aldosterone -more detailed ranges in aldosterone article",
+      "type": "Adult",
+      "lower": null,
+      "upper": "19, 34.0",
+      "unit": "ng/dL"
+    },
+    {
+      "category": "other_hormones",
+      "test": "aldosterone -more detailed ranges in aldosterone article",
+      "type": "",
+      "lower": null,
+      "upper": "530, 940",
+      "unit": "pmol/L"
+    },
+    {
+      "category": "other_hormones",
+      "test": "aldosterone-to-renin ratio -more detailed ranges in aldosterone/renin ratio article",
+      "type": "Adult",
+      "lower": null,
+      "upper": "13.1, 35.0",
+      "unit": "ng/dL per ng/(mL·h)"
+    },
+    {
+      "category": "other_hormones",
+      "test": "aldosterone-to-renin ratio -more detailed ranges in aldosterone/renin ratio article",
+      "type": "",
+      "lower": null,
+      "upper": "360, 970",
+      "unit": "pmol/liter per μg/(L·h)"
     },
     {
       "category": "vitamins",
@@ -1156,7 +1620,7 @@
       "type": "",
       "lower": "30",
       "upper": "65",
-      "unit": ""
+      "unit": "μg/dL"
     },
     {
       "category": "vitamins",
@@ -1164,7 +1628,7 @@
       "type": "Age > 1 year",
       "lower": "3.0",
       "upper": "16",
-      "unit": ""
+      "unit": "ng/mL or μg/L"
     },
     {
       "category": "vitamins",
@@ -1172,7 +1636,7 @@
       "type": "",
       "lower": "6.8",
       "upper": "36",
-      "unit": ""
+      "unit": "nmol/L"
     },
     {
       "category": "vitamins",
@@ -1180,7 +1644,7 @@
       "type": "",
       "lower": "200",
       "upper": "600",
-      "unit": ""
+      "unit": "ng/mL or μg/L"
     },
     {
       "category": "vitamins",
@@ -1188,7 +1652,7 @@
       "type": "",
       "lower": "450",
       "upper": "1400",
-      "unit": ""
+      "unit": "nmol/L"
     },
     {
       "category": "vitamins",
@@ -1208,18 +1672,34 @@
     },
     {
       "category": "vitamins",
+      "test": "vitamin b12 (cobalamin)",
+      "type": "",
+      "lower": "130, 160",
+      "upper": "700, 950",
+      "unit": "ng/L"
+    },
+    {
+      "category": "vitamins",
+      "test": "vitamin b12 (cobalamin)",
+      "type": "",
+      "lower": "100, 120",
+      "upper": "520, 700",
+      "unit": "pmol/L"
+    },
+    {
+      "category": "vitamins",
       "test": "homocysteine-more detailed ranges in homocysteine article",
-      "type": "3.3, 5.9 | 7.2, 15.3",
-      "lower": null,
-      "upper": "6.3",
+      "type": "",
+      "lower": "3.3, 5.9",
+      "upper": "7.2, 15.3",
       "unit": "μmol/L"
     },
     {
       "category": "vitamins",
       "test": "homocysteine-more detailed ranges in homocysteine article",
-      "type": "45, 80 | 100, 210",
-      "lower": null,
-      "upper": "85",
+      "type": "",
+      "lower": "45, 80",
+      "upper": "100, 210",
       "unit": "μg/dL"
     },
     {
@@ -1228,7 +1708,7 @@
       "type": "",
       "lower": "0.4",
       "upper": "1.5",
-      "unit": ""
+      "unit": "mg/dL"
     },
     {
       "category": "vitamins",
@@ -1236,7 +1716,23 @@
       "type": "",
       "lower": "23",
       "upper": "85",
-      "unit": ""
+      "unit": "μmol/L"
+    },
+    {
+      "category": "vitamins",
+      "test": "25-hydroxycholecalciferol (a vitamin d)",
+      "type": "",
+      "lower": "8, 9",
+      "upper": "40, 80",
+      "unit": "ng/mL"
+    },
+    {
+      "category": "vitamins",
+      "test": "25-hydroxycholecalciferol (a vitamin d)",
+      "type": "",
+      "lower": "20, 23",
+      "upper": "95, 150",
+      "unit": "nmol/L"
     },
     {
       "category": "vitamins",
@@ -1264,11 +1760,43 @@
     },
     {
       "category": "hematology_rbc",
-      "test": "vitamin e",
+      "test": "hemoglobin (hb)",
+      "type": "Male",
+      "lower": "2.0, 2.1",
+      "upper": "2.5, 2.7",
+      "unit": "Higher in neonates, lower in children."
+    },
+    {
+      "category": "hematology_rbc",
+      "test": "female",
+      "type": "",
+      "lower": "1.8, 1.9",
+      "upper": "2.3, 2.5",
+      "unit": "Sex difference negligible until adulthood."
+    },
+    {
+      "category": "hematology_rbc",
+      "test": "female",
       "type": "",
       "lower": null,
       "upper": "120",
-      "unit": "150, 152, 160"
+      "unit": "g/L"
+    },
+    {
+      "category": "hematology_rbc",
+      "test": "hemoglobin subunits (sometimes displayed simply as \"hemoglobin\")",
+      "type": "Male",
+      "lower": "8.0, 8.4",
+      "upper": "10.0, 10.8",
+      "unit": "4 per hemoglobin molecule"
+    },
+    {
+      "category": "hematology_rbc",
+      "test": "female",
+      "type": "",
+      "lower": "7.2, 7.6",
+      "upper": "9.2, 10.0",
+      "unit": "4 per hemoglobin molecule"
     },
     {
       "category": "hematology_rbc",
@@ -1276,7 +1804,7 @@
       "type": "",
       "lower": "0.16",
       "upper": "0.62",
-      "unit": "μmol/L"
+      "unit": "Normally diminutive compared with inside red blood cells"
     },
     {
       "category": "hematology_rbc",
@@ -1300,7 +1828,7 @@
       "type": "",
       "lower": "3.9",
       "upper": "5.3",
-      "unit": ""
+      "unit": "% of Hb"
     },
     {
       "category": "hematology_rbc",
@@ -1316,7 +1844,15 @@
       "type": "",
       "lower": "0.47",
       "upper": "2.1",
-      "unit": ""
+      "unit": "g/L"
+    },
+    {
+      "category": "hematology_rbc",
+      "test": "female",
+      "type": "0.35, 0.36, 0.37",
+      "lower": null,
+      "upper": "0.46, 0.48",
+      "unit": "L/L"
     },
     {
       "category": "hematology_rbc",
@@ -1325,6 +1861,14 @@
       "lower": "0.31",
       "upper": "0.43",
       "unit": "L/L"
+    },
+    {
+      "category": "hematology_rbc",
+      "test": "mean corpuscular volume (mcv)",
+      "type": "Male",
+      "lower": "76, 82",
+      "upper": "100, 102",
+      "unit": "Cells are larger in neonates, though smaller in other children."
     },
     {
       "category": "hematology_rbc",
@@ -1352,11 +1896,51 @@
     },
     {
       "category": "hematology_rbc",
+      "test": "mean cell hemoglobin (mch)",
+      "type": "",
+      "lower": null,
+      "upper": "25, 27",
+      "unit": "pg/cell"
+    },
+    {
+      "category": "hematology_rbc",
+      "test": "mean corpuscular hemoglobin concentration (mchc)",
+      "type": "",
+      "lower": "4.8, 5.0",
+      "upper": "5.4, 5.6",
+      "unit": "mmol/L"
+    },
+    {
+      "category": "hematology_rbc",
+      "test": "mean corpuscular hemoglobin concentration (mchc)",
+      "type": "",
+      "lower": "31, 32",
+      "upper": "35, 36",
+      "unit": "g/dL or %[note 1]"
+    },
+    {
+      "category": "hematology_rbc",
+      "test": "erythrocytes/red blood cells (rbc)",
+      "type": "Male",
+      "lower": null,
+      "upper": "4.2, 4.3",
+      "unit": "×1012/Lormillion/mm3"
+    },
+    {
+      "category": "hematology_rbc",
+      "test": "female",
+      "type": "3.5, 3.8, 3.9",
+      "lower": null,
+      "upper": "5.1, 5.5",
+      "unit": "×1012/Lormillion/mm3"
+    },
+    {
+      "category": "hematology_rbc",
       "test": "infant/child",
       "type": "",
       "lower": "3.8",
       "upper": "5.5",
-      "unit": ""
+      "unit": "×1012/Lormillion/mm3"
     },
     {
       "category": "hematology_rbc",
@@ -1442,9 +2026,9 @@
       "category": "blood_gases",
       "test": "1 year old",
       "type": "",
-      "lower": null,
-      "upper": "45–54",
-      "unit": "62, 74"
+      "lower": "45–54",
+      "upper": "62, 74",
+      "unit": "% of WBC"
     },
     {
       "category": "blood_gases",
@@ -1472,11 +2056,19 @@
     },
     {
       "category": "blood_gases",
-      "test": "neutrophilic band forms",
-      "type": "",
+      "test": "lymphocytes",
+      "type": "Adult",
       "lower": null,
-      "upper": "16–25",
-      "unit": "33, 45"
+      "upper": "0.7, 1.0",
+      "unit": "×109/L"
+    },
+    {
+      "category": "blood_gases",
+      "test": "lymphocytes",
+      "type": "",
+      "lower": "16–25",
+      "upper": "33, 45",
+      "unit": "% of WBC"
     },
     {
       "category": "blood_gases",
@@ -1489,10 +2081,18 @@
     {
       "category": "blood_gases",
       "test": "monocytes",
-      "type": "Adult | 0.1, 0.2",
-      "lower": null,
+      "type": "Adult",
+      "lower": "0.1, 0.2",
       "upper": "0.8",
       "unit": "×109/L"
+    },
+    {
+      "category": "blood_gases",
+      "test": "monocytes",
+      "type": "",
+      "lower": "3, 4.0",
+      "upper": "7, 10",
+      "unit": "% of WBC"
     },
     {
       "category": "blood_gases",
@@ -1520,11 +2120,27 @@
     },
     {
       "category": "blood_gases",
-      "test": "mononuclear leukocytes (lymphocytes + monocytes)",
-      "type": "",
+      "test": "cd4+ t cells",
+      "type": "Adult",
+      "lower": "0.4, 0.5",
+      "upper": "1.5, 1.8",
+      "unit": "×109/L"
+    },
+    {
+      "category": "blood_gases",
+      "test": "eosinophil granulocytes",
+      "type": "Adult",
       "lower": null,
-      "upper": "1",
-      "unit": "3, 7"
+      "upper": "0.0, 0.04",
+      "unit": "×109/L"
+    },
+    {
+      "category": "blood_gases",
+      "test": "eosinophil granulocytes",
+      "type": "",
+      "lower": "1",
+      "upper": "3, 7",
+      "unit": "% of WBC"
     },
     {
       "category": "blood_gases",
@@ -1540,15 +2156,15 @@
       "type": "Adult",
       "lower": null,
       "upper": "40",
-      "unit": "100, 200, 900"
+      "unit": "×106/L"
     },
     {
       "category": "blood_gases",
       "test": "basophil granulocytes",
       "type": "",
-      "lower": null,
-      "upper": "0.0",
-      "unit": "0.75, 2"
+      "lower": "0.0",
+      "upper": "0.75, 2",
+      "unit": "% of WBC"
     },
     {
       "category": "blood_gases",
@@ -1560,11 +2176,27 @@
     },
     {
       "category": "coagulation",
+      "test": "thrombocyte/platelet count (plt)",
+      "type": "",
+      "lower": null,
+      "upper": "140, 150",
+      "unit": "×109/L or x1000/μL"
+    },
+    {
+      "category": "coagulation",
       "test": "inr",
       "type": "",
       "lower": "0.9",
       "upper": "1.2",
       "unit": "The INR is a corrected ratio of a patient's PT to normal"
+    },
+    {
+      "category": "coagulation",
+      "test": "activated partial thromboplastin time (aptt)",
+      "type": "",
+      "lower": null,
+      "upper": "18, 30",
+      "unit": "s"
     },
     {
       "category": "coagulation",
@@ -1576,11 +2208,27 @@
     },
     {
       "category": "coagulation",
+      "test": "fibrinogen",
+      "type": "",
+      "lower": "1.7, 2.0",
+      "upper": "3.6, 4.2",
+      "unit": "g/L"
+    },
+    {
+      "category": "coagulation",
       "test": "antithrombin",
       "type": "",
       "lower": "0.80",
       "upper": "1.2",
       "unit": "kIU/L"
+    },
+    {
+      "category": "coagulation",
+      "test": "antithrombin",
+      "type": "",
+      "lower": "0.15, 0.17",
+      "upper": "0.2, 0.39",
+      "unit": "mg/mL"
     },
     {
       "category": "coagulation",
@@ -1604,7 +2252,39 @@
       "type": "Male",
       "lower": null,
       "upper": "0",
-      "unit": "Age÷2"
+      "unit": "ESR increases with age and tends to be higher in females."
+    },
+    {
+      "category": "immunology",
+      "test": "c-reactive protein (crp)",
+      "type": "",
+      "lower": null,
+      "upper": "5, 6",
+      "unit": "mg/L"
+    },
+    {
+      "category": "immunology",
+      "test": "c-reactive protein (crp)",
+      "type": "",
+      "lower": null,
+      "upper": "200, 240",
+      "unit": "nmol/L"
+    },
+    {
+      "category": "immunology",
+      "test": "alpha 1-antitrypsin (aat)",
+      "type": "",
+      "lower": "20, 22",
+      "upper": "38, 53",
+      "unit": "μmol/L"
+    },
+    {
+      "category": "immunology",
+      "test": "alpha 1-antitrypsin (aat)",
+      "type": "",
+      "lower": "89, 97",
+      "upper": "170, 230",
+      "unit": "mg/dL"
     },
     {
       "category": "immunology",
@@ -1616,11 +2296,19 @@
     },
     {
       "category": "immunology",
+      "test": "iga",
+      "type": "Adult",
+      "lower": "70, 110",
+      "upper": "360, 560",
+      "unit": "mg/dL"
+    },
+    {
+      "category": "immunology",
       "test": "igd",
       "type": "",
       "lower": "0.5",
       "upper": "3.0",
-      "unit": ""
+      "unit": "mg/dL"
     },
     {
       "category": "immunology",
@@ -1628,7 +2316,7 @@
       "type": "",
       "lower": "0.01",
       "upper": "0.04",
-      "unit": ""
+      "unit": "mg/dL"
     },
     {
       "category": "immunology",
@@ -1636,7 +2324,7 @@
       "type": "",
       "lower": "800",
       "upper": "1800",
-      "unit": ""
+      "unit": "mg/dL"
     },
     {
       "category": "immunology",
@@ -1644,7 +2332,7 @@
       "type": "",
       "lower": "54",
       "upper": "220",
-      "unit": ""
+      "unit": "mg/dL"
     },
     {
       "category": "blood_gases",
@@ -1660,7 +2348,7 @@
       "type": "",
       "lower": "< 1.0",
       "upper": "≥ 1.0",
-      "unit": ""
+      "unit": "Units (U)"
     },
     {
       "category": "blood_gases",
@@ -1684,7 +2372,7 @@
       "type": "",
       "lower": "< 25",
       "upper": "> 25",
-      "unit": ""
+      "unit": "Units per millilitre (U/mL)"
     },
     {
       "category": "blood_gases",
@@ -1692,7 +2380,7 @@
       "type": "",
       "lower": "< 20",
       "upper": "21–30",
-      "unit": ""
+      "unit": "Units per millilitre (U/mL)"
     },
     {
       "category": "blood_gases",
@@ -1700,7 +2388,7 @@
       "type": "",
       "lower": "< 5",
       "upper": "> 5",
-      "unit": ""
+      "unit": "Units per millilitre (U/mL)"
     },
     {
       "category": "blood_gases",
@@ -1724,7 +2412,7 @@
       "type": "",
       "lower": null,
       "upper": "> 100",
-      "unit": ""
+      "unit": "Units per millilitre (U/mL)"
     },
     {
       "category": "blood_gases",
@@ -1732,7 +2420,7 @@
       "type": "",
       "lower": null,
       "upper": "> 250",
-      "unit": ""
+      "unit": "Units per millilitre (U/mL)"
     },
     {
       "category": "blood_gases",
@@ -1740,7 +2428,7 @@
       "type": "",
       "lower": null,
       "upper": "> 125",
-      "unit": ""
+      "unit": "Units per millilitre (U/mL)"
     },
     {
       "category": "blood_gases",
@@ -1748,7 +2436,7 @@
       "type": "",
       "lower": "< 20",
       "upper": "20–30",
-      "unit": ""
+      "unit": "GPLU/mL"
     },
     {
       "category": "blood_gases",
@@ -1756,7 +2444,7 @@
       "type": "",
       "lower": "< 1.5",
       "upper": "1.5–2.5",
-      "unit": ""
+      "unit": "MPL /mL"
     },
     {
       "category": "blood_gases",
@@ -1764,7 +2452,7 @@
       "type": "",
       "lower": "< 10",
       "upper": "10–20",
-      "unit": ""
+      "unit": "arb U/mL"
     },
     {
       "category": "blood_gases",
@@ -1772,7 +2460,7 @@
       "type": "",
       "lower": "< 20",
       "upper": "20–39",
-      "unit": ""
+      "unit": "EU"
     },
     {
       "category": "unknown",
@@ -1781,6 +2469,14 @@
       "lower": "0.26",
       "upper": "1.65",
       "unit": "(unitless)"
+    },
+    {
+      "category": "liver_function",
+      "test": "serum total protein",
+      "type": "",
+      "lower": null,
+      "upper": "60, 63",
+      "unit": "Further information: Serum total protein § Interpretation"
     },
     {
       "category": "liver_function",
@@ -1804,7 +2500,7 @@
       "type": "",
       "lower": "1.8",
       "upper": "3.4",
-      "unit": "μkat/L"
+      "unit": "< 70 years old"
     },
     {
       "category": "liver_function",
@@ -1828,7 +2524,7 @@
       "type": "n/a",
       "lower": null,
       "upper": "500",
-      "unit": "ng/mL"
+      "unit": "Higher in pregnant women"
     },
     {
       "category": "liver_function",
@@ -1868,15 +2564,15 @@
       "type": "",
       "lower": "3.0",
       "upper": "7.0",
-      "unit": "mmol/L"
+      "unit": "BUN – blood urea nitrogen"
     },
     {
       "category": "metabolites",
       "test": "urea",
       "type": "",
-      "lower": null,
-      "upper": "7",
-      "unit": "18, 21"
+      "lower": "7",
+      "upper": "18, 21",
+      "unit": "mg/dL"
     },
     {
       "category": "metabolites",
@@ -1904,11 +2600,59 @@
     },
     {
       "category": "metabolites",
+      "test": "creatinine",
+      "type": "Male",
+      "lower": "60, 68",
+      "upper": "90, 118",
+      "unit": "May be complemented with creatinine clearance"
+    },
+    {
+      "category": "metabolites",
+      "test": "creatinine",
+      "type": "",
+      "lower": "0.7, 0.8",
+      "upper": "1.0, 1.3",
+      "unit": "mg/dL"
+    },
+    {
+      "category": "metabolites",
+      "test": "female",
+      "type": "",
+      "lower": "50, 68",
+      "upper": "90, 98",
+      "unit": "μmol/L"
+    },
+    {
+      "category": "metabolites",
+      "test": "female",
+      "type": "",
+      "lower": "0.6, 0.8",
+      "upper": "1.0, 1.1",
+      "unit": "mg/dL"
+    },
+    {
+      "category": "metabolites",
       "test": "bun/creatinine ratio",
       "type": "",
       "lower": "5",
       "upper": "35",
       "unit": "–"
+    },
+    {
+      "category": "metabolites",
+      "test": "plasma glucose (fasting)",
+      "type": "",
+      "lower": "3.8, 4.0",
+      "upper": "6.0, 6.1",
+      "unit": "mmol/L"
+    },
+    {
+      "category": "metabolites",
+      "test": "65, 70, 72",
+      "type": "",
+      "lower": null,
+      "upper": "100, 110",
+      "unit": "mg/dL"
     },
     {
       "category": "metabolites",
@@ -2012,7 +2756,7 @@
       "type": "",
       "lower": "0.5",
       "upper": "2.0",
-      "unit": "ng/mL"
+      "unit": "Narrow therapeutic window"
     },
     {
       "category": "toxicology",
@@ -2028,7 +2772,7 @@
       "type": "0.4, 0.5, 0.8",
       "lower": null,
       "upper": "1.3",
-      "unit": "mmol/L"
+      "unit": "Narrow therapeutic window"
     },
     {
       "category": "toxicology",
@@ -2036,7 +2780,7 @@
       "type": "",
       "lower": null,
       "upper": "30",
-      "unit": "mg/L"
+      "unit": "Risk of paracetamol toxicity at higher levels"
     },
     {
       "category": "toxicology",

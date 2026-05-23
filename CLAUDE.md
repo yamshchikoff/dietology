@@ -43,6 +43,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Исправления идут отдельным коммитом (не амендить рабочий коммит)
 - После каждого коммита — обязательный push в оба remote (github + gitflic)
 
+## Отслеживание проблем
+
+- **Баг-трекер:** [BUGS.md](BUGS.md) — известные и исправленные баги
+- **Технический долг:** [TECHDEBT.md](TECHDEBT.md) — задачи на рефакторинг и переименование
+
 ## Данные и архитектура
 
 Слои данных: [data/README.md](data/README.md) — верхнеуровнево, [docs/data-layers.md](docs/data-layers.md) — детально (5 слоёв от source documents до sources-final.json).

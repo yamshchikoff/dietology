@@ -265,12 +265,12 @@ fn test_describe_lab_ranges() {
     let v = call_describe(&registry, "describe_lab_ranges");
 
     assert_eq!(v["status"], "ok");
-    assert_eq!(v["total_tests"], 254);
+    assert_eq!(v["total_tests"], 347);
     let categories = v["categories"].as_array().unwrap();
     assert_eq!(categories.len(), 16);
-    assert!(categories.iter().any(|c| c["name"] == "blood_gases" && c["count"] == 62));
-    assert!(categories.iter().any(|c| c["name"] == "sex_hormones" && c["count"] == 37));
-    assert!(categories.iter().any(|c| c["name"] == "vitamins" && c["count"] == 13));
+    assert!(categories.iter().any(|c| c["name"] == "blood_gases" && c["count"] == 75));
+    assert!(categories.iter().any(|c| c["name"] == "sex_hormones" && c["count"] == 38));
+    assert!(categories.iter().any(|c| c["name"] == "vitamins" && c["count"] == 17));
 }
 
 #[test]

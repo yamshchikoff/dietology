@@ -1,6 +1,6 @@
 # Датасет 9: Лабораторные референсные диапазоны
 
-Типичные референсные диапазоны для 254 анализов крови и мочи. 16 категорий.
+Типичные референсные диапазоны для 347 анализов крови и мочи. 16 категорий.
 
 **Источник:** Wikipedia (агрегация из MedlinePlus, Uppsala University Hospital, Mayo Clinic, ~200 источников)
 **Уровень:** C — третичный источник
@@ -9,20 +9,20 @@
 
 | Категория | Тестов | Примеры |
 |-----------|--------|---------|
-| blood_gases | 62 | pH, pCO2, pO2, HCO3 |
-| sex_hormones | 37 | Testosterone, Estradiol, Progesterone |
-| hematology_rbc | 20 | Hemoglobin, Hematocrit, MCV, Ferritin |
-| ions_and_trace_metals | 19 | Sodium, Potassium, Calcium, Iron |
-| metabolites | 18 | Glucose, Creatinine, Urea, Uric acid |
-| other_hormones | 14 | Cortisol, Insulin, Growth hormone |
-| thyroid | 13 | TSH, T3, T4 |
-| vitamins | 13 | Vitamin D, B12, Folate |
-| lipids | 11 | Cholesterol, Triglycerides, HDL, LDL |
-| liver_function | 11 | ALT, AST, Bilirubin, Albumin |
-| cardiac | 10 | Troponin, CK-MB, NT-proBNP |
-| tumour_markers | 9 | PSA, CA-125, CEA |
-| immunology | 6 | CRP, Rheumatoid factor |
-| coagulation | 5 | PT, INR, aPTT |
+| blood_gases | 75 | pH, pCO2, pO2, HCO3 |
+| sex_hormones | 38 | Testosterone, Estradiol, Progesterone |
+| hematology_rbc | 31 | Hemoglobin, Hematocrit, MCV, Ferritin |
+| ions_and_trace_metals | 38 | Sodium, Potassium, Calcium, Iron |
+| metabolites | 24 | Glucose, Creatinine, Urea, Uric acid |
+| other_hormones | 28 | Cortisol, Insulin, Growth hormone |
+| thyroid | 19 | TSH, T3, T4 |
+| vitamins | 17 | Vitamin D, B12, Folate |
+| lipids | 15 | Cholesterol, Triglycerides, HDL, LDL |
+| liver_function | 12 | ALT, AST, Bilirubin, Albumin |
+| cardiac | 12 | Troponin, CK-MB, NT-proBNP |
+| tumour_markers | 12 | PSA, CA-125, CEA |
+| immunology | 11 | CRP, Rheumatoid factor |
+| coagulation | 9 | PT, INR, aPTT |
 | toxicology | 5 | Lead, Mercury |
 | unknown | 1 | — |
 

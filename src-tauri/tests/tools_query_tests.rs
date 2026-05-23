@@ -539,11 +539,11 @@ fn test_query_lab_ranges_thyroid_category() {
     );
 
     assert_eq!(v["status"], "ok");
-    assert_eq!(v["total_count"], 13);
+    assert_eq!(v["total_count"], 19);
     assert_eq!(v["filters_applied"]["category"], "thyroid");
 
     let data = v["data"].as_array().unwrap();
-    assert_eq!(data.len(), 13);
+    assert_eq!(data.len(), 19);
     for entry in data {
         assert_eq!(entry["category"].as_str().unwrap(), "thyroid");
     }
@@ -580,10 +580,10 @@ fn test_query_lab_ranges_empty() {
     );
 
     assert_eq!(v["status"], "ok");
-    assert_eq!(v["total_count"], 254);
+    assert_eq!(v["total_count"], 347);
 
     let data = v["data"].as_array().unwrap();
-    assert_eq!(data.len(), 254);
+    assert_eq!(data.len(), 347);
 }
 
 #[test]

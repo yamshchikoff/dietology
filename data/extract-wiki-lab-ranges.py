@@ -133,14 +133,20 @@ def is_numeric_value(s):
     """Check if string looks like a numeric value, range, or inequality after cleaning."""
     if not s:
         return False
-    # Clean reference markers
-    cleaned = re.sub(r"\[\d+\]", "", s)
-    cleaned = re.sub(r",\d+\s*$", "", cleaned)  # trailing ,number
+    # Remove reference citations with leading comma: 70,[10] → 70
+    cleaned = re.sub(r",\s*\[\d+\]", "", s)
+    # Remove bracket references: 110[172] → 110
+    cleaned = re.sub(r"\[\d+\]", "", cleaned)
+    cleaned = re.sub(r"\[citation needed\]", "", cleaned, flags=re.IGNORECASE)
+    # Remove trailing comma-number (reference artifact): "7.34,22" → "7.34"
+    cleaned = re.sub(r",\d+\s*$", "", cleaned)
     cleaned = cleaned.strip().replace(",", "").replace("−", "-").replace("–", "-")
     if not cleaned:
         return False
-    # Pattern: optional <, >, ≤, ≥ followed by number, possibly a range with -
-    m = re.match(r"^[<>≤≥]?\s*[\d.]+(\s*[-–]\s*[<>≤≥]?\s*[\d.]+)?$", cleaned)
+    # Normalize whitespace (comma-separated ranges become space-separated after comma removal)
+    cleaned = re.sub(r"\s+", " ", cleaned)
+    # Pattern: optional <, >, ≤, ≥ followed by number, possibly a range with -, –, or space
+    m = re.match(r"^[<>≤≥]?\s*[\d.]+(\s*[-– ]\s*[<>≤≥]?\s*[\d.]+)?$", cleaned)
     if m:
         return True
     # Pattern: "Age÷2" type expressions
@@ -196,16 +202,36 @@ def classify_table(rows):
     return "unknown"
 
 
+def split_value_and_unit(text):
+    """If text ends with a unit-like suffix, split into (value, unit).
+    Returns (original_text, unit_or_None)."""
+    if not text:
+        return text, None
+    # Unit patterns: optional space + known unit strings
+    unit_match = re.search(
+        r'\s+(pg/mL|ng/mL|μg/dL|mg/dL|g/dL|g/L|mmol/L|μmol/L|nmol/L|pmol/L|'
+        r'mEq/L|IU/L|U/L|kPa|mmHg|torr|%|mL/min|mL/min/1\.73m2|'
+        r'ng/L|μg/L|mg/L|mIU/L|μIU/mL|ng/mL or μg/L)$',
+        text
+    )
+    if unit_match:
+        value = text[:unit_match.start()].strip()
+        unit = unit_match.group(1)
+        return value, unit
+    return text, None
+
+
 def extract_ranges(tables):
     """Extract lab reference ranges from parsed HTML tables."""
     results = []
-    prev_test = ""  # for rowspan continuations
+    prev_test = ""  # for rowspan continuations (persists across split tables)
 
     for table in tables:
         if len(table) < 2:
             continue
 
         category = classify_table(table)
+        prev_unit = ""  # for rowspan unit inheritance (within this table only)
 
         for row_idx, row in enumerate(table[1:], 1):  # Skip header
             if not row:
@@ -260,14 +286,31 @@ def extract_ranges(tables):
             else:
                 continue
 
-            # Extract unit
-            for i in range(unit_idx, min(unit_idx + 2, len(cells))):
-                if i < len(cells) and cells[i] and not is_numeric_value(cells[i]):
+            # Extract unit — scan all remaining cells (not just +2), take last match
+            for i in range(unit_idx, len(cells)):
+                if cells[i] and not is_numeric_value(cells[i]):
                     potential_unit = cells[i]
-                    # Filter out things that don't look like units
                     if not re.match(r"^(See|rowspan|colspan|\[)", potential_unit):
                         unit = potential_unit
-                        break
+                        # Don't break — keep scanning to get the last (rightmost) unit
+
+            # Extract units embedded in low/high values (e.g., "100–500 pg/mL")
+            if low:
+                low, low_unit = split_value_and_unit(low)
+                if low_unit and not unit:
+                    unit = low_unit
+            if high:
+                high, high_unit = split_value_and_unit(high)
+                if high_unit and not unit:
+                    unit = high_unit
+
+            # Inherit unit from previous row if still not found
+            if not unit and prev_unit:
+                unit = prev_unit
+
+            # Update prev_unit on first row of a test group that has an explicit unit
+            if has_test_name and unit:
+                prev_unit = unit
 
             if test_name and (low or high):
                 results.append({
