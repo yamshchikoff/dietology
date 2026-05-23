@@ -70,8 +70,8 @@
 - Ожидается: 13 результатов, status ok, все имеют `category: "thyroid"`
 
 ### `test_query_lab_ranges_both_filters`
-- `test_name_substring="T4"`, `category="thyroid"`
-- Ожидается: ≥1 результат, все в категории thyroid с T4 в имени
+- `test_name_substring="ft3"`, `category="thyroid"`
+- Ожидается: ≥1 результат, все в категории thyroid с ft3 в имени
 
 ### `test_query_lab_ranges_empty`
 - Без параметров

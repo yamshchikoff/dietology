@@ -585,3 +585,33 @@ fn test_query_lab_ranges_empty() {
     let data = v["data"].as_array().unwrap();
     assert_eq!(data.len(), 254);
 }
+
+#[test]
+fn test_query_lab_ranges_not_found() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_lab_ranges",
+        json!({"test_name_substring": "xyznonexistent"}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 0);
+    let data = v["data"].as_array().unwrap();
+    assert!(data.is_empty());
+}
+
+#[test]
+fn test_query_lab_ranges_wrong_case_category() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_lab_ranges",
+        json!({"category": "Thyroid"}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 0);
+    let data = v["data"].as_array().unwrap();
+    assert!(data.is_empty());
+}
