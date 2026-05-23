@@ -15,7 +15,7 @@ fn test_register_adds_tool() {
         "test_tool",
         "A test tool",
         json!({"type": "object", "properties": {}, "required": []}),
-        |_args| Ok(r#"{"ok": true}"#.to_string()),
+        Box::new(|_args| Ok(r#"{"ok": true}"#.to_string())),
     );
     let defs = registry.definitions();
     assert_eq!(defs.len(), 1);
@@ -30,7 +30,7 @@ fn test_dispatch_calls_correct_handler() {
         "echo",
         "Echoes the input",
         json!({"type": "object", "properties": {}, "required": []}),
-        |args| Ok(args.to_string()),
+        Box::new(|args| Ok(args.to_string())),
     );
     let call = ToolCall {
         id: "call_1".to_string(),
@@ -59,7 +59,8 @@ fn test_dispatch_unknown_tool_returns_error() {
 #[test]
 fn test_register_describe_tools_registers_nine() {
     let mut registry = ToolRegistry::new();
-    dietology_lib::tools::registry::register_describe_tools(&mut registry);
+    let loader = dietology_lib::data::DataLoader::for_development();
+    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
     let defs = registry.definitions();
     assert_eq!(defs.len(), 9, "expected 9 describe tools");
 
@@ -78,7 +79,8 @@ fn test_register_describe_tools_registers_nine() {
 #[test]
 fn test_describe_tool_returns_not_implemented() {
     let mut registry = ToolRegistry::new();
-    dietology_lib::tools::registry::register_describe_tools(&mut registry);
+    let loader = dietology_lib::data::DataLoader::for_development();
+    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
     let call = ToolCall {
         id: "call_1".to_string(),
         r#type: "tool_use".to_string(),
@@ -95,8 +97,14 @@ fn test_describe_tool_returns_not_implemented() {
 #[test]
 fn test_tool_definition_has_input_schema() {
     let mut registry = ToolRegistry::new();
-    let schema = json!({"type": "object", "properties": {"x": {"type": "number"}}, "required": ["x"]});
-    registry.register("with_schema", "Has schema", schema.clone(), |_| Ok("ok".into()));
+    let schema =
+        json!({"type": "object", "properties": {"x": {"type": "number"}}, "required": ["x"]});
+    registry.register(
+        "with_schema",
+        "Has schema",
+        schema.clone(),
+        Box::new(|_| Ok("ok".into())),
+    );
     let defs = registry.definitions();
     assert_eq!(defs[0].input_schema, schema);
 }

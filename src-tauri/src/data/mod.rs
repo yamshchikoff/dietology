@@ -16,6 +16,7 @@ pub const PRODUCTION_FILES: &[(&str, &str)] = &[
     ("lab_ranges", "lab-reference-ranges.json"),
 ];
 
+#[derive(Clone)]
 pub struct DataLoader {
     base_path: PathBuf,
 }

@@ -28,8 +28,9 @@ pub struct ToolResult {
     pub content: String,
 }
 
-/// Tool function signature: takes arguments JSON, returns result JSON string
-pub type ToolFn = fn(&serde_json::Value) -> Result<String, String>;
+/// Tool handler: takes arguments JSON, returns result JSON string.
+/// Box<dyn Fn> allows handlers to capture DataLoader and other state.
+pub type ToolFn = Box<dyn Fn(&serde_json::Value) -> Result<String, String> + Send + Sync>;
 
 struct ToolDefEntry {
     definition: ToolDefinition,
@@ -84,49 +85,4 @@ impl ToolRegistry {
         }
         Err(format!("unknown tool: {}", call.name))
     }
-}
-
-/// Register all 9 describe tools as placeholders (implemented in phases 1-4)
-pub fn register_describe_tools(registry: &mut ToolRegistry) {
-    let empty_schema = serde_json::json!({
-        "type": "object",
-        "properties": {},
-        "required": []
-    });
-
-    macro_rules! register {
-        ($registry:expr, $name:literal, $desc:literal, $handler:expr) => {
-            $registry.register($name, $desc, empty_schema.clone(), $handler)
-        };
-    }
-
-    use crate::tools::describe;
-
-    register!(registry, "describe_dri_minerals",
-        "Return valid enum values for DRI minerals dataset filters (nutrients, groups, sexes)",
-        describe::describe_dri_minerals);
-    register!(registry, "describe_dri_vitamins",
-        "Return valid enum values for DRI vitamins dataset filters (nutrients, groups, sexes)",
-        describe::describe_dri_vitamins);
-    register!(registry, "describe_dri_per_kg",
-        "Return valid enum values for DRI per-kg dataset filters (nutrients, groups, unit)",
-        describe::describe_dri_per_kg);
-    register!(registry, "describe_usda_foods",
-        "Return valid enum values for USDA foods dataset filters (nutrients, food_categories)",
-        describe::describe_usda_foods);
-    register!(registry, "describe_who_hb",
-        "Return valid enum values for WHO Hb thresholds (diagnostic_groups, severity_levels)",
-        describe::describe_who_hb);
-    register!(registry, "describe_who_anaemia",
-        "Return valid enum values for WHO anaemia data (countries, years, severities)",
-        describe::describe_who_anaemia);
-    register!(registry, "describe_who_bmi",
-        "Return valid enum values for WHO BMI data (countries, years, sexes, agegroups)",
-        describe::describe_who_bmi);
-    register!(registry, "describe_who_diabetes",
-        "Return valid enum values for WHO diabetes data (countries, years, sexes, agegroups)",
-        describe::describe_who_diabetes);
-    register!(registry, "describe_lab_ranges",
-        "Return valid enum values for lab reference ranges (categories, tests)",
-        describe::describe_lab_ranges);
 }
