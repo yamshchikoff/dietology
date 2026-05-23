@@ -37,7 +37,7 @@
 
 Фаза 1 — наивысший приоритет. DRI-датасеты имеют самые сложные фильтры, model-facing interface наиболее чувствителен к точным ключам.
 
-**Статус:** 🔴 Переоткрыта (2026-05-23). Python reference implementation удалена. Требуется развернуть production-инфраструктуру (Rust core) перед реализацией describe-инструментов на Rust.
+**Статус:** Выполнена (2026-05-23). Rust implementation: `src-tauri/src/tools/describe.rs`.
 
 ## Порядок выполнения
 
