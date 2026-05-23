@@ -66,9 +66,12 @@ pub struct EpiRecord {
     pub parent_region: Option<String>,
     #[serde(default)]
     pub parent_region_code: Option<String>,
-    pub sex: String,
+    #[serde(default)]
+    pub sex: Option<String>,
     #[serde(default)]
     pub agegroup: Option<String>,
+    #[serde(default)]
+    pub severity: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

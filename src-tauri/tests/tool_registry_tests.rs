@@ -185,6 +185,78 @@ fn test_describe_who_hb() {
 }
 
 #[test]
+fn test_describe_who_anaemia() {
+    let mut registry = ToolRegistry::new();
+    let loader = dietology_lib::data::DataLoader::for_development();
+    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
+
+    let v = call_describe(&registry, "describe_who_anaemia");
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_records"], 20950);
+    assert_eq!(v["countries"].as_array().unwrap().len(), 242);
+    assert!(v["countries"].as_array().unwrap().iter().any(|c| c == "AFG"));
+    assert!(v["countries"].as_array().unwrap().iter().any(|c| c == "ZWE"));
+    assert_eq!(v["years"]["min"], 1995);
+    assert_eq!(v["years"]["max"], 2019);
+    assert_eq!(v["severities"].as_array().unwrap().len(), 4);
+    assert!(v["severities"].as_array().unwrap().iter().any(|s| s == "SEVERITY_TOTAL"));
+    assert!(v["severities"].as_array().unwrap().iter().any(|s| s == "SEVERITY_MILD"));
+    assert!(v["severities"].as_array().unwrap().iter().any(|s| s == "SEVERITY_MODERATE"));
+    assert!(v["severities"].as_array().unwrap().iter().any(|s| s == "SEVERITY_SEVERE"));
+    // Anaemia data is female-only
+    assert_eq!(v["sexes"].as_array().unwrap().len(), 1);
+    assert!(v["sexes"].as_array().unwrap().iter().any(|s| s == "SEX_FMLE"));
+}
+
+#[test]
+fn test_describe_who_bmi() {
+    let mut registry = ToolRegistry::new();
+    let loader = dietology_lib::data::DataLoader::for_development();
+    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
+
+    let v = call_describe(&registry, "describe_who_bmi");
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_records"], 20790);
+    assert_eq!(v["countries"].as_array().unwrap().len(), 210);
+    assert!(v["countries"].as_array().unwrap().iter().any(|c| c == "AFG"));
+    assert!(v["countries"].as_array().unwrap().iter().any(|c| c == "ZWE"));
+    assert_eq!(v["years"]["min"], 1990);
+    assert_eq!(v["years"]["max"], 2022);
+    assert_eq!(v["sexes"].as_array().unwrap().len(), 3);
+    assert!(v["sexes"].as_array().unwrap().iter().any(|s| s == "SEX_BTSX"));
+    assert!(v["sexes"].as_array().unwrap().iter().any(|s| s == "SEX_MLE"));
+    assert!(v["sexes"].as_array().unwrap().iter().any(|s| s == "SEX_FMLE"));
+    assert_eq!(v["agegroups"].as_array().unwrap().len(), 1);
+    assert!(v["agegroups"].as_array().unwrap().iter().any(|a| a == "AGEGROUP_YEARS18-PLUS"));
+}
+
+#[test]
+fn test_describe_who_diabetes() {
+    let mut registry = ToolRegistry::new();
+    let loader = dietology_lib::data::DataLoader::for_development();
+    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
+
+    let v = call_describe(&registry, "describe_who_diabetes");
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_records"], 41580);
+    assert_eq!(v["countries"].as_array().unwrap().len(), 210);
+    assert!(v["countries"].as_array().unwrap().iter().any(|c| c == "AFG"));
+    assert!(v["countries"].as_array().unwrap().iter().any(|c| c == "ZWE"));
+    assert_eq!(v["years"]["min"], 1990);
+    assert_eq!(v["years"]["max"], 2022);
+    assert_eq!(v["sexes"].as_array().unwrap().len(), 3);
+    assert!(v["sexes"].as_array().unwrap().iter().any(|s| s == "SEX_BTSX"));
+    assert!(v["sexes"].as_array().unwrap().iter().any(|s| s == "SEX_MLE"));
+    assert!(v["sexes"].as_array().unwrap().iter().any(|s| s == "SEX_FMLE"));
+    assert_eq!(v["agegroups"].as_array().unwrap().len(), 2);
+    assert!(v["agegroups"].as_array().unwrap().iter().any(|a| a == "AGEGROUP_YEARS18-PLUS"));
+    assert!(v["agegroups"].as_array().unwrap().iter().any(|a| a == "AGEGROUP_YEARS30-PLUS"));
+}
+
+#[test]
 fn test_tool_definition_has_input_schema() {
     let mut registry = ToolRegistry::new();
     let schema =

@@ -1,7 +1,7 @@
 use std::collections::BTreeSet;
 
 use crate::data::DataLoader;
-use crate::models::datasets::{UsdaFoods, WhoHbThresholds};
+use crate::models::datasets::{UsdaFoods, WhoEpiData, WhoHbThresholds};
 use crate::models::dri::DriOverlay;
 use crate::tools::registry::{ToolFn, ToolRegistry};
 
@@ -100,6 +100,54 @@ fn build_who_hb_describe(hb: &WhoHbThresholds) -> serde_json::Value {
     })
 }
 
+fn build_epi_describe(data: &WhoEpiData) -> serde_json::Value {
+    let countries: BTreeSet<&str> = data
+        .data
+        .iter()
+        .map(|r| r.country_code.as_str())
+        .collect();
+
+    let years_min = data.data.iter().map(|r| r.year).min().unwrap_or(0);
+    let years_max = data.data.iter().map(|r| r.year).max().unwrap_or(0);
+
+    let sexes: BTreeSet<&str> = data
+        .data
+        .iter()
+        .filter_map(|r| r.sex.as_deref())
+        .collect();
+
+    let agegroups: BTreeSet<&str> = data
+        .data
+        .iter()
+        .filter_map(|r| r.agegroup.as_deref())
+        .collect();
+
+    let severities: BTreeSet<&str> = data
+        .data
+        .iter()
+        .filter_map(|r| r.severity.as_deref())
+        .collect();
+
+    let mut result = serde_json::json!({
+        "status": "ok",
+        "countries": countries.iter().collect::<Vec<_>>(),
+        "years": {"min": years_min, "max": years_max},
+        "total_records": data.data.len(),
+    });
+
+    if !sexes.is_empty() {
+        result["sexes"] = serde_json::json!(sexes.iter().collect::<Vec<_>>());
+    }
+    if !agegroups.is_empty() {
+        result["agegroups"] = serde_json::json!(agegroups.iter().collect::<Vec<_>>());
+    }
+    if !severities.is_empty() {
+        result["severities"] = serde_json::json!(severities.iter().collect::<Vec<_>>());
+    }
+
+    result
+}
+
 /// Register all 9 describe tools. Each handler captures a DataLoader clone.
 pub fn register_describe_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
     let empty_schema = serde_json::json!({
@@ -185,14 +233,19 @@ pub fn register_describe_tools(registry: &mut ToolRegistry, loader: &DataLoader)
         );
     }
 
-    // Phase 3: placeholders
+    // Phase 3: WHO GHO epidemiology (real implementations)
     {
         let l = loader.clone();
         registry.register(
             "describe_who_anaemia",
             "Return valid enum values for WHO anaemia data (countries, years, severities)",
             empty_schema.clone(),
-            placeholder(l, "3"),
+            Box::new(move |_args: &serde_json::Value| -> Result<String, String> {
+                let data: WhoEpiData = l
+                    .read_json("who-anaemia-nonpregnant-prevalence.json")
+                    .map_err(|e| format!("failed to read WHO anaemia data: {e}"))?;
+                Ok(build_epi_describe(&data).to_string())
+            }),
         );
     }
     {
@@ -201,7 +254,12 @@ pub fn register_describe_tools(registry: &mut ToolRegistry, loader: &DataLoader)
             "describe_who_bmi",
             "Return valid enum values for WHO BMI data (countries, years, sexes, agegroups)",
             empty_schema.clone(),
-            placeholder(l, "3"),
+            Box::new(move |_args: &serde_json::Value| -> Result<String, String> {
+                let data: WhoEpiData = l
+                    .read_json("who-bmi-overweight-prevalence.json")
+                    .map_err(|e| format!("failed to read WHO BMI data: {e}"))?;
+                Ok(build_epi_describe(&data).to_string())
+            }),
         );
     }
     {
@@ -210,7 +268,12 @@ pub fn register_describe_tools(registry: &mut ToolRegistry, loader: &DataLoader)
             "describe_who_diabetes",
             "Return valid enum values for WHO diabetes data (countries, years, sexes, agegroups)",
             empty_schema.clone(),
-            placeholder(l, "3"),
+            Box::new(move |_args: &serde_json::Value| -> Result<String, String> {
+                let data: WhoEpiData = l
+                    .read_json("who-diabetes-prevalence.json")
+                    .map_err(|e| format!("failed to read WHO diabetes data: {e}"))?;
+                Ok(build_epi_describe(&data).to_string())
+            }),
         );
     }
 
