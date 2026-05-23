@@ -51,6 +51,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Оверлейный принцип:** machine-verified значения + rich metadata без модификации существующих файлов
 - **Каждый нутриент** имеет per-nutrient `source_id` с прослеживанием до исходного документа
 
+### Продуктовая документация (для LLM-модели)
+
+Модель получает данные через инструменты (describe/query), не читая JSON-файлы напрямую. Документация организована в два слоя:
+
+- **Слой 1 — Навигация:** [data/product/CLAUDE.md.product](data/product/CLAUDE.md.product) — таблица из 9 датасетов, workflow describe → query. Загружается всегда.
+- **Слой 2 — Документация датасетов:** [data/product/docs/](data/product/docs/) — 9 файлов `dataset-N-*.md` с сигнатурами инструментов, возвращаемыми полями, критическими соглашениями. Загружаются при первом обращении.
+- **Принципы тулинга:** [docs/json-data-principles.md](docs/json-data-principles.md) — архитектура describe/query, антипаттерны.
+
 ## Данные и лицензирование
 
 **Проект лицензирован под MIT.** Справочные данные извлекаются из публичных источников по модели «numeric facts extraction»:
