@@ -384,3 +384,122 @@ fn test_query_who_hb_all() {
     let data = v["data"].as_array().unwrap();
     assert_eq!(data.len(), 9);
 }
+
+// ---- Phase 3: WHO GHO epidemiology ----
+
+#[test]
+fn test_query_who_anaemia_rus_2019_total() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_who_anaemia",
+        json!({"country_code": "RUS", "year": 2019, "severity": "SEVERITY_TOTAL"}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 1);
+    assert_eq!(v["filters_applied"]["country_code"], "RUS");
+    assert_eq!(v["filters_applied"]["year"], 2019);
+    assert_eq!(v["filters_applied"]["severity"], "SEVERITY_TOTAL");
+
+    let data = v["data"].as_array().unwrap();
+    assert_eq!(data.len(), 1);
+    let entry = &data[0];
+    assert_eq!(entry["country_code"], "RUS");
+    assert_eq!(entry["year"], 2019);
+    assert_eq!(entry["severity"], "SEVERITY_TOTAL");
+    assert!(entry["value"].is_number());
+    assert!(entry["low"].is_number());
+    assert!(entry["high"].is_number());
+    assert_eq!(entry["parent_region"], "Europe");
+    assert_eq!(entry["parent_region_code"], "EUR");
+}
+
+#[test]
+fn test_query_who_anaemia_all_empty() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_who_anaemia",
+        json!({}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 20950);
+    let data = v["data"].as_array().unwrap();
+    assert_eq!(data.len(), 20950);
+}
+
+#[test]
+fn test_query_who_bmi_afg_2020() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_who_bmi",
+        json!({"country_code": "AFG", "year": 2020}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 3);
+    assert_eq!(v["filters_applied"]["country_code"], "AFG");
+    assert_eq!(v["filters_applied"]["year"], 2020);
+
+    let data = v["data"].as_array().unwrap();
+    assert_eq!(data.len(), 3);
+
+    let sexes: Vec<&str> = data.iter().map(|r| r["sex"].as_str().unwrap()).collect();
+    assert!(sexes.contains(&"SEX_BTSX"));
+    assert!(sexes.contains(&"SEX_MLE"));
+    assert!(sexes.contains(&"SEX_FMLE"));
+
+    for entry in data {
+        assert_eq!(entry["country_code"], "AFG");
+        assert_eq!(entry["year"], 2020);
+        assert!(entry["value"].is_number());
+        assert!(entry["low"].is_number());
+        assert!(entry["high"].is_number());
+    }
+}
+
+#[test]
+fn test_query_who_diabetes_afg_2022_fmle_30plus() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_who_diabetes",
+        json!({"country_code": "AFG", "year": 2022, "sex": "SEX_FMLE", "agegroup": "AGEGROUP_YEARS30-PLUS"}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 1);
+    assert_eq!(v["filters_applied"]["country_code"], "AFG");
+    assert_eq!(v["filters_applied"]["year"], 2022);
+    assert_eq!(v["filters_applied"]["sex"], "SEX_FMLE");
+    assert_eq!(v["filters_applied"]["agegroup"], "AGEGROUP_YEARS30-PLUS");
+
+    let data = v["data"].as_array().unwrap();
+    assert_eq!(data.len(), 1);
+    let entry = &data[0];
+    assert_eq!(entry["country_code"], "AFG");
+    assert_eq!(entry["year"], 2022);
+    assert_eq!(entry["sex"], "SEX_FMLE");
+    assert_eq!(entry["agegroup"], "AGEGROUP_YEARS30-PLUS");
+    assert!(entry["value"].is_number());
+    assert!(entry["low"].is_number());
+    assert!(entry["high"].is_number());
+}
+
+#[test]
+fn test_query_who_anaemia_unknown_country() {
+    let registry = setup_query_registry();
+    let v = call_query(
+        &registry,
+        "query_who_anaemia",
+        json!({"country_code": "XYZ"}),
+    );
+
+    assert_eq!(v["status"], "ok");
+    assert_eq!(v["total_count"], 0);
+    let data = v["data"].as_array().unwrap();
+    assert!(data.is_empty());
+}

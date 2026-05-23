@@ -1,5 +1,5 @@
 use crate::data::DataLoader;
-use crate::models::datasets::{Food, HbDiagnosticThreshold, HbSeverityRange, UsdaFoods, WhoHbThresholds};
+use crate::models::datasets::{EpiRecord, Food, HbDiagnosticThreshold, HbSeverityRange, UsdaFoods, WhoEpiData, WhoHbThresholds};
 use crate::models::dri::{DriNutrient, DriOverlay};
 use crate::tools::registry::ToolRegistry;
 
@@ -95,6 +95,74 @@ fn filter_dri_overlay(
             }
             if let Some(ref note) = g.note.as_ref().or(nutrient_entry.note.as_ref()) {
                 entry["note"] = serde_json::json!(note);
+            }
+            entry
+        })
+        .collect()
+}
+
+/// Filter epidemiological records by country_code, year, sex, agegroup, severity.
+/// All filters are exact match. If a record field is None, it does NOT pass a filter on that dimension.
+fn filter_epi_records(
+    records: &[EpiRecord],
+    country_code: Option<&str>,
+    year: Option<u64>,
+    sex: Option<&str>,
+    agegroup: Option<&str>,
+    severity: Option<&str>,
+) -> Vec<serde_json::Value> {
+    records
+        .iter()
+        .filter(|r| {
+            if let Some(cc) = country_code {
+                if r.country_code != cc {
+                    return false;
+                }
+            }
+            if let Some(y) = year {
+                if r.year as u64 != y {
+                    return false;
+                }
+            }
+            if let Some(s) = sex {
+                if r.sex.as_deref() != Some(s) {
+                    return false;
+                }
+            }
+            if let Some(ag) = agegroup {
+                if r.agegroup.as_deref() != Some(ag) {
+                    return false;
+                }
+            }
+            if let Some(sev) = severity {
+                if r.severity.as_deref() != Some(sev) {
+                    return false;
+                }
+            }
+            true
+        })
+        .map(|r| {
+            let mut entry = serde_json::json!({
+                "country_code": r.country_code,
+                "year": r.year,
+                "value": r.value,
+                "low": r.low,
+                "high": r.high,
+            });
+            if let Some(ref pr) = r.parent_region {
+                entry["parent_region"] = serde_json::json!(pr);
+            }
+            if let Some(ref prc) = r.parent_region_code {
+                entry["parent_region_code"] = serde_json::json!(prc);
+            }
+            if let Some(ref s) = r.sex {
+                entry["sex"] = serde_json::json!(s);
+            }
+            if let Some(ref ag) = r.agegroup {
+                entry["agegroup"] = serde_json::json!(ag);
+            }
+            if let Some(ref sev) = r.severity {
+                entry["severity"] = serde_json::json!(sev);
             }
             entry
         })
@@ -301,6 +369,108 @@ fn query_who_hb_impl(loader: &DataLoader, args: &serde_json::Value) -> Result<St
     Ok(build_response(&data, data.len(), filters))
 }
 
+// ---- Phase 3: WHO GHO epidemiology ----
+
+fn query_who_anaemia_impl(loader: &DataLoader, args: &serde_json::Value) -> Result<String, String> {
+    let epi_data: WhoEpiData = loader
+        .read_json("who-anaemia-nonpregnant-prevalence.json")
+        .map_err(|e| format!("failed to read WHO anaemia data: {e}"))?;
+
+    let country_code = get_str_arg(args, "country_code");
+    let year = get_u64_arg(args, "year");
+    let severity = get_str_arg(args, "severity");
+
+    let data = filter_epi_records(
+        &epi_data.data,
+        country_code.as_deref(),
+        year,
+        None,
+        None,
+        severity.as_deref(),
+    );
+
+    let mut filters = serde_json::json!({});
+    if let Some(cc) = country_code {
+        filters["country_code"] = serde_json::json!(cc);
+    }
+    if let Some(y) = year {
+        filters["year"] = serde_json::json!(y);
+    }
+    if let Some(sev) = severity {
+        filters["severity"] = serde_json::json!(sev);
+    }
+
+    Ok(build_response(&data, data.len(), filters))
+}
+
+fn query_who_bmi_impl(loader: &DataLoader, args: &serde_json::Value) -> Result<String, String> {
+    let epi_data: WhoEpiData = loader
+        .read_json("who-bmi-overweight-prevalence.json")
+        .map_err(|e| format!("failed to read WHO BMI data: {e}"))?;
+
+    let country_code = get_str_arg(args, "country_code");
+    let year = get_u64_arg(args, "year");
+    let sex = get_str_arg(args, "sex");
+
+    let data = filter_epi_records(
+        &epi_data.data,
+        country_code.as_deref(),
+        year,
+        sex.as_deref(),
+        None,
+        None,
+    );
+
+    let mut filters = serde_json::json!({});
+    if let Some(cc) = country_code {
+        filters["country_code"] = serde_json::json!(cc);
+    }
+    if let Some(y) = year {
+        filters["year"] = serde_json::json!(y);
+    }
+    if let Some(s) = sex {
+        filters["sex"] = serde_json::json!(s);
+    }
+
+    Ok(build_response(&data, data.len(), filters))
+}
+
+fn query_who_diabetes_impl(loader: &DataLoader, args: &serde_json::Value) -> Result<String, String> {
+    let epi_data: WhoEpiData = loader
+        .read_json("who-diabetes-prevalence.json")
+        .map_err(|e| format!("failed to read WHO diabetes data: {e}"))?;
+
+    let country_code = get_str_arg(args, "country_code");
+    let year = get_u64_arg(args, "year");
+    let sex = get_str_arg(args, "sex");
+    let agegroup = get_str_arg(args, "agegroup");
+
+    let data = filter_epi_records(
+        &epi_data.data,
+        country_code.as_deref(),
+        year,
+        sex.as_deref(),
+        agegroup.as_deref(),
+        None,
+    );
+
+    let mut filters = serde_json::json!({});
+    if let Some(cc) = country_code {
+        filters["country_code"] = serde_json::json!(cc);
+    }
+    if let Some(y) = year {
+        filters["year"] = serde_json::json!(y);
+    }
+    if let Some(s) = sex {
+        filters["sex"] = serde_json::json!(s);
+    }
+    if let Some(ag) = agegroup {
+        filters["agegroup"] = serde_json::json!(ag);
+    }
+
+    Ok(build_response(&data, data.len(), filters))
+}
+
 fn register_dri_query(
     registry: &mut ToolRegistry,
     loader: &DataLoader,
@@ -320,7 +490,7 @@ fn register_dri_query(
     );
 }
 
-/// Register all query tools (Phase 1 DRI + Phase 2 USDA Foods/WHO Hb).
+/// Register all query tools (Phase 1 DRI + Phase 2 USDA Foods/WHO Hb + Phase 3 WHO GHO epidemiology).
 pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
     // Phase 1: DRI
     register_dri_query(
@@ -409,5 +579,58 @@ pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
             "required": []
         }),
         query_who_hb_impl,
+    );
+
+    // Phase 3: WHO GHO epidemiology
+    register_dri_query(
+        registry,
+        loader,
+        "query_who_anaemia",
+        "Query WHO anaemia prevalence data by country (ISO3), year, and severity",
+        serde_json::json!({
+            "type": "object",
+            "properties": {
+                "country_code": {"type": "string", "description": "ISO3 country code (e.g., 'RUS'). Use describe_who_anaemia() for valid codes."},
+                "year": {"type": "integer", "description": "Year 1995-2019."},
+                "severity": {"type": "string", "enum": ["SEVERITY_TOTAL", "SEVERITY_MILD", "SEVERITY_MODERATE", "SEVERITY_SEVERE"]}
+            },
+            "required": []
+        }),
+        query_who_anaemia_impl,
+    );
+
+    register_dri_query(
+        registry,
+        loader,
+        "query_who_bmi",
+        "Query WHO BMI overweight prevalence data by country (ISO3), year, and sex",
+        serde_json::json!({
+            "type": "object",
+            "properties": {
+                "country_code": {"type": "string", "description": "ISO3 country code. Use describe_who_bmi() for valid codes."},
+                "year": {"type": "integer", "description": "Year 1990-2022."},
+                "sex": {"type": "string", "enum": ["SEX_BTSX", "SEX_MLE", "SEX_FMLE"]}
+            },
+            "required": []
+        }),
+        query_who_bmi_impl,
+    );
+
+    register_dri_query(
+        registry,
+        loader,
+        "query_who_diabetes",
+        "Query WHO diabetes prevalence data by country (ISO3), year, sex, and agegroup",
+        serde_json::json!({
+            "type": "object",
+            "properties": {
+                "country_code": {"type": "string", "description": "ISO3 country code. Use describe_who_diabetes() for valid codes."},
+                "year": {"type": "integer", "description": "Year 1990-2022."},
+                "sex": {"type": "string", "enum": ["SEX_BTSX", "SEX_MLE", "SEX_FMLE"]},
+                "agegroup": {"type": "string", "enum": ["AGEGROUP_YEARS18-PLUS", "AGEGROUP_YEARS30-PLUS"]}
+            },
+            "required": []
+        }),
+        query_who_diabetes_impl,
     );
 }
