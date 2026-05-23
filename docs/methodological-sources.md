@@ -242,7 +242,7 @@ Tolerable Upper Intake Levels (UL) для Phosphorus (9 возрастных г�
 
 | Категория | Подкатегория | Источник | Tier | Статус |
 |-----------|-------------|----------|------|--------|
-| **Состав продуктов** | Макро- и микронутриенты на 100г | USDA FoodData Central | A | ✅ готово (363 продукта, 27 nutrients) |
+| **Состав продуктов** | Макро- и микронутриенты на 100г | USDA FoodData Central | A | ✅ готово (363 продукта, 25 nutrients) |
 | | Брендированные продукты (штрихкоды) | Open Food Facts | B | 🔜 context-only (ODbL, 3.7M продуктов) |
 | **Суточные нормы (RDA/UL)** | Витамины | MSD Manual DRI Tables | A | ✅ готово (overlay: 11 vitamins, 154 groups) |
 | | Витамины (первичный источник) | National Academies DRI Guide | B | 🔧 экстракция PDF pp. 529–542 |

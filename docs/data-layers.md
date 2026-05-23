@@ -133,7 +133,7 @@ Dietology организует данные в шесть слоёв. Кажды
 | 3 | `dri-minerals-overlay.json` | 3 | 14 минералов × 254 группы | A | 5 источников (IOM 2011, IOM 1997/NCBI, MSD, NAS 2019, LPI) |
 | 4 | `dri-vitamins-overlay.json` | 3 | 11 витаминов × 154 группы | A | MSD Manual Professional |
 | 5 | `dri-macronutrients-per-kg-overlay.json` | 3 | 3 per-kg нутриента × 51 группа | A | MSD Manual / IOM 1997 |
-| 6 | `usda-foundation-foods-essential.json` | — | 363 продукта × 27 nutrients | A | USDA FoodData Central (CC0) |
+| 6 | `usda-foundation-foods-essential.json` | — | 363 продукта × 25 nutrients | A | USDA FoodData Central (CC0) |
 | 7 | `who-hb-thresholds.json` | — | 9 diagnostic thresholds + 9 severity groups | B | WHO 2024 Hb Guideline (pdfplumber) |
 | 8 | `who-anaemia-nonpregnant-prevalence.json` | — | 20,950 records: anaemia prevalence by country/year/severity | A | WHO GHO (CC BY 4.0) |
 | 9 | `who-bmi-overweight-prevalence.json` | — | 20,790 records: overweight (BMI≥25) by country/year/sex | A | WHO GHO (CC BY 4.0) |
@@ -260,7 +260,7 @@ python3 data/build-all.py --help      # справка
 | `dri-minerals-overlay.json` | 14 минералов × 254 группы | Шаг 6: build-minerals-overlay.py |
 | `dri-vitamins-overlay.json` | 11 витаминов × 154 группы | Шаг 5: build-vitamins-overlay.py |
 | `dri-macronutrients-per-kg-overlay.json` | 3 нутриента × 51 группа | Шаг 7: build-macronutrients-per-kg-overlay.py |
-| `usda-foundation-foods-essential.json` | 363 продукта, 27 nutrients | Шаг 8: extract-usda.py |
+| `usda-foundation-foods-essential.json` | 363 продукта, 25 nutrients | Шаг 8: extract-usda.py |
 | `who-hb-thresholds.json` | 9 diagnostic thresholds + severity | Шаг 8: extract-who-hb.py |
 | `lab-reference-ranges.json` | 254 lab tests, 16 категорий | Шаг 9: extract-wiki-lab-ranges.py |
 | `data-index.json` | Манифест 7 datasets | Шаг 8: build-data-index.py |

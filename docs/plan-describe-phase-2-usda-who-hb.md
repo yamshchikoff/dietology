@@ -18,7 +18,7 @@
 ### `describe_usda_foods()`
 
 - Источник: `usda-foundation-foods-essential.json`
-- Возвращает: `nutrients[]` (27 имён), `food_categories[]` (уникальные категории), `total_foods` (363)
+- Возвращает: `nutrients[]` (25 имён), `food_categories[]` (уникальные категории), `total_foods` (363)
 - Извлечение: `nutrients` = список полей-нутриентов из `data[]` или `_meta`. `food_categories` = уникальные значения `food_category` из записей
 - Особенность: foods не имеют group/sex фильтров, но модель должна знать список nutrients для параметра `nutrient` в `query_usda_foods`
 
