@@ -15,6 +15,7 @@ pub fn run() {
     let loader = data::DataLoader::for_development();
     let mut registry = tools::registry::ToolRegistry::new();
     tools::describe::register_describe_tools(&mut registry, &loader);
+    tools::query::register_query_tools(&mut registry, &loader);
 
     tauri::Builder::default()
         .manage(AppState {
