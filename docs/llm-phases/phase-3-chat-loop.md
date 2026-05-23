@@ -135,19 +135,9 @@ pub async fn chat(
 
         match response.stop_reason.as_str() {
             "end_turn" => {
-                let final_text = response
-                    .content
-                    .iter()
-                    .filter_map(|block| match block {
-                        ContentBlock::Text { text } => Some(text.clone()),
-                        _ => None,
-                    })
-                    .collect::<Vec<_>>()
-                    .join("\n");
-
                 return Ok(LlmResponse {
                     messages: messages.clone(),
-                    final_text,
+                    final_text: extract_text(&response),
                     visualization_json: None, // MVP: без визуализаций
                     usage: total_usage,
                 });
@@ -161,19 +151,9 @@ pub async fn chat(
 
                 if tool_uses.is_empty() {
                     // Защита: stop_reason=tool_use но нет tool_use блоков
-                    let final_text = response
-                        .content
-                        .iter()
-                        .filter_map(|block| match block {
-                            ContentBlock::Text { text } => Some(text.clone()),
-                            _ => None,
-                        })
-                        .collect::<Vec<_>>()
-                        .join("\n");
-
                     return Ok(LlmResponse {
                         messages: messages.clone(),
-                        final_text,
+                        final_text: extract_text(&response),
                         visualization_json: None,
                         usage: total_usage,
                     });
@@ -181,15 +161,12 @@ pub async fn chat(
 
                 let mut tool_results = Vec::new();
                 for tu in &tool_uses {
-                    match tu {
-                        ContentBlock::ToolUse { id, .. } => {
-                            let result = self.dispatch_tool(tu)?;
-                            tool_results.push(ContentBlock::ToolResult {
-                                tool_use_id: id.clone(),
-                                content: result,
-                            });
-                        }
-                        _ => {} // extract_tool_uses гарантирует только ToolUse
+                    if let ContentBlock::ToolUse { id, .. } = tu {
+                        let result = self.dispatch_tool(tu)?;
+                        tool_results.push(ContentBlock::ToolResult {
+                            tool_use_id: id.clone(),
+                            content: result,
+                        });
                     }
                 }
 
@@ -198,29 +175,28 @@ pub async fn chat(
                     content: tool_results,
                 });
             }
-            _ => {
-                // Неизвестный stop_reason — возвращаем что есть
-                let final_text = response
-                    .content
-                    .iter()
-                    .filter_map(|block| match block {
-                        ContentBlock::Text { text } => Some(text.clone()),
-                        _ => None,
-                    })
-                    .collect::<Vec<_>>()
-                    .join("\n");
-
-                return Ok(LlmResponse {
-                    messages: messages.clone(),
-                    final_text,
-                    visualization_json: None,
-                    usage: total_usage,
-                });
+            other => {
+                return Err(LlmError::Parse(format!(
+                    "unexpected stop_reason: {other}"
+                )));
             }
         }
     }
 
     Err(LlmError::MaxToolRounds(self.max_tool_rounds))
+}
+
+/// Вспомогательная функция: извлечь все текстовые блоки из ответа.
+fn extract_text(response: &ApiResponse) -> String {
+    response
+        .content
+        .iter()
+        .filter_map(|block| match block {
+            ContentBlock::Text { text } => Some(text.clone()),
+            _ => None,
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
 }
 ```
 
