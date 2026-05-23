@@ -39,9 +39,19 @@
 
 **Статус:** Выполнена (2026-05-23). Rust implementation: `src-tauri/src/tools/describe.rs`.
 
+## TDD-дисциплина
+
+Каждый production-коммит следует циклу Red → Green → Refactor:
+
+1. **Red:** написать тест, который падает (`cargo test` — FAIL). Тест выражает контракт: какой JSON возвращает describe-инструмент, какие enum-значения содержит.
+2. **Green:** написать минимальную реализацию хендлера, чтобы тест прошёл (`cargo test` — PASS).
+3. **Refactor:** устранить дублирование, улучшить имена — под защитой зелёных тестов.
+
+Запрещено коммитить реализацию без предшествующего теста. Тесты на describe-инструменты проверяют: status=ok, количество nutrients/groups/sexes, наличие конкретных значений, total_groups.
+
 ## Порядок выполнения
 
 1. **Перейти в режим планирования (plan mode).** Спланировать реализацию трёх describe-инструментов.
-2. **Выполнить работы** в соответствии с принципами разработки проекта ([CLAUDE.md](../CLAUDE.md)), требованиями ([requirements-discussion.md](./requirements-discussion.md)) и принципами тулинга ([json-data-principles.md](./json-data-principles.md)).
+2. **Выполнить работы** в соответствии с TDD-дисциплиной выше и принципами проекта ([CLAUDE.md](../CLAUDE.md), [requirements-discussion.md](./requirements-discussion.md), [json-data-principles.md](./json-data-principles.md)).
 3. **Написать отчёт по фазе** — `docs/reports/phase-1-report.md`. Содержит: реализованные инструменты, проверка на тестовых вызовах (каждый describe вызван, выходные enum-ы сверены с JSON), замечания.
 4. **Закоммитить** реализацию + отчёт отдельным коммитом с push в оба remote.
