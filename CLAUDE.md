@@ -23,6 +23,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Документация инфраструктуры:** [docs/rust-infrastructure.md](docs/rust-infrastructure.md)
 - **Describe-план:** [docs/plan-describe-implementation.md](docs/plan-describe-implementation.md)
 - **Query-план:** [docs/plan-query-implementation.md](docs/plan-query-implementation.md)
+- **LLM-клиент-план:** [docs/plan-llm-client-implementation.md](docs/plan-llm-client-implementation.md)
 
 ## Git remotes
 

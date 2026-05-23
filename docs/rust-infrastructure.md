@@ -12,6 +12,7 @@
 ```
 Tauri shell (tauri v2)
   └─ Rust core (src-tauri/src/)
+       ├─ llm/          LLM-клиент (DeepSeek API + tool dispatch loop)
        ├─ tools/        Anthropic-совместимые инструменты (describe + query)
        ├─ models/       Serde-модели для production JSON-файлов
        ├─ data/         DataLoader — чтение JSON из файловой системы
@@ -35,9 +36,14 @@ src-tauri/src/
   models/dri.rs        DriGroup, DriNutrient, DriOverlay (from_file)
   models/datasets.rs   UsdaFoods, WhoHbThresholds, WhoEpiData, LabReferenceRanges
   models/manifest.rs   DataIndex, SourcesFinal
-  tools/mod.rs          Агрегатор: registry, describe
+  tools/mod.rs          Агрегатор: registry, describe, query
   tools/registry.rs    ToolRegistry: register(), definitions(), dispatch()
-  tools/describe.rs    9 describe-плейсхолдеров (фазы 1-4)
+  tools/describe.rs    9 describe-инструментов (фазы 1-4)
+  tools/query.rs       9 query-инструментов (фазы 1-4)
+  llm/mod.rs            LLM-клиент (план)
+  llm/types.rs          Serde-типы Messages API
+  llm/client.rs         HTTP-клиент DeepSeek API + цикл tool use
+  llm/session.rs        ChatSession: история диалога (JSONL)
 ```
 
 ## 3. DataLoader и бандлинг данных
@@ -196,4 +202,4 @@ make fmt       # cd src-tauri && cargo fmt
 - Git commit automation, user-map, investigation mode
 - Полноценного CI/CD
 
-**Следующий шаг:** реализовать фронтенд и MVVM-слой.
+**Следующий шаг:** реализовать LLM-клиент согласно [plan-llm-client-implementation.md](plan-llm-client-implementation.md) (фазы 1-5).
