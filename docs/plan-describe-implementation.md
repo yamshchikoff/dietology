@@ -15,96 +15,39 @@
 
 **Подробнее о подходе:** [tooling-describe-approach.md](./tooling-describe-approach.md)
 
-## Состав работ
+**Принципы интеграции модели с JSON:** [json-data-principles.md](./json-data-principles.md)
 
-### Шаг 1: Describe для 3 DRI-датасетов
+**Требования к проекту:** [requirements-discussion.md](./requirements-discussion.md)
 
-Три оверлейных JSON-файла, сходная структура: массив nutrients, каждый содержит массив groups.
+## Фазы
 
-**`describe_dri_minerals()`**
-- Источник: `dri-minerals-overlay.json`
-- Возвращает: `nutrients[]` (14 имён), `groups[]` (все group-ключи), `sexes[]` (male, female), `total_groups` (254)
-- Извлечение: `nutrients` = `data[].name`, `groups` = собрать уникальные `group` из `data[].groups[]`
+| Фаза | Содержание | Инструментов | План фазы |
+|------|-----------|-------------|----------|
+| 1 | DRI describe (минералы, витамины, per-kg) | 3 | [plan-describe-phase-1-dri.md](./plan-describe-phase-1-dri.md) |
+| 2 | USDA Foods + WHO Hb thresholds | 2 | [plan-describe-phase-2-usda-who-hb.md](./plan-describe-phase-2-usda-who-hb.md) |
+| 3 | WHO GHO epidemiology (anaemia, BMI, diabetes) | 3 | [plan-describe-phase-3-who-gho.md](./plan-describe-phase-3-who-gho.md) |
+| 4 | Lab reference ranges | 1 | [plan-describe-phase-4-lab-ranges.md](./plan-describe-phase-4-lab-ranges.md) |
+| 5 | Регистрация в Rust-ядре + обновление документации | — | [plan-describe-phase-5-registration-docs.md](./plan-describe-phase-5-registration-docs.md) |
 
-**`describe_dri_vitamins()`**
-- Источник: `dri-vitamins-overlay.json`
-- Возвращает: `nutrients[]` (11 имён), `groups[]`, `sexes[]`, `total_groups` (154)
-- Аналогичная логика извлечения
+Фазы выполняются последовательно. Каждая фаза завершается отчётом и коммитом до перехода к следующей.
 
-**`describe_dri_per_kg()`**
-- Источник: `dri-macronutrients-per-kg-overlay.json`
-- Возвращает: `nutrients[]` (3 имени), `groups[]`, `total_groups` (51)
-- Плюс: `unit` = "mg/kg", `note` = критическое соглашение о умножении на массу тела
+## Порядок выполнения фазы
 
-### Шаг 2: Describe для USDA Foods
+Для каждой фазы:
 
-**`describe_usda_foods()`**
-- Источник: `usda-foundation-foods-essential.json`
-- Возвращает: `nutrients[]` (27 имён), `food_categories[]` (уникальные категории), `total_foods` (363)
-- Извлечение: `nutrients` = список полей-нутриентов из `data[]` или из `_meta`
-- Примечание: foods не имеют group/sex фильтров, но модель должна знать список nutrients для параметра `nutrient` в `query_usda_foods`
-
-### Шаг 3: Describe для WHO Hb Thresholds
-
-**`describe_who_hb()`**
-- Источник: `who-hb-thresholds.json`
-- Возвращает: `diagnostic_groups[]` (9 имён групп), `severity_levels[]` (mild, moderate, severe), `sexes[]` (male, female, any), `pregnant_options` (true, false)
-- Извлечение: diagnostic_groups = `data[].group`, severity_levels — из полей severity_* в записях
-
-### Шаг 4: Describe для 3 эпидемиологических WHO GHO датасетов
-
-**`describe_who_anaemia()`**
-- Источник: `who-anaemia-nonpregnant-prevalence.json`
-- Возвращает: `countries[]` (242 ISO3 кода), `years` {min: 1995, max: 2019}, `severities[]` (TOTAL, MILD, MODERATE, SEVERE), `total_records` (20950)
-
-**`describe_who_bmi()`**
-- Источник: `who-bmi-overweight-prevalence.json`
-- Возвращает: `countries[]` (210 ISO3), `years` {min: 1990, max: 2022}, `sexes[]` (SEX_BTSX, SEX_MLE, SEX_FMLE), `agegroups[]`, `total_records` (20790)
-
-**`describe_who_diabetes()`**
-- Источник: `who-diabetes-prevalence.json`
-- Возвращает: `countries[]` (210 ISO3), `years` {min: 1990, max: 2022}, `sexes[]`, `agegroups[]` (18+, 30+), `total_records` (41580)
-
-### Шаг 5: Describe для Lab Reference Ranges
-
-**`describe_lab_ranges()`**
-- Источник: `lab-reference-ranges.json`
-- Возвращает: `categories[]` (16 имён с количеством тестов), `total_tests` (254)
-- Категории с подсчётом: `[{name: "blood_gases", count: 62}, ...]`
-
-### Шаг 6: Регистрация инструментов в Rust-ядре
-
-Для каждого describe-инструмента:
-1. Реализовать Rust-функцию, читающую JSON и возвращающую структуру с enum-ами
-2. Зарегистрировать в Anthropic-compatible tool definitions (имя, описание, схема параметров)
-3. Describe-ы не пишут данные → не требуют git commit после вызова
-
-### Шаг 7: Дополнить `docs/dataset-*.md`
-
-В каждый doc датасета добавить секцию:
-
-```md
-## Describe-инструмент
-
-Перед вызовом query_xxx можно вызвать `describe_xxx()` — вернёт актуальные списки
-валидных значений для фильтров (nutrients, groups, sexes, ...) и кардинальность.
-```
-
-## Приоритет
-
-1. DRI датасеты (шаг 1) — самые сложные фильтры, model-facing interface наиболее чувствителен к точным ключам
-2. WHO GHO (шаг 4) — страны и годы, модель не знает полный список ISO3-кодов
-3. Остальные (шаги 2, 3, 5) — меньше риск ошибки, но нужны для полноты
-4. Регистрация (шаг 6) и docs (шаг 7) — завершающие
+1. **Перейти в режим планирования (plan mode).** Спланировать реализацию в соответствии с планом фазы.
+2. **Выполнить работы** в соответствии с принципами разработки, принятыми в проекте ([CLAUDE.md](../CLAUDE.md)), требованиями к проекту ([requirements-discussion.md](./requirements-discussion.md)), принципами тулинга ([json-data-principles.md](./json-data-principles.md)) и подходом describe ([tooling-describe-approach.md](./tooling-describe-approach.md)).
+3. **Написать отчёт по фазе** — отдельным файлом `docs/reports/phase-N-report.md`. Отчёт содержит: что сделано, какие инструменты реализованы, проверка на тестовых вызовах, замечания.
+4. **Закоммитить результат фазы** (реализация + отчёт) отдельным коммитом с push в оба remote.
 
 ## Оценка
 
-- Каждый describe — ~20-40 строк Rust (прочитать JSON, извлечь уникальные ключи)
-- 9 describe-инструментов × 30 строк = ~300 строк кода
-- Время: один спринт
+- Каждый describe — ~20-40 строк Rust
+- 9 инструментов × 30 строк ≈ 300 строк кода
+- 5 фаз, время: один спринт
 
 ## Не требуется в этом плане
 
 - Универсальный `describe(dataset)` — rejected, см. подход per-dataset
-- Кэширование результатов describe — данные статичны внутри релиза, перечитывать не нужно
+- Кэширование результатов describe — данные статичны внутри релиза
 - Describe для будущих датасетов — только для текущих 9
