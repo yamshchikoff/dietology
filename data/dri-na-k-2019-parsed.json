@@ -6,7 +6,7 @@
       "https://nap.nationalacademies.org/catalog/25353",
       "https://nap.nationalacademies.org/resource/25353/030519DRISodiumPotassium.pdf"
     ],
-    "extraction_date": "2026-05-21T23:57:47Z",
+    "extraction_date": "2026-05-23T21:14:07Z",
     "extraction_script": "data/extract-nas-dri-2019.py",
     "extraction_method": "pdfplumber-text-strategy",
     "extracted_by": "agent",
@@ -110,7 +110,7 @@
         {
           "group": "male_51_70yr",
           "sex": "male",
-          "age_range": "51-70 years",
+          "age_range": "51–70 years",
           "value": 3400,
           "type": "AI",
           "ul": null,

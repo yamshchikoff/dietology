@@ -29,7 +29,7 @@
 
 | # | Severity | Описание | Root cause | Fix |
 |---|----------|----------|-----------|-----|
-| 1.3 | medium | Ca `pregnant_14_18yr` + `breastfeeding_14_18yr`: type='RDA' при note='AI' | IOM 2011: для подростков ≤18 значение — AI, не RDA. Overlay присвоил 'RDA' из общего заголовка колонки | type → 'AI' |
+| 1.3 | medium | Ca `pregnant_14_18yr` + `breastfeeding_14_18yr`: note='AI' при type='RDA' (type корректен, note ошибочна) | `build-minerals-overlay.py:61,66`: хардкод `("AI", 1300)`. IOM 2011 PDF Table S-1: EAR=1100, RDA=1300 для этих групп — AI не применим | note 'AI' → 'RDA' в build-скрипте |
 | 1.5 | medium | Per-kg `pregnant` group: `age_range="—"` (em dash) | MSD HTML: в таблице не указан возраст для pregnant, em dash как placeholder | age_range → null |
 | 1.2a | low | K `male_51_70yr`: `age_range="51-70 years"` (ASCII hyphen), `female_51_70yr`: `"51–70 years"` (en-dash) | Опечатка в extraction или overlay | Унифицировано на en-dash |
 
@@ -50,6 +50,12 @@
 
 ## Затронутые файлы
 
-- `data/dri-minerals-overlay.json` — Ca type fix + K hyphen fix
-- `data/dri-macronutrients-per-kg-overlay.json` — pregnant age_range fix
+- `data/build-minerals-overlay.py` — Ca teen pregnancy/breastfeeding note: AI→RDA
+- `data/extract-nas-dri-2019.py` — K age_range hyphen normalization (ASCII hyphen→en-dash)
+- `data/extract-msd-dri-parser.py` — per-kg pregnant age_range: em dash→empty string
+- `data/build-macronutrients-per-kg-overlay.py` — empty/dash age_range→null
+- `data/dri-minerals-overlay.json` — regenerated
+- `data/dri-macronutrients-per-kg-overlay.json` — regenerated
+- `data/dri-na-k-2019-parsed.json` — regenerated
+- `data/dri-macronutrients-per-kg-parsed.json` — regenerated
 - `TECHDEBT.md` — TD-002, TD-003, TD-004

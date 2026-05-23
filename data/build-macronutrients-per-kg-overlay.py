@@ -44,10 +44,13 @@ def main():
 
         for g in n["groups"]:
             val = g["value"]
+            age_range = g.get("age_range", "")
+            if not age_range or age_range in ("—", "–", "-"):
+                age_range = None
             group_entry = {
                 "group": g["group"],
                 "sex": g.get("sex", "any"),
-                "age_range": g.get("age_range", ""),
+                "age_range": age_range,
                 "value": int(val) if val == int(val) else val,
                 "type": g.get("type", "RDA"),
             }

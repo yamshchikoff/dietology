@@ -724,10 +724,11 @@ def parse_macronutrients_per_kg(rows):
                 }
                 nutrients.append(nutrient)
 
+            age_display = "" if age in ("—", "–", "-", "–") else age
             nutrient["groups"].append({
                 "group": group_id,
                 "sex": sex,
-                "age_range": age,
+                "age_range": age_display,
                 "value": val,
                 "type": value_type,
             })

@@ -58,12 +58,12 @@ NUTRIENT_NOTES = {
 # subgroups. The teen subgroup uses the adolescent age-bracket value, not the adult value.
 # These per-group notes clarify that distinction.
 PREGNANCY_BREASTFEEDING_TEEN_NOTES = {
-    "Calcium": ("AI", 1300),
+    "Calcium": ("RDA", 1300),
     "Phosphorus": ("RDA", 1250),
     "Magnesium": ("RDA", 400),
 }
 BREASTFEEDING_TEEN_NOTES = {
-    "Calcium": ("AI", 1300),
+    "Calcium": ("RDA", 1300),
     "Phosphorus": ("RDA", 1250),
     "Magnesium": ("RDA", 360),
 }

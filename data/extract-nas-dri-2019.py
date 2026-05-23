@@ -65,7 +65,6 @@ def parse_potassium_table(page_text):
         "14–18 years": "14_18yr",
         "19–30 years": "19_30yr",
         "31–50 years": "31_50yr",
-        "51-70 years": "51_70yr",
         "51–70 years": "51_70yr",
         ">70 years": "gt70yr",
     }
@@ -79,11 +78,6 @@ def parse_potassium_table(page_text):
         "Lactation": "female",
     }
 
-    # Pattern: optional category prefix, age range, AI number, (ND|number?), (ND|number?)
-    row_pattern = re.compile(
-        r"^(\d[–\-\d\s>]*\S+)\s+([\d,]+)\s*(?:a)?\s+ND\w*\s+ND\w*$"
-    )
-    # Simpler: just extract age_range and first number from each row
     data_pattern = re.compile(r"([>\d][\d–\-–\s>]*?\S+)\s+([\d,]+)")
 
     lines = page_text.split("\n")
@@ -106,6 +100,8 @@ def parse_potassium_table(page_text):
             continue
 
         age_raw = m.group(1).strip()
+        age_raw = re.sub(r"[–—−]", "–", age_raw)
+        age_raw = re.sub(r"-", "–", age_raw)
         ai_val = int(m.group(2).replace(",", ""))
 
         group_id = age_range_map.get(age_raw)
@@ -153,7 +149,6 @@ def parse_sodium_table(page_text):
         "19–30 years": "19_30yr",
         "31–50 years": "31_50yr",
         "51–70 years": "51_70yr",
-        "51-70 years": "51_70yr",
         ">70 years": "gt70yr",
     }
 
@@ -192,6 +187,8 @@ def parse_sodium_table(page_text):
             continue
 
         age_raw = m.group(1).strip()
+        age_raw = re.sub(r"[–—−]", "–", age_raw)
+        age_raw = re.sub(r"-", "–", age_raw)
         ai_val = int(m.group(2).replace(",", ""))
 
         group_id = age_range_map.get(age_raw)
