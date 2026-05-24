@@ -68,10 +68,8 @@ fn assert_valid_response(resp: &LlmResponse, messages: &[Message]) {
     assert!(resp.usage.input_tokens > 0);
     assert!(resp.usage.output_tokens > 0);
 
-    eprintln!(
-        "SUCCESS: final_text = {}",
-        &resp.final_text[..200.min(resp.final_text.len())]
-    );
+    let preview: String = resp.final_text.chars().take(200).collect();
+    eprintln!("SUCCESS: final_text = {preview}");
 }
 
 fn resolve_api_key() -> Option<String> {

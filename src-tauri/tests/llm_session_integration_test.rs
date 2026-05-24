@@ -40,7 +40,7 @@ async fn test_session_chat_roundtrip() {
     let mut session = ChatSession::new(system_prompt);
 
     assert_eq!(session.message_count(), 0);
-    session.add_user_message("Сколько кальция рекомендуется мужчине 19-30 лет?");
+    session.add_user_message("Сколько кальция рекомендуется мужчине 19-30 лет?".to_string());
 
     let response = client
         .chat(&mut session.messages, &session.system_prompt)
@@ -82,7 +82,7 @@ async fn test_session_chat_roundtrip() {
 async fn test_session_save_load_after_chat() {
     let (client, system_prompt) = setup_client().expect("failed to create client");
     let mut session = ChatSession::new(system_prompt.clone());
-    session.add_user_message("Какие пороги гемоглобина для диагностики анемии у беременных?");
+    session.add_user_message("Какие пороги гемоглобина для диагностики анемии у беременных?".to_string());
 
     client
         .chat(&mut session.messages, &session.system_prompt)

@@ -21,7 +21,9 @@ tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 [[test]]
 name = "llm_chat_integration"
 harness = false
+path = "tests/llm_chat_integration_test.rs"
 
 [[test]]
 name = "llm_session_integration"
 harness = false
+path = "tests/llm_session_integration_test.rs"
