@@ -42,9 +42,9 @@ ToolResult.content (строка) напрямую идёт в ContentBlock::Too
 | Файл | Тестов | Тип |
 |------|--------|-----|
 | `llm_types_tests.rs` | 12 | unit (serde roundtrip) |
-| `llm_client_tests.rs` | 8 | unit (extract, dispatch, env vars) |
+| `llm_client_tests.rs` | 9 | unit (extract, dispatch, env vars) |
 | `llm_chat_integration_test.rs` | 1 | integration (real API) |
-| `llm_session_tests.rs` | 9 | unit (session + JSONL) |
+| `llm_session_tests.rs` | 8 | unit (session + JSONL) |
 | **Итого** | **30** | |
 
 Всего в проекте: 96 тестов (clippy clean).
