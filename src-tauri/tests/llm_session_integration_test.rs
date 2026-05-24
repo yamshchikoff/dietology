@@ -21,20 +21,21 @@ fn setup_client() -> Result<(LlmClient, String), LlmError> {
     Ok((client, system_prompt))
 }
 
-fn api_key_present() -> bool {
-    std::env::var("DEEPSEEK_API_KEY").is_ok()
+fn resolve_api_key() -> Option<String> {
+    let args: Vec<String> = std::env::args().collect();
+    if let Some(pos) = args.iter().position(|a| a == "--api-key") {
+        if let Some(val) = args.get(pos + 1) {
+            if !val.starts_with("--") {
+                return Some(val.clone());
+            }
+        }
+    }
+    std::env::var("DEEPSEEK_API_KEY").ok()
 }
 
 // ---- Tests ----
 
-/// Полный цикл ChatSession → LlmClient.chat(): сессия накапливает сообщения и usage.
-#[tokio::test]
 async fn test_session_chat_roundtrip() {
-    if !api_key_present() {
-        eprintln!("SKIP: DEEPSEEK_API_KEY not set");
-        return;
-    }
-
     let (client, system_prompt) = setup_client().expect("failed to create client");
     let mut session = ChatSession::new(system_prompt);
 
@@ -78,14 +79,7 @@ async fn test_session_chat_roundtrip() {
     );
 }
 
-/// Chat → save JSONL → load → проверка сохранённых сообщений.
-#[tokio::test]
 async fn test_session_save_load_after_chat() {
-    if !api_key_present() {
-        eprintln!("SKIP: DEEPSEEK_API_KEY not set");
-        return;
-    }
-
     let (client, system_prompt) = setup_client().expect("failed to create client");
     let mut session = ChatSession::new(system_prompt.clone());
     session.add_user_message("Какие пороги гемоглобина для диагностики анемии у беременных?");
@@ -133,4 +127,19 @@ async fn test_session_save_load_after_chat() {
 
     std::fs::remove_file(&tmp_path).ok();
     eprintln!("SUCCESS: saved and loaded {msg_count_before} messages");
+}
+
+// ---- Entrypoint ----
+
+fn main() {
+    let Some(key) = resolve_api_key() else {
+        eprintln!("Usage: cargo test --test llm_session_integration -- --api-key <KEY>");
+        eprintln!("   or: DEEPSEEK_API_KEY=sk-... cargo test --test llm_session_integration");
+        return;
+    };
+    std::env::set_var("DEEPSEEK_API_KEY", key);
+
+    let rt = tokio::runtime::Runtime::new().expect("tokio runtime");
+    rt.block_on(test_session_chat_roundtrip());
+    rt.block_on(test_session_save_load_after_chat());
 }

@@ -74,20 +74,21 @@ fn assert_valid_response(resp: &LlmResponse, messages: &[Message]) {
     );
 }
 
-fn api_key_present() -> bool {
-    std::env::var("DEEPSEEK_API_KEY").is_ok()
+fn resolve_api_key() -> Option<String> {
+    let args: Vec<String> = std::env::args().collect();
+    if let Some(pos) = args.iter().position(|a| a == "--api-key") {
+        if let Some(val) = args.get(pos + 1) {
+            if !val.starts_with("--") {
+                return Some(val.clone());
+            }
+        }
+    }
+    std::env::var("DEEPSEEK_API_KEY").ok()
 }
 
 // ---- Tests ----
 
-/// Полный цикл: "сколько кальция мужчине 19-30?" → describe → query → ответ
-#[tokio::test]
 async fn test_full_roundtrip_calcium() {
-    if !api_key_present() {
-        eprintln!("SKIP: DEEPSEEK_API_KEY not set");
-        return;
-    }
-
     let (client, system_prompt) = setup_client().expect("failed to create client");
     let mut messages = vec![user_message(
         "Сколько кальция рекомендуется мужчине 19-30 лет?",
@@ -100,14 +101,7 @@ async fn test_full_roundtrip_calcium() {
     }
 }
 
-/// Витамин C: DRI Vitamins — "сколько витамина C рекомендуется женщине 19-30 лет?"
-#[tokio::test]
 async fn test_roundtrip_vitamin_c() {
-    if !api_key_present() {
-        eprintln!("SKIP: DEEPSEEK_API_KEY not set");
-        return;
-    }
-
     let (client, system_prompt) = setup_client().expect("failed to create client");
     let mut messages = vec![user_message(
         "Сколько витамина C рекомендуется женщине 19-30 лет?",
@@ -120,14 +114,7 @@ async fn test_roundtrip_vitamin_c() {
     }
 }
 
-/// WHO Hb: "какие пороги анемии для беременных?"
-#[tokio::test]
 async fn test_roundtrip_who_hb() {
-    if !api_key_present() {
-        eprintln!("SKIP: DEEPSEEK_API_KEY not set");
-        return;
-    }
-
     let (client, system_prompt) = setup_client().expect("failed to create client");
     let mut messages = vec![user_message(
         "Какие пороги гемоглобина для диагностики анемии у беременных?",
@@ -140,14 +127,7 @@ async fn test_roundtrip_who_hb() {
     }
 }
 
-/// USDA Foods: "сколько кальция в молоке?"
-#[tokio::test]
 async fn test_roundtrip_usda_milk() {
-    if !api_key_present() {
-        eprintln!("SKIP: DEEPSEEK_API_KEY not set");
-        return;
-    }
-
     let (client, system_prompt) = setup_client().expect("failed to create client");
     let mut messages = vec![user_message(
         "Сколько кальция содержится в коровьем молоке?",
@@ -160,14 +140,7 @@ async fn test_roundtrip_usda_milk() {
     }
 }
 
-/// Lab Ranges: "какие референсные значения гемоглобина в крови?"
-#[tokio::test]
 async fn test_roundtrip_lab_ranges() {
-    if !api_key_present() {
-        eprintln!("SKIP: DEEPSEEK_API_KEY not set");
-        return;
-    }
-
     let (client, system_prompt) = setup_client().expect("failed to create client");
     let mut messages = vec![user_message(
         "Какие референсные значения гемоглобина в крови?",
@@ -178,4 +151,22 @@ async fn test_roundtrip_lab_ranges() {
         Ok(resp) => assert_valid_response(&resp, &messages),
         Err(e) => panic!("chat() failed: {e}"),
     }
+}
+
+// ---- Entrypoint ----
+
+fn main() {
+    let Some(key) = resolve_api_key() else {
+        eprintln!("Usage: cargo test --test llm_chat_integration -- --api-key <KEY>");
+        eprintln!("   or: DEEPSEEK_API_KEY=sk-... cargo test --test llm_chat_integration");
+        return;
+    };
+    std::env::set_var("DEEPSEEK_API_KEY", key);
+
+    let rt = tokio::runtime::Runtime::new().expect("tokio runtime");
+    rt.block_on(test_full_roundtrip_calcium());
+    rt.block_on(test_roundtrip_vitamin_c());
+    rt.block_on(test_roundtrip_who_hb());
+    rt.block_on(test_roundtrip_usda_milk());
+    rt.block_on(test_roundtrip_lab_ranges());
 }
