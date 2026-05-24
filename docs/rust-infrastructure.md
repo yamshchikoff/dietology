@@ -40,11 +40,24 @@ src-tauri/src/
   tools/registry.rs    ToolRegistry: register(), definitions(), dispatch()
   tools/describe.rs    9 describe-инструментов (фазы 1-4)
   tools/query.rs       9 query-инструментов (фазы 1-4)
-  llm/mod.rs            LLM-клиент (план)
+  llm/mod.rs            LLM-клиент
   llm/types.rs          Serde-типы Messages API
-  llm/client.rs         HTTP-клиент DeepSeek API + цикл tool use
+  llm/client.rs         HTTP-клиент DeepSeek API + цикл tool use (chat)
   llm/session.rs        ChatSession: история диалога (JSONL)
 ```
+
+### llm/ — LLM-клиент
+
+- **types.rs** — Serde-типы Anthropic Messages API: ContentBlock, Message, ApiRequest, ApiResponse, LlmResponse, LlmError, Usage
+- **client.rs** — LlmClient: HTTP-клиент DeepSeek API, цикл tool use (chat), диспатч через ToolRegistry
+- **session.rs** — ChatSession: история диалога, системный промпт, сохранение/загрузка JSONL
+
+**Конфигурация** (env vars, в порядке приоритета):
+1. `DEEPSEEK_API_KEY` — API ключ (обязательно)
+2. `DEEPSEEK_API_BASE` — base URL (default: `https://api.deepseek.com`)
+3. `DEEPSEEK_MODEL` — модель (default: `deepseek-chat`)
+
+**Архитектурный принцип:** LLM-клиент — часть Model, не ViewModel. Возвращает готовый ответ (текст + опциональный visualization JSON). ViewModel получает финальный ответ, а не сырые tool_use/tool_result.
 
 ## 3. DataLoader и бандлинг данных
 
@@ -193,13 +206,16 @@ make fmt       # cd src-tauri && cargo fmt
 - Бандлинг JSON-файлов через Tauri resources
 - ToolRegistry с Anthropic-совместимым API
 - 18 инструментов (9 describe + 9 query)
+- LLM-клиент (DeepSeek API + tool use loop + ChatSession с JSONL)
 - Dev-тулинг (.gitignore, Makefile, CI placeholder)
-- 66 тестов, clippy clean
+- 96 тестов, clippy clean
 
 **Ещё нет:**
 - Фронтенда (кроме placeholder `dist/index.html`)
 - MVVM-реализации
+- Интеграции LLM-клиента с ViewModel
+- Стриминга (SSE)
 - Git commit automation, user-map, investigation mode
 - Полноценного CI/CD
 
-**Следующий шаг:** реализовать LLM-клиент согласно [plan-llm-client-implementation.md](plan-llm-client-implementation.md) (фазы 1-5).
+**Следующий шаг:** интеграция LLM-клиента с ViewModel через Tauri-команды.
