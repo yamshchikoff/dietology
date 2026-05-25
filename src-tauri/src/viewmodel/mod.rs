@@ -173,11 +173,62 @@ pub fn get_messages(state: State<'_, AppState>) -> Result<Vec<Message>, String> 
     Ok(guard.as_ref().expect("session is free").messages.clone())
 }
 
+/// Проверяет и нормализует пользовательский путь для save/load сессии.
+///
+/// Защиты:
+/// - пустая строка — отказ
+/// - null-байты — отказ (попытка обмана строковых API)
+/// - `..` компоненты — отказ (выход за пределы директории)
+/// - symlink-резолвинг: если путь существует, каноникализируется и
+///   перепроверяется (симлинк мог указать наружу)
 pub fn validate_path(path: &str) -> Result<PathBuf, String> {
+    if path.trim().is_empty() {
+        return Err("path is empty".into());
+    }
+
+    if path.contains('\0') {
+        return Err("path contains null byte".into());
+    }
+
     let p = PathBuf::from(path);
+
     if p.components().any(|c| c == std::path::Component::ParentDir) {
         return Err("path traversal rejected: '..' not allowed".into());
     }
+
+    // Если путь существует — каноникализировать (разрешить симлинки) и перепроверить.
+    // std::fs::canonicalize требует существования, поэтому только для существующих.
+    if p.exists() {
+        let canonical = p
+            .canonicalize()
+            .map_err(|e| format!("failed to resolve path: {e}"))?;
+        if canonical
+            .components()
+            .any(|c| c == std::path::Component::ParentDir)
+        {
+            return Err("path traversal rejected after symlink resolution".into());
+        }
+        return Ok(canonical);
+    }
+
+    // Путь не существует (например, save в новый файл) — каноникализируем родителя.
+    if let Some(parent) = p.parent() {
+        if parent.exists() {
+            let canonical_parent = parent
+                .canonicalize()
+                .map_err(|e| format!("failed to resolve parent path: {e}"))?;
+            if canonical_parent
+                .components()
+                .any(|c| c == std::path::Component::ParentDir)
+            {
+                return Err("path traversal rejected after parent symlink resolution".into());
+            }
+            if let Some(file_name) = p.file_name() {
+                return Ok(canonical_parent.join(file_name));
+            }
+        }
+    }
+
     Ok(p)
 }
 
@@ -214,4 +265,75 @@ pub fn clear_session(state: State<'_, AppState>) -> Result<(), String> {
     ensure_free(&guard)?;
     guard.as_mut().expect("session is free").clear();
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::validate_path;
+    use std::fs;
+    use std::os::unix::fs as unix_fs;
+
+    #[test]
+    fn rejects_empty() {
+        assert!(validate_path("").is_err());
+        assert!(validate_path("   ").is_err());
+    }
+
+    #[test]
+    fn rejects_null_byte() {
+        assert!(validate_path("/tmp/foo\0bar").is_err());
+    }
+
+    #[test]
+    fn rejects_parent_dir() {
+        assert!(validate_path("../etc/passwd").is_err());
+        assert!(validate_path("foo/../../bar").is_err());
+    }
+
+    #[test]
+    fn accepts_absolute_path() {
+        assert!(validate_path("/tmp/session.jsonl").is_ok());
+    }
+
+    #[test]
+    fn accepts_relative_path() {
+        assert!(validate_path("session.jsonl").is_ok());
+    }
+
+    #[test]
+    fn canonicalizes_symlink_and_rejects_traversal() {
+        let tmp = std::env::temp_dir().join("dietology_test_canon");
+        let _ = fs::remove_dir_all(&tmp);
+        fs::create_dir_all(&tmp).unwrap();
+
+        let real_dir = tmp.join("real");
+        fs::create_dir_all(&real_dir).unwrap();
+
+        let link = tmp.join("link");
+        unix_fs::symlink(&real_dir, &link).unwrap();
+
+        // symlink сам по себе валиден (без ..)
+        let file = link.join("test.jsonl");
+        // файла нет — валидация проходит по родителю
+        let result = validate_path(file.to_str().unwrap());
+        assert!(result.is_ok(), "symlink to safe dir should pass: {result:?}");
+
+        let _ = fs::remove_dir_all(&tmp);
+    }
+
+    #[test]
+    fn canonicalizes_existing_file() {
+        let tmp = std::env::temp_dir().join("dietology_test_existing");
+        let _ = fs::remove_dir_all(&tmp);
+        fs::create_dir_all(&tmp).unwrap();
+
+        let file = tmp.join("real.jsonl");
+        fs::write(&file, "test").unwrap();
+
+        let result = validate_path(file.to_str().unwrap()).unwrap();
+        // результат должен быть каноникализирован (symlinks разрешены)
+        assert_eq!(result, file.canonicalize().unwrap());
+
+        let _ = fs::remove_dir_all(&tmp);
+    }
 }

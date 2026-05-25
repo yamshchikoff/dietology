@@ -22,6 +22,23 @@ Tauri shell (tauri v2)
        data/*.json      11 production JSON-файлов (bundled as Tauri resources)
 ```
 
+### Два view-слоя (by design)
+
+Проект с самого старта предусматривает **два независимых view-слоя**, работающих с одним и тем же Rust-ядром:
+
+| View | Транспорт | Файлы | Назначение |
+|------|-----------|-------|------------|
+| **Tauri Desktop** | Tauri IPC (`invoke` + `listen`) | `dist/index.html` | Основной deliverable — десктопное приложение. WebView в окне Tauri. |
+| **Web-сервер** | HTTP + SSE (`fetch` + `EventSource`) | `web/index.html`, `web/app.js`, `web/style.css` | Браузерный доступ через `web_server` (axum). Разработка и отладка без Tauri-рантайма. |
+
+ViewModel-слой один — `viewmodel/mod.rs`. Он содержит:
+- Tauri-команды (`#[tauri::command]`) — транспорт для десктопного view
+- Общие хелперы (`ensure_free`, `validate_path`, `SessionInfo`, `DEFAULT_SYSTEM_PROMPT`) — используются обоими транспортами
+
+`bin/web_server.rs` — это HTTP-транспорт (axum-обработчики), который **вызывает** общие хелперы из viewmodel, а не дублирует их. Собственной ViewModel у web-сервера нет.
+
+**Это не дублирование, а архитектурное решение.** Tauri IPC и HTTP/SSE — разные протоколы с разными сигнатурами, и их унификация в один абстрактный слой добавила бы больше сложности, чем два конкретных транспорта. При изменениях фича вносится в оба слоя — это осознанная цена за отсутствие абстракции.
+
 **Принцип:** модель (DeepSeek) не видит файлы напрямую — только через инструменты. Все вызовы `query_*` и `describe_*` идут через ToolRegistry → DataLoader → JSON на диске. Serde-структуры в `models/` — чистое описание формы данных, десериализуются через `DataLoader::read_json::<T>(path)` (serde игнорирует `_meta` по умолчанию).
 
 ## 2. Дерево модулей
