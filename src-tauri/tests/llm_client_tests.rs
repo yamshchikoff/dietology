@@ -474,7 +474,7 @@ async fn test_chat_tool_use_then_end_turn() {
 }
 
 #[tokio::test]
-async fn test_chat_unknown_stop_reason() {
+async fn test_chat_max_tokens_is_success() {
     use wiremock::{Mock, MockServer, ResponseTemplate};
     use wiremock::matchers::{method, path};
 
@@ -485,8 +485,48 @@ async fn test_chat_unknown_stop_reason() {
             "id": "msg_001",
             "type": "message",
             "role": "assistant",
-            "content": [{"type": "text", "text": "..."}],
+            "content": [{"type": "text", "text": "Ответ до лимита."}],
             "stop_reason": "max_tokens",
+            "usage": {"input_tokens": 10, "output_tokens": 5}
+        })))
+        .mount(&server)
+        .await;
+
+    let client = LlmClient {
+        api_base_url: server.uri(),
+        api_key: "test-key".into(),
+        model: "deepseek-chat".into(),
+        http: reqwest::Client::new(),
+        registry: Arc::new(ToolRegistry::new()),
+        max_tokens: 4096,
+        max_tool_rounds: 10,
+    };
+
+    let mut messages = vec![Message {
+        role: "user".into(),
+        content: vec![ContentBlock::Text { text: "вопрос".into() }],
+    }];
+
+    let response = client.chat(&mut messages, "system").await.unwrap();
+    assert!(!response.final_text.is_empty());
+    assert_eq!(response.usage.input_tokens, 10);
+    assert_eq!(messages.len(), 2);
+}
+
+#[tokio::test]
+async fn test_chat_end_turn_empty_text_returns_error() {
+    use wiremock::{Mock, MockServer, ResponseTemplate};
+    use wiremock::matchers::{method, path};
+
+    let server = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/v1/messages"))
+        .respond_with(ResponseTemplate::new(200).set_body_json(serde_json::json!({
+            "id": "msg_001",
+            "type": "message",
+            "role": "assistant",
+            "content": [],
+            "stop_reason": "end_turn",
             "usage": {"input_tokens": 10, "output_tokens": 5}
         })))
         .mount(&server)
@@ -509,7 +549,48 @@ async fn test_chat_unknown_stop_reason() {
 
     let result = client.chat(&mut messages, "system").await;
     match result {
-        Err(LlmError::Parse(msg)) => assert!(msg.contains("max_tokens")),
+        Err(LlmError::Parse(msg)) => assert!(msg.contains("no text")),
+        other => panic!("expected Parse error, got {other:?}"),
+    }
+}
+
+#[tokio::test]
+async fn test_chat_unknown_stop_reason() {
+    use wiremock::{Mock, MockServer, ResponseTemplate};
+    use wiremock::matchers::{method, path};
+
+    let server = MockServer::start().await;
+    Mock::given(method("POST"))
+        .and(path("/v1/messages"))
+        .respond_with(ResponseTemplate::new(200).set_body_json(serde_json::json!({
+            "id": "msg_001",
+            "type": "message",
+            "role": "assistant",
+            "content": [{"type": "text", "text": "..."}],
+            "stop_reason": "refusal",
+            "usage": {"input_tokens": 10, "output_tokens": 5}
+        })))
+        .mount(&server)
+        .await;
+
+    let client = LlmClient {
+        api_base_url: server.uri(),
+        api_key: "test-key".into(),
+        model: "deepseek-chat".into(),
+        http: reqwest::Client::new(),
+        registry: Arc::new(ToolRegistry::new()),
+        max_tokens: 4096,
+        max_tool_rounds: 10,
+    };
+
+    let mut messages = vec![Message {
+        role: "user".into(),
+        content: vec![ContentBlock::Text { text: "вопрос".into() }],
+    }];
+
+    let result = client.chat(&mut messages, "system").await;
+    match result {
+        Err(LlmError::Parse(msg)) => assert!(msg.contains("refusal")),
         other => panic!("expected Parse error, got {other:?}"),
     }
 }
@@ -559,7 +640,9 @@ async fn test_chat_max_tool_rounds() {
 
     let result = client.chat(&mut messages, "system").await;
     match result {
-        Err(LlmError::MaxToolRounds(2)) => {}
+        Err(LlmError::MaxToolRounds { rounds: 2, messages: err_msgs }) => {
+            assert_eq!(err_msgs.len(), 5, "error should carry accumulated messages");
+        }
         other => panic!("expected MaxToolRounds(2), got {other:?}"),
     }
     // 2 раунда: user + 2*(assistant + user_tool_result) = 5 сообщений

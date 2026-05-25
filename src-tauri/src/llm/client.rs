@@ -150,10 +150,14 @@ impl LlmClient {
             });
 
             match response.stop_reason.as_str() {
-                "end_turn" => {
+                "end_turn" | "max_tokens" => {
+                    let final_text = extract_text(&response);
+                    if final_text.is_empty() {
+                        return Err(LlmError::Parse("no text in response".into()));
+                    }
                     return Ok(LlmResponse {
                         messages: messages.clone(),
-                        final_text: extract_text(&response),
+                        final_text,
                         visualization_json: None,
                         usage: total_usage,
                     });
@@ -166,9 +170,13 @@ impl LlmClient {
                         .collect();
 
                     if tool_uses.is_empty() {
+                        let final_text = extract_text(&response);
+                        if final_text.is_empty() {
+                            return Err(LlmError::Parse("no text in response".into()));
+                        }
                         return Ok(LlmResponse {
                             messages: messages.clone(),
-                            final_text: extract_text(&response),
+                            final_text,
                             visualization_json: None,
                             usage: total_usage,
                         });
@@ -198,6 +206,9 @@ impl LlmClient {
             }
         }
 
-        Err(LlmError::MaxToolRounds(self.max_tool_rounds))
+        Err(LlmError::MaxToolRounds {
+            rounds: self.max_tool_rounds,
+            messages: messages.clone(),
+        })
     }
 }
