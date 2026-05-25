@@ -199,7 +199,7 @@ async function loadSession() {
     document.getElementById('chat').innerHTML = '';
     renderMessages(info.messages);
     document.getElementById('status').textContent =
-      `Загружено ${info.message_count} сообщений | ${info.system_prompt.slice(0, 60)}...`;
+      `Загружено ${info.message_count} сообщений | ${(info.system_prompt || '').slice(0, 60)}...`;
   } catch (e) { addMsg('error', 'Ошибка загрузки: ' + e); }
 }
 

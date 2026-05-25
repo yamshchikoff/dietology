@@ -1,23 +1,31 @@
 let currentMsgElem = null;
 let isStreaming = false;
 
-// ---- Cookie helpers (единственное, что хранится в cookie) ----
+// ---- Cookie helpers ----
 
 const COOKIE_KEY = 'dietology_api_key';
+const COOKIE_BASE_URL = 'dietology_base_url';
 
-function getApiKey() {
-  const m = document.cookie.match('(?:^|;)\\s*' + COOKIE_KEY + '=([^;]*)');
+function getCookie(name) {
+  const m = document.cookie.match('(?:^|;)\\s*' + name + '=([^;]*)');
   return m ? decodeURIComponent(m[1]) : null;
 }
 
-function setApiKey(key) {
+function setCookie(name, value) {
   const secure = location.protocol === 'https:' ? ';Secure' : '';
-  document.cookie = COOKIE_KEY + '=' + encodeURIComponent(key) + ';path=/;max-age=31536000;SameSite=Strict' + secure;
+  document.cookie = name + '=' + encodeURIComponent(value) + ';path=/;max-age=31536000;SameSite=Strict' + secure;
 }
 
-function clearApiKey() {
-  document.cookie = COOKIE_KEY + '=;path=/;max-age=0';
+function clearCookie(name) {
+  document.cookie = name + '=;path=/;max-age=0';
 }
+
+function getApiKey() { return getCookie(COOKIE_KEY); }
+function setApiKey(key) { setCookie(COOKIE_KEY, key); }
+function clearApiKey() { clearCookie(COOKIE_KEY); }
+
+function getBaseUrl() { return getCookie(COOKIE_BASE_URL); }
+function setBaseUrl(url) { setCookie(COOKIE_BASE_URL, url); }
 
 // ---- DOM helpers ----
 
@@ -82,6 +90,7 @@ async function connect() {
       throw new Error(err);
     }
     setApiKey(key);
+    if (baseUrl) setBaseUrl(baseUrl);
     const ok = await initChat();
     if (!ok) {
       document.getElementById('connect-btn').disabled = false;
@@ -212,7 +221,12 @@ async function sendMessageSSE(text) {
           try {
             handleSSEvent(eventName, JSON.parse(data));
           } catch (_) {
-            // ignore parse errors (keepalive comments)
+            // Skip SSE comments/keepalive (no valid JSON payload).
+            // Only warn for data that looks like it was meant to be JSON.
+            const t = data.trim();
+            if (t.startsWith('{') || t.startsWith('[')) {
+              console.warn('SSE: failed to parse event data', eventName, t.slice(0, 80));
+            }
           }
         }
       }
@@ -291,7 +305,8 @@ async function loadSession() {
     const info = await resp.json();
     document.getElementById('chat').innerHTML = '';
     renderMessages(info.messages);
-    setStatus('Загружено ' + info.message_count + ' сообщений | ' + info.system_prompt.slice(0, 60) + '...');
+    const promptPreview = (info.system_prompt || '').slice(0, 60);
+    setStatus('Загружено ' + info.message_count + ' сообщений | ' + promptPreview + (promptPreview.length >= 60 ? '...' : ''));
   } catch (e) {
     addMsg('error', 'Ошибка загрузки: ' + (e.message || String(e)));
   }
@@ -313,6 +328,10 @@ async function clearSession() {
 
 (async () => {
   const savedKey = getApiKey();
+  const savedBaseUrl = getBaseUrl();
+  if (savedBaseUrl) {
+    document.getElementById('base-url-input').value = savedBaseUrl;
+  }
   if (savedKey) {
     // Try to re-initialize server with saved key
     try {

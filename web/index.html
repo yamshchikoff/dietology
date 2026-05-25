@@ -13,7 +13,7 @@
     <h1>Dietology</h1>
     <p>Введите API-ключ DeepSeek</p>
     <input id="key-input" type="password" placeholder="sk-..."
-      onkeydown="if(event.key==='Enter') connect()">
+      onkeydown="if(event.key==='Enter'){(async()=>await connect())()}">
     <div class="key-row">
       <input id="base-url-input" type="text" placeholder="https://api.deepseek.com/anthropic" value="https://api.deepseek.com/anthropic">
     </div>
@@ -37,7 +37,7 @@
 
   <div id="input-area">
     <input id="input" type="text" placeholder="Задайте вопрос о питании..." autofocus
-      onkeydown="if(event.key==='Enter') send()">
+      onkeydown="if(event.key==='Enter'){(async()=>await send())()}">
     <button id="send-btn" onclick="send()">→</button>
   </div>
 </div>

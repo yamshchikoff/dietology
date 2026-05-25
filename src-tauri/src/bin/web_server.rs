@@ -321,7 +321,11 @@ async fn main() {
         session: Mutex::new(Some(
             std::env::var("SESSION_PATH")
                 .ok()
-                .and_then(|p| ChatSession::load_from_jsonl(&std::path::PathBuf::from(&p)).ok())
+                .and_then(|p| {
+                    viewmodel::validate_path(&p)
+                        .ok()
+                        .and_then(|safe_path| ChatSession::load_from_jsonl(&safe_path).ok())
+                })
                 .unwrap_or_else(|| ChatSession::new(viewmodel::DEFAULT_SYSTEM_PROMPT.into())),
         )),
         registry: Arc::new(registry),
