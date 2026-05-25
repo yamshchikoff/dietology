@@ -89,6 +89,15 @@ impl LlmClient {
         let model =
             std::env::var("DEEPSEEK_MODEL").unwrap_or_else(|_| "deepseek-chat".into());
 
+        Self::with_credentials(registry, api_key, api_base_url, model)
+    }
+
+    pub fn with_credentials(
+        registry: Arc<ToolRegistry>,
+        api_key: String,
+        api_base_url: String,
+        model: String,
+    ) -> Result<Self, LlmError> {
         let http = reqwest::Client::builder()
             .timeout(std::time::Duration::from_secs(30))
             .build()
@@ -370,14 +379,12 @@ impl LlmClient {
                             }
                             current_block = Some(BlockBuilder::Text { text });
                         }
-                        SseContentBlock::ToolUse { id, name, input } => {
+                        SseContentBlock::ToolUse { id, name, .. } => {
                             on_tool_start(&name);
-                            let input_json =
-                                serde_json::to_string(&input).unwrap_or_default();
                             current_block = Some(BlockBuilder::ToolUse {
                                 id,
                                 name,
-                                input_json,
+                                input_json: String::new(),
                             });
                         }
                         SseContentBlock::Other => {}

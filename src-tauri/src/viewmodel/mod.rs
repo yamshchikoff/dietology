@@ -47,14 +47,14 @@ pub struct AppState {
     pub session: std::sync::Mutex<Option<ChatSession>>,
 }
 
-const DEFAULT_SYSTEM_PROMPT: &str = "\
+pub const DEFAULT_SYSTEM_PROMPT: &str = "\
 Ты — ассистент по питанию. Отвечай на русском языке.
 Для поиска данных используй инструменты: сначала describe для навигации, потом query для конкретных значений.";
 
 // ---- Invariant helpers ----
 
 /// Возвращает `Ok` если сессия свободна (не занята `send_message`), иначе ошибку.
-fn ensure_free(guard: &Option<ChatSession>) -> Result<(), String> {
+pub fn ensure_free(guard: &Option<ChatSession>) -> Result<(), String> {
     if guard.is_some() {
         Ok(())
     } else {
@@ -172,7 +172,7 @@ pub fn get_messages(state: State<'_, AppState>) -> Result<Vec<Message>, String> 
     Ok(guard.as_ref().expect("session is free").messages.clone())
 }
 
-fn validate_path(path: &str) -> Result<PathBuf, String> {
+pub fn validate_path(path: &str) -> Result<PathBuf, String> {
     let p = PathBuf::from(path);
     if p.components().any(|c| c == std::path::Component::ParentDir) {
         return Err("path traversal rejected: '..' not allowed".into());

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dietology</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="key-screen" class="key-screen">
+  <div class="key-card">
+    <h1>Dietology</h1>
+    <p>Введите API-ключ DeepSeek</p>
+    <input id="key-input" type="password" placeholder="sk-...">
+    <div class="key-row">
+      <input id="base-url-input" type="text" placeholder="https://api.deepseek.com/anthropic" value="https://api.deepseek.com/anthropic">
+    </div>
+    <button id="connect-btn" onclick="connect()">Подключиться</button>
+    <div id="key-error" class="key-error"></div>
+  </div>
+</div>
+
+<div id="chat-screen" style="display:none">
+  <header>
+    <h1>Dietology</h1>
+    <div class="controls">
+      <button onclick="saveSession()">Save</button>
+      <button onclick="loadSession()">Load</button>
+      <button onclick="clearSession()">Clear</button>
+    </div>
+  </header>
+
+  <div id="chat"></div>
+  <div class="status" id="status">Initializing...</div>
+
+  <div id="input-area">
+    <input id="input" type="text" placeholder="Задайте вопрос о питании..." autofocus
+      onkeydown="if(event.key==='Enter') send()">
+    <button id="send-btn" onclick="send()">→</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -150,6 +150,7 @@ pub(crate) enum SseContentBlock {
     #[serde(rename = "text")]
     Text { text: String },
     #[serde(rename = "tool_use")]
+    #[allow(dead_code)]
     ToolUse {
         id: String,
         name: String,
