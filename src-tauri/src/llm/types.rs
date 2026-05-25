@@ -64,7 +64,6 @@ pub struct Usage {
 
 #[derive(Debug, Clone)]
 pub struct LlmResponse {
-    pub messages: Vec<Message>,
     pub final_text: String,
     pub visualization_json: Option<serde_json::Value>,
     pub usage: Usage,
@@ -78,7 +77,10 @@ pub enum LlmError {
     Api { status: u16, body: String },
     Parse(String),
     ToolDispatch(String),
-    MaxToolRounds(u8),
+    MaxToolRounds {
+        rounds: u8,
+        messages: Vec<Message>,
+    },
     MissingApiKey,
 }
 
@@ -89,7 +91,9 @@ impl std::fmt::Display for LlmError {
             Self::Api { status, body } => write!(f, "API error {status}: {body}"),
             Self::Parse(msg) => write!(f, "parse error: {msg}"),
             Self::ToolDispatch(msg) => write!(f, "tool dispatch error: {msg}"),
-            Self::MaxToolRounds(n) => write!(f, "exceeded max tool rounds ({n})"),
+            Self::MaxToolRounds { rounds, .. } => {
+                write!(f, "exceeded max tool rounds ({rounds})")
+            }
             Self::MissingApiKey => write!(f, "DEEPSEEK_API_KEY not set"),
         }
     }

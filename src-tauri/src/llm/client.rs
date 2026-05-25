@@ -156,7 +156,6 @@ impl LlmClient {
                         return Err(LlmError::Parse("no text in response".into()));
                     }
                     return Ok(LlmResponse {
-                        messages: messages.clone(),
                         final_text,
                         visualization_json: None,
                         usage: total_usage,
@@ -175,7 +174,6 @@ impl LlmClient {
                             return Err(LlmError::Parse("no text in response".into()));
                         }
                         return Ok(LlmResponse {
-                            messages: messages.clone(),
                             final_text,
                             visualization_json: None,
                             usage: total_usage,
