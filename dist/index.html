@@ -101,7 +101,8 @@ function addMsg(role, text) {
 }
 
 function scrollChat() {
-  document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
+  const c = document.getElementById('chat');
+  c.scrollTop = c.scrollHeight;
 }
 
 function renderMessages(messages) {

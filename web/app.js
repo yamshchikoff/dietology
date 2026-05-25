@@ -149,7 +149,7 @@ function handleSSEvent(name, payload) {
       break;
     case 'done':
       if (currentMsgElem) {
-        currentMsgElem.textContent = payload.final_text;
+        currentMsgElem.textContent = payload.final_text ?? currentMsgElem.textContent;
       }
       setStatus('Токенов: ' + payload.usage.input_tokens + ' вх + ' + payload.usage.output_tokens + ' вых');
       resetUI();
@@ -199,7 +199,7 @@ async function sendMessageSSE(text) {
 
       resetTimeout();
 
-      buffer += decoder.decode(value, { stream: true });
+      buffer += decoder.decode(value, { stream: true }).replace(/\r\n/g, '\n');
 
       let idx;
       while ((idx = buffer.indexOf('\n\n')) !== -1) {
@@ -273,6 +273,13 @@ async function send() {
       setStatus('Ошибка');
       resetUI();
     }
+  }
+  if (isStreaming) {
+    // SSE stream ended without a terminal event (done/error)
+    currentMsgElem.className = 'msg error';
+    currentMsgElem.textContent = 'Ошибка: неожиданный конец потока';
+    setStatus('Ошибка');
+    resetUI();
   }
 }
 
