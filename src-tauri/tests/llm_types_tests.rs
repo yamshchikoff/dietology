@@ -116,6 +116,7 @@ fn test_api_request_serialization() {
     let req = ApiRequest {
         model: "deepseek-chat".into(),
         max_tokens: 4096,
+        stream: false,
         system: "You are a nutrition assistant.".into(),
         messages: vec![Message {
             role: "user".into(),

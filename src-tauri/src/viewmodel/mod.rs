@@ -1,6 +1,6 @@
 use serde::Serialize;
 use std::path::PathBuf;
-use tauri::State;
+use tauri::{Emitter, State};
 
 use crate::llm::client::LlmClient;
 use crate::llm::session::ChatSession;
@@ -68,6 +68,7 @@ pub fn new_chat(
 
 #[tauri::command]
 pub async fn send_message(
+    app: tauri::AppHandle,
     state: State<'_, AppState>,
     text: String,
 ) -> Result<ChatResponse, String> {
@@ -84,28 +85,56 @@ pub async fn send_message(
     session.add_user_message(text);
     let system_prompt = session.system_prompt.clone();
 
+    let app_token = app.clone();
+    let app_tool_start = app.clone();
+    let app_tool_done = app.clone();
+
     let result = state
         .llm_client
-        .chat(&mut session.messages, &system_prompt)
+        .chat_streaming(
+            &mut session.messages,
+            &system_prompt,
+            move |text: &str| {
+                let _ = app_token.emit("chat:token", serde_json::json!({"delta": text}));
+            },
+            move |name: &str| {
+                let _ = app_tool_start.emit("chat:tool_start", serde_json::json!({"name": name}));
+            },
+            move |name: &str| {
+                let _ = app_tool_done.emit("chat:tool_done", serde_json::json!({"name": name}));
+            },
+        )
         .await;
 
     match result {
         Ok(response) => {
             session.add_usage(response.usage);
             let resp = ChatResponse {
-                final_text: response.final_text,
+                final_text: response.final_text.clone(),
                 visualization_json: response.visualization_json,
                 usage: response.usage,
             };
+            let _ = app.emit(
+                "chat:done",
+                serde_json::json!({
+                    "final_text": response.final_text,
+                    "usage": {
+                        "input_tokens": response.usage.input_tokens,
+                        "output_tokens": response.usage.output_tokens,
+                    }
+                }),
+            );
             let mut guard = state.session.lock().map_err(|e| e.to_string())?;
             *guard = Some(session);
             Ok(resp)
         }
         Err(e) => {
+            let error_msg = e.to_string();
             session.messages.truncate(len_before);
+            let _ = app.emit("chat:error", serde_json::json!({"message": error_msg}));
             let mut guard = state.session.lock().map_err(|e| e.to_string())?;
             *guard = Some(session);
-            Err(e.to_string())
+            Err(error_msg)
         }
     }
 }
