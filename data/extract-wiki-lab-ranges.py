@@ -35,6 +35,9 @@ class TableExtractor(HTMLParser):
         self.in_row = False
         self.in_cell = False
         self.skip_depth = 0
+        self._rowspan_cells = []  # (remaining, col_idx, content)
+        self._rowspan_pending = []  # (remaining, pre_inject_idx, content)
+        self._current_rowspan = 0
 
     def handle_starttag(self, tag, attrs):
         if self.skip_depth > 0:
@@ -44,18 +47,19 @@ class TableExtractor(HTMLParser):
         if tag == "table":
             self.in_table = True
             self.current_table = []
+            self._rowspan_cells = []
         elif tag == "tr" and self.in_table:
             self.in_row = True
             self.current_row = []
         elif (tag == "td" or tag == "th") and self.in_row:
             self.in_cell = True
             self.current_cell = ""
-            # Check for colspan/rowspan
+            self._current_rowspan = 0
             for attr, val in attrs:
                 if attr == "colspan":
                     self._colspan = int(val)
                 if attr == "rowspan":
-                    pass  # rowspan handled separately
+                    self._current_rowspan = int(val)
 
     def handle_endtag(self, tag):
         if self.skip_depth > 0:
@@ -68,15 +72,37 @@ class TableExtractor(HTMLParser):
             if self.current_table:
                 self.tables.append(self.current_table)
                 self.current_table = None
+            self._rowspan_cells = []
         elif tag == "tr" and self.in_row:
             self.in_row = False
-            if self.current_row and self.current_table is not None:
-                self.current_table.append(self.current_row)
-                self.current_row = None
+            if self.current_row is not None:
+                # Inject buffered rowspan cells from previous rows (ascending col order).
+                injected_cols = []
+                for _remaining, col_idx, content in sorted(self._rowspan_cells, key=lambda x: x[1]):
+                    pos = min(col_idx, len(self.current_row))
+                    self.current_row.insert(pos, content)
+                    injected_cols.append(col_idx)
+                if self.current_table is not None:
+                    self.current_table.append(self.current_row)
+                    self.current_row = None
+                # Decrement remaining counters.
+                self._rowspan_cells = [
+                    (r - 1, ci, c) for r, ci, c in self._rowspan_cells if r > 1
+                ]
+                # Merge pending cells from this row. Their pre-injection col_idx needs
+                # to be offset by injected cells placed at or before that position.
+                for remaining, pre_idx, content in self._rowspan_pending:
+                    offset = sum(1 for ic in injected_cols if ic <= pre_idx)
+                    self._rowspan_cells.append((remaining, pre_idx + offset, content))
+                self._rowspan_pending = []
         elif (tag == "td" or tag == "th") and self.in_cell:
             self.in_cell = False
             if self.current_cell is not None and self.current_row is not None:
-                self.current_row.append(self.current_cell.strip())
+                cell_text = self.current_cell.strip()
+                col_idx = len(self.current_row)
+                self.current_row.append(cell_text)
+                if self._current_rowspan > 1:
+                    self._rowspan_pending.append((self._current_rowspan - 1, col_idx, cell_text))
                 self.current_cell = None
 
     def handle_data(self, data):
@@ -145,12 +171,13 @@ def is_numeric_value(s):
         return False
     # Normalize whitespace (comma-separated ranges become space-separated after comma removal)
     cleaned = re.sub(r"\s+", " ", cleaned)
-    # Pattern: optional <, >, ≤, ≥ followed by number, possibly a range with -, –, or space
-    m = re.match(r"^[<>≤≥]?\s*[\d.]+(\s*[-– ]\s*[<>≤≥]?\s*[\d.]+)?$", cleaned)
-    if m:
+    # Space- or dash-separated numbers, optionally prefixed with inequality
+    # e.g. "0.3 0.5" (2 sources), "0.3 0.4 0.5 0.6" (4 sources), "110–140" (range)
+    if re.match(r"^[<>≤≥]?\s*[\d.]+(\s*[-–]?\s*[<>≤≥]?\s*[\d.]+)*$", cleaned):
         return True
-    # Pattern: "Age÷2" type expressions
-    if re.search(r"[\d.]+\s*[÷/+\-]\s*[\d.]+", cleaned):
+    # Expression-like patterns with letters and operator: "Age÷2"
+    # Dash-separated ranges are already handled above; this catches ÷ and / in text.
+    if re.search(r"[A-Za-z].*[\d.]+\s*[÷/+]\s*[\d.]+", cleaned):
         return True
     return False
 

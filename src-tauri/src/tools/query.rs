@@ -733,10 +733,10 @@ mod tests {
 
     #[test]
     fn lab_exact_match_positive() {
-        let args = serde_json::json!({"test_name": "adults – optimal range"});
+        let args = serde_json::json!({"test_name": "thyroid stimulating hormone (tsh or thyrotropin)"});
         let result = query_lab_ranges_impl(&dev_loader(), &args).unwrap();
         let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
-        assert_eq!(parsed["total_count"], 1);
+        assert_eq!(parsed["total_count"], 3);
         assert_eq!(parsed["data"][0]["category"], "thyroid");
     }
 
