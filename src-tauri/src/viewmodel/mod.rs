@@ -50,6 +50,9 @@ pub fn new_chat(
     let messages = session.messages.clone();
 
     let mut guard = state.session.lock().map_err(|e| e.to_string())?;
+    if guard.is_none() {
+        return Err("session is busy — another request is in progress".into());
+    }
     *guard = Some(session);
 
     Ok(SessionInfo {
@@ -110,14 +113,14 @@ pub async fn send_message(
 #[tauri::command]
 pub fn get_messages(state: State<'_, AppState>) -> Result<Vec<Message>, String> {
     let guard = state.session.lock().map_err(|e| e.to_string())?;
-    let session = guard.as_ref().ok_or_else(|| "session not initialized".to_string())?;
+    let session = guard.as_ref().ok_or_else(|| "session is busy — another request is in progress".to_string())?;
     Ok(session.messages.clone())
 }
 
 #[tauri::command]
 pub fn save_session(state: State<'_, AppState>, path: String) -> Result<(), String> {
     let guard = state.session.lock().map_err(|e| e.to_string())?;
-    let session = guard.as_ref().ok_or_else(|| "session not initialized".to_string())?;
+    let session = guard.as_ref().ok_or_else(|| "session is busy — another request is in progress".to_string())?;
     session.save_to_jsonl(&PathBuf::from(path))
 }
 
@@ -134,6 +137,9 @@ pub fn load_session(
         usage: loaded.total_usage,
     };
     let mut guard = state.session.lock().map_err(|e| e.to_string())?;
+    if guard.is_none() {
+        return Err("session is busy — another request is in progress".into());
+    }
     *guard = Some(loaded);
     Ok(info)
 }
@@ -141,7 +147,7 @@ pub fn load_session(
 #[tauri::command]
 pub fn clear_session(state: State<'_, AppState>) -> Result<(), String> {
     let mut guard = state.session.lock().map_err(|e| e.to_string())?;
-    let session = guard.as_mut().ok_or_else(|| "session not initialized".to_string())?;
+    let session = guard.as_mut().ok_or_else(|| "session is busy — another request is in progress".to_string())?;
     session.clear();
     Ok(())
 }
