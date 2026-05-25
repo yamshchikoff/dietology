@@ -12,7 +12,8 @@
   <div class="key-card">
     <h1>Dietology</h1>
     <p>Введите API-ключ DeepSeek</p>
-    <input id="key-input" type="password" placeholder="sk-...">
+    <input id="key-input" type="password" placeholder="sk-..."
+      onkeydown="if(event.key==='Enter') connect()">
     <div class="key-row">
       <input id="base-url-input" type="text" placeholder="https://api.deepseek.com/anthropic" value="https://api.deepseek.com/anthropic">
     </div>

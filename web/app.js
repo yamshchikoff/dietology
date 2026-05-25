@@ -90,7 +90,7 @@ async function initChat() {
     addMsg('system', 'Новая сессия. Задайте вопрос о питании.');
     setStatus('Ready');
   } catch (e) {
-    addMsg('error', 'Init failed: ' + JSON.stringify(e));
+    addMsg('error', 'Init failed: ' + (e.message || String(e)));
     setStatus('Init error');
   }
 }
