@@ -35,7 +35,6 @@ pub struct LlmClient {
     pub http_stream: reqwest::Client,
     pub registry: Arc<ToolRegistry>,
     pub max_tokens: u32,
-    pub max_tool_rounds: u8,
 }
 
 /// Intermediate state for building a ContentBlock from SSE deltas.
@@ -116,7 +115,6 @@ impl LlmClient {
             http_stream,
             registry,
             max_tokens: 4096,
-            max_tool_rounds: 10,
         })
     }
 
@@ -200,7 +198,7 @@ impl LlmClient {
             output_tokens: 0,
         };
 
-        for _round in 0..self.max_tool_rounds {
+        loop {
             let response = self.call_api(messages, system_prompt).await?;
 
             total_usage.input_tokens += response.usage.input_tokens;
@@ -269,11 +267,6 @@ impl LlmClient {
                 }
             }
         }
-
-        Err(LlmError::MaxToolRounds {
-            rounds: self.max_tool_rounds,
-            messages: messages.clone(),
-        })
     }
 
     /// POST to the API with `stream: true`, parse SSE, fire callbacks for text/tool events.
@@ -453,7 +446,7 @@ impl LlmClient {
             output_tokens: 0,
         };
 
-        for _round in 0..self.max_tool_rounds {
+        loop {
             let response = self
                 .call_api_with_stream(
                     messages,
@@ -526,9 +519,5 @@ impl LlmClient {
             }
         }
 
-        Err(LlmError::MaxToolRounds {
-            rounds: self.max_tool_rounds,
-            messages: messages.clone(),
-        })
     }
 }
