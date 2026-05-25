@@ -46,14 +46,17 @@
 
 ## Describe-инструмент
 
-**`describe_lab_ranges()`** — без параметров. Возвращает: `categories[]` (16 имён с количеством тестов в каждой), `total_tests` (254). Вызови, если не знаешь точное имя категории.
+**`describe_lab_ranges(category?)`**
+
+- **Без аргументов** — возвращает индекс: `categories[]` (16 имён с количеством тестов в каждой), `total_tests` (347).
+- **С аргументом `category`** — возвращает drill-down: `{category, tests: [{test_name, lower, upper, unit, ...}], count}`. Все тесты в указанной категории с точными именами для использования в query.
 
 ## Инструмент
 
-**`query_lab_ranges(test_name_substring, category)`**
+**`query_lab_ranges(test_name, category)`**
 
 Параметры-фильтры (все опциональны):
-- `test_name_substring` (str | None) — поиск по подстроке в названии теста. "ferritin" найдёт "Ferritin (blood)"
-- `category` (str | None) — фильтр по категории, например "lipids", "thyroid"
+- `test_name` (str | None) — **точное** имя теста. Скопируй из вывода `describe_lab_ranges(category=...)`.
+- `category` (str | None) — фильтр по категории, например `"lipids"`, `"thyroid"`. Валидные имена — из `describe_lab_ranges()`.
 
-Без фильтров возвращает все 254 теста.
+Без фильтров возвращает все 347 тестов.

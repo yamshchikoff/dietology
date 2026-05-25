@@ -43,7 +43,28 @@ fn describe_dri_impl(loader: &DataLoader, path: &str, include_sexes: bool) -> Re
     Ok(build_dri_describe(&overlay, include_sexes).to_string())
 }
 
-fn build_usda_foods_describe(foods: &UsdaFoods) -> serde_json::Value {
+fn build_usda_foods_describe(foods: &UsdaFoods, category: Option<&str>) -> serde_json::Value {
+    if let Some(cat) = category {
+        let matching: Vec<serde_json::Value> = foods
+            .foods
+            .iter()
+            .filter(|f| f.category == cat)
+            .map(|f| {
+                serde_json::json!({
+                    "food_name": f.name,
+                    "fdc_id": f.fdc_id,
+                })
+            })
+            .collect();
+
+        return serde_json::json!({
+            "status": "ok",
+            "category": cat,
+            "foods": matching,
+            "count": matching.len(),
+        });
+    }
+
     let nutrients: BTreeSet<&str> = foods
         .foods
         .iter()
@@ -138,7 +159,40 @@ fn build_epi_describe(data: &WhoEpiData) -> serde_json::Value {
     result
 }
 
-fn build_lab_ranges_describe(lr: &LabReferenceRanges) -> serde_json::Value {
+fn build_lab_ranges_describe(lr: &LabReferenceRanges, category: Option<&str>) -> serde_json::Value {
+    if let Some(cat) = category {
+        let matching: Vec<serde_json::Value> = lr
+            .ranges
+            .iter()
+            .filter(|r| r.category == cat)
+            .map(|r| {
+                let mut entry = serde_json::json!({
+                    "test_name": r.test,
+                    "unit": r.unit,
+                });
+                if let Some(ref lower) = r.lower {
+                    entry["lower"] = serde_json::json!(lower);
+                }
+                if let Some(ref upper) = r.upper {
+                    entry["upper"] = serde_json::json!(upper);
+                }
+                if let Some(ref rt) = r.range_type {
+                    if !rt.is_empty() {
+                        entry["range_type"] = serde_json::json!(rt);
+                    }
+                }
+                entry
+            })
+            .collect();
+
+        return serde_json::json!({
+            "status": "ok",
+            "category": cat,
+            "tests": matching,
+            "count": matching.len(),
+        });
+    }
+
     let mut category_counts: BTreeMap<&str, usize> = BTreeMap::new();
     for r in &lr.ranges {
         *category_counts.entry(r.category.as_str()).or_insert(0) += 1;
@@ -211,15 +265,23 @@ pub fn register_describe_tools(registry: &mut ToolRegistry, loader: &DataLoader)
     // Phase 2: USDA Foods + WHO Hb thresholds (real implementations)
     {
         let l = loader.clone();
+        let schema = serde_json::json!({
+            "type": "object",
+            "properties": {
+                "category": {"type": "string", "description": "Optional: get all food names in this category. Call without args first to see available categories."}
+            },
+            "required": []
+        });
         registry.register(
             "describe_usda_foods",
-            "Return valid enum values for USDA foods dataset filters (nutrients, food_categories)",
-            empty_schema.clone(),
-            Box::new(move |_args: &serde_json::Value| -> Result<String, String> {
+            "Navigate USDA foods: without args returns nutrients + food_categories index; with category returns all food_name + fdc_id entries in that category",
+            schema,
+            Box::new(move |args: &serde_json::Value| -> Result<String, String> {
                 let foods: UsdaFoods = l
                     .read_json("usda-foundation-foods-essential.json")
                     .map_err(|e| format!("failed to read USDA foods: {e}"))?;
-                Ok(build_usda_foods_describe(&foods).to_string())
+                let cat = args.get("category").and_then(|v| v.as_str());
+                Ok(build_usda_foods_describe(&foods, cat).to_string())
             }),
         );
     }
@@ -285,16 +347,148 @@ pub fn register_describe_tools(registry: &mut ToolRegistry, loader: &DataLoader)
     // Phase 4: Lab reference ranges (real implementation)
     {
         let l = loader.clone();
+        let schema = serde_json::json!({
+            "type": "object",
+            "properties": {
+                "category": {"type": "string", "description": "Optional: get all test names in this category. Call without args first to see available categories."}
+            },
+            "required": []
+        });
         registry.register(
             "describe_lab_ranges",
-            "Return valid enum values for lab reference ranges (categories with test counts, total_tests)",
-            empty_schema.clone(),
-            Box::new(move |_args: &serde_json::Value| -> Result<String, String> {
+            "Navigate lab reference ranges: without args returns categories index with test counts; with category returns all test_name + reference values in that category",
+            schema,
+            Box::new(move |args: &serde_json::Value| -> Result<String, String> {
                 let lr: LabReferenceRanges = l
                     .read_json("lab-reference-ranges.json")
                     .map_err(|e| format!("failed to read lab reference ranges: {e}"))?;
-                Ok(build_lab_ranges_describe(&lr).to_string())
+                let cat = args.get("category").and_then(|v| v.as_str());
+                Ok(build_lab_ranges_describe(&lr, cat).to_string())
             }),
         );
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::models::datasets::{Food, LabRange, LabReferenceRanges, NutrientAmount, UsdaFoods};
+    use std::collections::HashMap;
+
+    fn make_test_foods() -> UsdaFoods {
+        UsdaFoods {
+            foods: vec![
+                Food {
+                    name: "Chicken, breast, boneless, skinless, raw".into(),
+                    category: "Poultry Products".into(),
+                    fdc_id: 171108,
+                    nutrients: HashMap::from([
+                        ("Energy".into(), NutrientAmount { amount: 120.0, unit: "kcal".into() }),
+                        ("Protein".into(), NutrientAmount { amount: 22.5, unit: "g".into() }),
+                    ]),
+                },
+                Food {
+                    name: "Apple, raw".into(),
+                    category: "Fruits and Fruit Juices".into(),
+                    fdc_id: 171688,
+                    nutrients: HashMap::from([
+                        ("Energy".into(), NutrientAmount { amount: 52.0, unit: "kcal".into() }),
+                    ]),
+                },
+            ],
+        }
+    }
+
+    fn make_test_lab_ranges() -> LabReferenceRanges {
+        LabReferenceRanges {
+            ranges: vec![
+                LabRange {
+                    category: "thyroid".into(),
+                    test: "adults – optimal range".into(),
+                    range_type: None,
+                    lower: Some("0.3, 0.5".into()),
+                    upper: Some("2.0, 3.0".into()),
+                    unit: "mIU/L".into(),
+                },
+                LabRange {
+                    category: "thyroid".into(),
+                    test: "free thyroxine (ft4)".into(),
+                    range_type: None,
+                    lower: None,
+                    upper: Some("0.7, 0.8".into()),
+                    unit: "ng/dL".into(),
+                },
+                LabRange {
+                    category: "lipids".into(),
+                    test: "total cholesterol".into(),
+                    range_type: Some("desirable".into()),
+                    lower: None,
+                    upper: Some("200".into()),
+                    unit: "mg/dL".into(),
+                },
+            ],
+        }
+    }
+
+    #[test]
+    fn usda_index() {
+        let foods = make_test_foods();
+        let result = build_usda_foods_describe(&foods, None);
+        assert_eq!(result["status"], "ok");
+        assert_eq!(result["total_foods"], 2);
+        let categories: Vec<&str> = result["food_categories"]
+            .as_array().unwrap().iter()
+            .filter_map(|v| v.as_str())
+            .collect();
+        assert!(categories.contains(&"Poultry Products"));
+        assert!(categories.contains(&"Fruits and Fruit Juices"));
+        let nutrients: Vec<&str> = result["nutrients"]
+            .as_array().unwrap().iter()
+            .filter_map(|v| v.as_str())
+            .collect();
+        assert!(nutrients.contains(&"Energy"));
+        assert!(nutrients.contains(&"Protein"));
+    }
+
+    #[test]
+    fn usda_drilldown() {
+        let foods = make_test_foods();
+        let result = build_usda_foods_describe(&foods, Some("Poultry Products"));
+        assert_eq!(result["status"], "ok");
+        assert_eq!(result["category"], "Poultry Products");
+        assert_eq!(result["count"], 1);
+        let food_list = result["foods"].as_array().unwrap();
+        assert_eq!(food_list.len(), 1);
+        assert_eq!(food_list[0]["food_name"], "Chicken, breast, boneless, skinless, raw");
+        assert_eq!(food_list[0]["fdc_id"], 171108);
+    }
+
+    #[test]
+    fn lab_index() {
+        let lr = make_test_lab_ranges();
+        let result = build_lab_ranges_describe(&lr, None);
+        assert_eq!(result["status"], "ok");
+        assert_eq!(result["total_tests"], 3);
+        let categories: Vec<serde_json::Value> = result["categories"]
+            .as_array().unwrap().iter()
+            .map(|v| v.clone())
+            .collect();
+        let thyroid = categories.iter().find(|v| v["name"] == "thyroid").unwrap();
+        assert_eq!(thyroid["count"], 2);
+        let lipids = categories.iter().find(|v| v["name"] == "lipids").unwrap();
+        assert_eq!(lipids["count"], 1);
+    }
+
+    #[test]
+    fn lab_drilldown() {
+        let lr = make_test_lab_ranges();
+        let result = build_lab_ranges_describe(&lr, Some("thyroid"));
+        assert_eq!(result["status"], "ok");
+        assert_eq!(result["category"], "thyroid");
+        assert_eq!(result["count"], 2);
+        let tests = result["tests"].as_array().unwrap();
+        let names: Vec<&str> = tests.iter().map(|t| t["test_name"].as_str().unwrap()).collect();
+        assert!(names.contains(&"adults – optimal range"));
+        assert!(names.contains(&"free thyroxine (ft4)"));
     }
 }

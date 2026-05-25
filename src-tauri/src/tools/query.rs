@@ -261,13 +261,12 @@ fn query_usda_foods_impl(loader: &DataLoader, args: &serde_json::Value) -> Resul
         .read_json("usda-foundation-foods-essential.json")
         .map_err(|e| format!("failed to read USDA foods: {e}"))?;
 
-    let food_name_substring = get_str_arg(args, "food_name_substring");
+    let food_name = get_str_arg(args, "food_name");
     let nutrient = get_str_arg(args, "nutrient");
     let max_results = get_u64_arg(args, "max_results").unwrap_or(50) as usize;
 
-    let mut foods: Vec<&Food> = if let Some(ref needle) = food_name_substring {
-        let needle_lower = needle.to_lowercase();
-        foods_data.foods.iter().filter(|f| f.name.to_lowercase().contains(&needle_lower)).collect()
+    let mut foods: Vec<&Food> = if let Some(ref name) = food_name {
+        foods_data.foods.iter().filter(|f| &f.name == name).collect()
     } else {
         foods_data.foods.iter().collect()
     };
@@ -293,8 +292,8 @@ fn query_usda_foods_impl(loader: &DataLoader, args: &serde_json::Value) -> Resul
     }).collect();
 
     let mut filters = serde_json::json!({});
-    if let Some(n) = food_name_substring {
-        filters["food_name_substring"] = serde_json::json!(n);
+    if let Some(n) = food_name {
+        filters["food_name"] = serde_json::json!(n);
     }
     if let Some(n) = nutrient {
         filters["nutrient"] = serde_json::json!(n);
@@ -305,11 +304,7 @@ fn query_usda_foods_impl(loader: &DataLoader, args: &serde_json::Value) -> Resul
 }
 
 fn find_severity<'a>(severities: &'a [HbSeverityRange], group: &str) -> Option<&'a HbSeverityRange> {
-    if let Some(s) = severities.iter().find(|s| s.group == group) {
-        return Some(s);
-    }
-    let prefix = group.rsplit_once('_').map(|(p, _)| p).unwrap_or(group);
-    severities.iter().find(|s| s.group.starts_with(prefix))
+    severities.iter().find(|s| s.group == group)
 }
 
 fn query_who_hb_impl(loader: &DataLoader, args: &serde_json::Value) -> Result<String, String> {
@@ -329,8 +324,7 @@ fn query_who_hb_impl(loader: &DataLoader, args: &serde_json::Value) -> Result<St
             if t.pregnant != p { return false; }
         }
         if let Some(ref ag) = age_group {
-            let ag_lower = ag.to_lowercase();
-            if !t.group.to_lowercase().contains(&ag_lower) { return false; }
+            if &t.group != ag { return false; }
         }
         true
     }).collect();
@@ -478,16 +472,15 @@ fn query_lab_ranges_impl(loader: &DataLoader, args: &serde_json::Value) -> Resul
         .read_json("lab-reference-ranges.json")
         .map_err(|e| format!("failed to read lab reference ranges: {e}"))?;
 
-    let test_name_substring = get_str_arg(args, "test_name_substring");
+    let test_name = get_str_arg(args, "test_name");
     let category = get_str_arg(args, "category");
 
     let data: Vec<serde_json::Value> = lab_data
         .ranges
         .iter()
         .filter(|r| {
-            if let Some(ref needle) = test_name_substring {
-                let needle_lower = needle.to_lowercase();
-                if !r.test.to_lowercase().contains(&needle_lower) {
+            if let Some(ref name) = test_name {
+                if &r.test != name {
                     return false;
                 }
             }
@@ -520,8 +513,8 @@ fn query_lab_ranges_impl(loader: &DataLoader, args: &serde_json::Value) -> Resul
         .collect();
 
     let mut filters = serde_json::json!({});
-    if let Some(ref n) = test_name_substring {
-        filters["test_name_substring"] = serde_json::json!(n);
+    if let Some(ref n) = test_name {
+        filters["test_name"] = serde_json::json!(n);
     }
     if let Some(ref c) = category {
         filters["category"] = serde_json::json!(c);
@@ -609,11 +602,11 @@ pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
         registry,
         loader,
         "query_usda_foods",
-        "Query USDA Foundation Foods by name substring, nutrient sort, and max results",
+        "Query USDA Foundation Foods by exact food name (from describe_usda_foods drill-down) and optional nutrient sort",
         serde_json::json!({
             "type": "object",
             "properties": {
-                "food_name_substring": {"type": "string", "description": "Case-insensitive substring search on food name."},
+                "food_name": {"type": "string", "description": "Exact food name. Copy from describe_usda_foods(category=...) output."},
                 "nutrient": {"type": "string", "description": "Nutrient name to sort by descending amount. Use describe_usda_foods() for valid names."},
                 "max_results": {"type": "integer", "description": "Max results to return (default 50)."}
             },
@@ -627,13 +620,13 @@ pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
         registry,
         loader,
         "query_who_hb",
-        "Query WHO haemoglobin thresholds by sex, pregnant status, and age group substring",
+        "Query WHO haemoglobin thresholds by sex, pregnant status, and exact age group",
         serde_json::json!({
             "type": "object",
             "properties": {
                 "sex": {"type": "string", "enum": ["male", "female", "any"]},
                 "pregnant": {"type": "boolean"},
-                "age_group": {"type": "string", "description": "Substring match on diagnostic group name (e.g., 'children', 'trimester')."}
+                "age_group": {"type": "string", "description": "Exact diagnostic group name. Copy from describe_who_hb() diagnostic_groups."}
             },
             "required": []
         }),
@@ -698,15 +691,129 @@ pub fn register_query_tools(registry: &mut ToolRegistry, loader: &DataLoader) {
         registry,
         loader,
         "query_lab_ranges",
-        "Query lab reference ranges by test name substring and/or category filter",
+        "Query lab reference ranges by exact test name (from describe_lab_ranges drill-down) and/or category filter",
         serde_json::json!({
             "type": "object",
             "properties": {
-                "test_name_substring": {"type": "string", "description": "Case-insensitive substring search on test name (e.g., 'ferritin')."},
+                "test_name": {"type": "string", "description": "Exact test name. Copy from describe_lab_ranges(category=...) output."},
                 "category": {"type": "string", "description": "Exact category filter. Use describe_lab_ranges() for valid categories."}
             },
             "required": []
         }),
         query_lab_ranges_impl,
     );
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::data::DataLoader;
+    use crate::models::datasets::HbSeverityRange;
+
+    fn dev_loader() -> DataLoader {
+        DataLoader::for_development()
+    }
+
+    #[test]
+    fn usda_exact_match_positive() {
+        let args = serde_json::json!({"food_name": "Chicken, breast, boneless, skinless, raw"});
+        let result = query_usda_foods_impl(&dev_loader(), &args).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+        assert_eq!(parsed["total_count"], 1);
+        assert_eq!(parsed["data"][0]["food_name"], "Chicken, breast, boneless, skinless, raw");
+    }
+
+    #[test]
+    fn usda_exact_match_negative() {
+        let args = serde_json::json!({"food_name": "chicken breast"});
+        let result = query_usda_foods_impl(&dev_loader(), &args).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+        assert_eq!(parsed["total_count"], 0);
+    }
+
+    #[test]
+    fn lab_exact_match_positive() {
+        let args = serde_json::json!({"test_name": "adults – optimal range"});
+        let result = query_lab_ranges_impl(&dev_loader(), &args).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+        assert_eq!(parsed["total_count"], 1);
+        assert_eq!(parsed["data"][0]["category"], "thyroid");
+    }
+
+    #[test]
+    fn lab_exact_match_negative() {
+        let args = serde_json::json!({"test_name": "TSH"});
+        let result = query_lab_ranges_impl(&dev_loader(), &args).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+        assert_eq!(parsed["total_count"], 0);
+    }
+
+    #[test]
+    fn hb_exact_match_positive() {
+        let args = serde_json::json!({"age_group": "men_15_plus"});
+        let result = query_who_hb_impl(&dev_loader(), &args).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+        assert_eq!(parsed["total_count"], 1);
+        assert_eq!(parsed["data"][0]["group"], "men_15_plus");
+    }
+
+    #[test]
+    fn hb_exact_match_negative() {
+        let args = serde_json::json!({"age_group": "men"});
+        let result = query_who_hb_impl(&dev_loader(), &args).unwrap();
+        let parsed: serde_json::Value = serde_json::from_str(&result).unwrap();
+        assert_eq!(parsed["total_count"], 0);
+    }
+
+    #[test]
+    fn severity_exact_match_positive() {
+        let severities = vec![
+            HbSeverityRange {
+                group: "men_15_plus".into(),
+                normal_low: 130.0,
+                mild_low: 110.0,
+                mild_high: 129.0,
+                moderate_low: 80.0,
+                moderate_high: 109.0,
+                severe_below: 80.0,
+            },
+        ];
+        let found = find_severity(&severities, "men_15_plus");
+        assert!(found.is_some());
+        assert_eq!(found.unwrap().normal_low, 130.0);
+    }
+
+    #[test]
+    fn severity_exact_match_negative() {
+        let severities = vec![
+            HbSeverityRange {
+                group: "men_15_plus".into(),
+                normal_low: 130.0,
+                mild_low: 110.0,
+                mild_high: 129.0,
+                moderate_low: 80.0,
+                moderate_high: 109.0,
+                severe_below: 80.0,
+            },
+        ];
+        let found = find_severity(&severities, "men_15_65");
+        assert!(found.is_none());
+    }
+
+    #[test]
+    fn severity_no_prefix_fallback() {
+        let severities = vec![
+            HbSeverityRange {
+                group: "men_15_plus".into(),
+                normal_low: 130.0,
+                mild_low: 110.0,
+                mild_high: 129.0,
+                moderate_low: 80.0,
+                moderate_high: 109.0,
+                severe_below: 80.0,
+            },
+        ];
+        let found = find_severity(&severities, "men_15");
+        assert!(found.is_none());
+    }
 }

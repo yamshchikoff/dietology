@@ -128,7 +128,7 @@
       "severe_below": 80
     },
     {
-      "group": "non_pregnant_women_15_65",
+      "group": "non_pregnant_women_15_plus",
       "normal_low": 120,
       "mild_low": 110,
       "mild_high": 119,
@@ -137,7 +137,7 @@
       "severe_below": 80
     },
     {
-      "group": "men_15_65",
+      "group": "men_15_plus",
       "normal_low": 130,
       "mild_low": 110,
       "mild_high": 129,

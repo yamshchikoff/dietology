@@ -34,15 +34,18 @@
 
 ## Describe-инструмент
 
-**`describe_usda_foods()`** — без параметров. Возвращает: `nutrients[]` (25 имён), `food_categories[]`, `total_foods` (363). Вызови, если не знаешь точное имя nutrient или какие категории доступны.
+**`describe_usda_foods(category?)`**
+
+- **Без аргументов** — возвращает индекс: `nutrients[]` (25 имён), `food_categories[]`, `total_foods` (363).
+- **С аргументом `category`** — возвращает drill-down: `{category, foods: [{food_name, fdc_id}], count}`. Все продукты в указанной категории с точными именами для использования в query.
 
 ## Инструмент
 
-**`query_usda_foods(food_name_substring, nutrient, max_results)`**
+**`query_usda_foods(food_name, nutrient, max_results)`**
 
-Параметры-фильтры (все опциональны):
-- `food_name_substring` (str | None) — поиск по подстроке в названии. "apple" найдёт "Apples, raw, with skin"
-- `nutrient` (str | None) — имя нутриента для сортировки по убыванию (вернуть продукты, богатые этим нутриентом)
-- `max_results` (int) — ограничение количества результатов (по умолчанию 50)
+Параметры (все опциональны):
+- `food_name` (str | None) — **точное** имя продукта. Скопируй из вывода `describe_usda_foods(category=...)`.
+- `nutrient` (str | None) — имя нутриента для сортировки по убыванию. Валидные имена — из `describe_usda_foods()`.
+- `max_results` (int) — ограничение количества результатов (по умолчанию 50).
 
-Если вызвать без фильтров — вернёт первые max_results продуктов.
+Если вызвать без `food_name` — вернёт первые max_results продуктов.

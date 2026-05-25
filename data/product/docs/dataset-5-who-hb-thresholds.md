@@ -59,6 +59,6 @@
 Параметры-фильтры (все опциональны):
 - `sex` (str | None) — "male", "female" или "any"
 - `pregnant` (bool | None) — True для беременных, False для небеременных, None для всех
-- `age_group` (str | None) — подстрока, например "children" или "trimester"
+- `age_group` (str | None) — **точное** имя группы из `describe_who_hb()`. Например: `"children_6_23_months"`, `"men_15_plus"`, `"pregnant_second_trimester"`.
 
 Без фильтров возвращает все 9 диагностических групп.
