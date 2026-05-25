@@ -150,9 +150,9 @@ listen('chat:done', (event) => {
 listen('chat:error', (event) => {
   if (currentMsgElem) {
     currentMsgElem.className = 'msg error';
-    currentMsgElem.textContent = 'Ошибка: ' + event.payload.message;
+    currentMsgElem.textContent = 'Ошибка: ' + (event.payload.message ?? 'неизвестная ошибка');
   } else {
-    addMsg('error', 'Ошибка: ' + event.payload.message);
+    addMsg('error', 'Ошибка: ' + (event.payload.message ?? 'неизвестная ошибка'));
   }
   document.getElementById('status').textContent = 'Ошибка';
   isStreaming = false;

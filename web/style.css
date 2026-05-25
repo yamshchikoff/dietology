@@ -31,6 +31,7 @@ body {
   padding: 10px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500;
 }
 .key-card button:hover { background: #3b82f6; }
+.key-card button:disabled { opacity: 0.5; cursor: not-allowed; }
 .key-error { color: #fca5a5; font-size: 13px; text-align: center; min-height: 18px; }
 
 /* Chat screen */

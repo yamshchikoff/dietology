@@ -158,9 +158,9 @@ function handleSSEvent(name, payload) {
     case 'error':
       if (currentMsgElem) {
         currentMsgElem.className = 'msg error';
-        currentMsgElem.textContent = 'Ошибка: ' + payload.message;
+        currentMsgElem.textContent = 'Ошибка: ' + (payload.message ?? 'неизвестная ошибка');
       } else {
-        addMsg('error', 'Ошибка: ' + payload.message);
+        addMsg('error', 'Ошибка: ' + (payload.message ?? 'неизвестная ошибка'));
       }
       setStatus('Ошибка');
       resetUI();
