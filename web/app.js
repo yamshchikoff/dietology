@@ -1,5 +1,16 @@
 let currentMsgElem = null;
 let isStreaming = false;
+let pendingTokens = '';
+let tokenRafId = null;
+
+function flushTokens() {
+  if (currentMsgElem && pendingTokens) {
+    currentMsgElem.textContent += pendingTokens;
+    pendingTokens = '';
+    scrollChat();
+  }
+  tokenRafId = null;
+}
 
 // ---- Cookie helpers ----
 
@@ -39,7 +50,9 @@ function addMsg(role, text) {
 
 function scrollChat() {
   const c = document.getElementById('chat');
-  c.scrollTop = c.scrollHeight;
+  if (c.scrollHeight - c.scrollTop - c.clientHeight < 80) {
+    c.scrollTop = c.scrollHeight;
+  }
 }
 
 function renderMessages(messages) {
@@ -60,6 +73,8 @@ function setStatus(text) {
 function resetUI() {
   isStreaming = false;
   currentMsgElem = null;
+  pendingTokens = '';
+  if (tokenRafId) { cancelAnimationFrame(tokenRafId); tokenRafId = null; }
   document.getElementById('send-btn').disabled = false;
   document.getElementById('input').focus();
 }
@@ -136,12 +151,15 @@ function handleSSEvent(name, payload) {
   switch (name) {
     case 'token':
       if (currentMsgElem) {
-        currentMsgElem.textContent += payload.delta ?? '';
-        scrollChat();
+        pendingTokens += payload.delta ?? '';
+        if (!tokenRafId) {
+          tokenRafId = requestAnimationFrame(flushTokens);
+        }
       }
       break;
     case 'tool_start':
       if (currentMsgElem) {
+        if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
         currentMsgElem.textContent += '\n[tool: ' + (payload.name ?? '?') + '...]\n';
         scrollChat();
       }
@@ -149,6 +167,7 @@ function handleSSEvent(name, payload) {
     case 'tool_done':
       break;
     case 'done':
+      if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
       if (currentMsgElem) {
         currentMsgElem.textContent = payload.final_text ?? currentMsgElem.textContent;
       }
@@ -156,9 +175,13 @@ function handleSSEvent(name, payload) {
       resetUI();
       break;
     case 'error':
+      if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
       if (currentMsgElem) {
-        currentMsgElem.className = 'msg error';
-        currentMsgElem.textContent = 'Ошибка: ' + (payload.message ?? 'неизвестная ошибка');
+        if (currentMsgElem.textContent) {
+          currentMsgElem.textContent += '\n\n[Ошибка: ' + (payload.message ?? 'неизвестная ошибка') + ']';
+        } else {
+          currentMsgElem.textContent = 'Ошибка: ' + (payload.message ?? 'неизвестная ошибка');
+        }
       } else {
         addMsg('error', 'Ошибка: ' + (payload.message ?? 'неизвестная ошибка'));
       }
@@ -234,6 +257,26 @@ async function sendMessageSSE(text) {
         }
       }
     }
+
+    // Flush remaining decoder state and buffer (incomplete final event)
+    buffer += decoder.decode();
+    buffer = buffer.replace(/\r\n/g, '\n');
+    if (buffer.trim()) {
+      let eventName = '';
+      let data = '';
+      for (const line of buffer.split('\n')) {
+        if (line.startsWith('event: ')) {
+          eventName = line.slice(7).trim();
+        } else if (line.startsWith('data: ')) {
+          data = line.slice(6);
+        }
+      }
+      if (eventName && data) {
+        try {
+          handleSSEvent(eventName, JSON.parse(data));
+        } catch (_) {}
+      }
+    }
   } catch (e) {
     if (e.name === 'AbortError') {
       throw new Error('Таймаут запроса: сервер не отвечает');
@@ -268,17 +311,24 @@ async function send() {
     await sendMessageSSE(text);
   } catch (e) {
     if (isStreaming) {
+      if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
       const errMsg = e.message || String(e);
-      currentMsgElem.className = 'msg error';
-      currentMsgElem.textContent = 'Ошибка: ' + errMsg;
+      if (currentMsgElem.textContent) {
+        currentMsgElem.textContent += '\n\n[Ошибка: ' + errMsg + ']';
+      } else {
+        currentMsgElem.textContent = 'Ошибка: ' + errMsg;
+      }
       setStatus('Ошибка');
       resetUI();
     }
   }
   if (isStreaming) {
-    // SSE stream ended without a terminal event (done/error)
-    currentMsgElem.className = 'msg error';
-    currentMsgElem.textContent = 'Ошибка: неожиданный конец потока';
+    if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
+    if (currentMsgElem.textContent) {
+      currentMsgElem.textContent += '\n\n[Ошибка: неожиданный конец потока]';
+    } else {
+      currentMsgElem.textContent = 'Ошибка: неожиданный конец потока';
+    }
     setStatus('Ошибка');
     resetUI();
   }

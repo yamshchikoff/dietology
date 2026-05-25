@@ -34,3 +34,7 @@ path = "tests/llm_chat_integration_test.rs"
 name = "llm_session_integration"
 harness = false
 path = "tests/llm_session_integration_test.rs"
+
+[[test]]
+name = "browser_streaming"
+path = "tests/browser_streaming_test.rs"

@@ -91,6 +91,17 @@ const listen = window.__TAURI__.event.listen;
 
 let currentMsgElem = null;
 let isStreaming = false;
+let pendingTokens = '';
+let tokenRafId = null;
+
+function flushTokens() {
+  if (currentMsgElem && pendingTokens) {
+    currentMsgElem.textContent += pendingTokens;
+    pendingTokens = '';
+    scrollChat();
+  }
+  tokenRafId = null;
+}
 
 function addMsg(role, text) {
   const d = document.createElement('div');
@@ -102,7 +113,18 @@ function addMsg(role, text) {
 
 function scrollChat() {
   const c = document.getElementById('chat');
-  c.scrollTop = c.scrollHeight;
+  if (c.scrollHeight - c.scrollTop - c.clientHeight < 80) {
+    c.scrollTop = c.scrollHeight;
+  }
+}
+
+function resetUI() {
+  isStreaming = false;
+  currentMsgElem = null;
+  pendingTokens = '';
+  if (tokenRafId) { cancelAnimationFrame(tokenRafId); tokenRafId = null; }
+  document.getElementById('send-btn').disabled = false;
+  document.getElementById('input').focus();
 }
 
 function renderMessages(messages) {
@@ -119,13 +141,16 @@ function renderMessages(messages) {
 // Event listeners for streaming
 listen('chat:token', (event) => {
   if (currentMsgElem) {
-    currentMsgElem.textContent += event.payload.delta ?? '';
-    scrollChat();
+    pendingTokens += event.payload.delta ?? '';
+    if (!tokenRafId) {
+      tokenRafId = requestAnimationFrame(flushTokens);
+    }
   }
 });
 
 listen('chat:tool_start', (event) => {
   if (currentMsgElem) {
+    if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
     currentMsgElem.textContent += `\n[tool: ${event.payload.name ?? '?'}...]\n`;
     scrollChat();
   }
@@ -136,29 +161,28 @@ listen('chat:tool_done', (_event) => {
 });
 
 listen('chat:done', (event) => {
+  if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
   if (currentMsgElem) {
     currentMsgElem.textContent = event.payload.final_text ?? currentMsgElem.textContent;
   }
   document.getElementById('status').textContent =
     `Токенов: ${event.payload.usage?.input_tokens ?? '?'} вх + ${event.payload.usage?.output_tokens ?? '?'} вых`;
-  isStreaming = false;
-  currentMsgElem = null;
-  document.getElementById('send-btn').disabled = false;
-  document.getElementById('input').focus();
+  resetUI();
 });
 
 listen('chat:error', (event) => {
+  if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
   if (currentMsgElem) {
-    currentMsgElem.className = 'msg error';
-    currentMsgElem.textContent = 'Ошибка: ' + (event.payload.message ?? 'неизвестная ошибка');
+    if (currentMsgElem.textContent) {
+      currentMsgElem.textContent += '\n\n[Ошибка: ' + (event.payload.message ?? 'неизвестная ошибка') + ']';
+    } else {
+      currentMsgElem.textContent = 'Ошибка: ' + (event.payload.message ?? 'неизвестная ошибка');
+    }
   } else {
     addMsg('error', 'Ошибка: ' + (event.payload.message ?? 'неизвестная ошибка'));
   }
   document.getElementById('status').textContent = 'Ошибка';
-  isStreaming = false;
-  currentMsgElem = null;
-  document.getElementById('send-btn').disabled = false;
-  document.getElementById('input').focus();
+  resetUI();
 });
 
 async function send() {
@@ -183,14 +207,15 @@ async function send() {
     await invoke('send_message', { text });
   } catch (e) {
     if (isStreaming) {
+      if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
       const errMsg = typeof e === 'string' ? e : e.message || JSON.stringify(e);
-      currentMsgElem.className = 'msg error';
-      currentMsgElem.textContent = 'Ошибка: ' + errMsg;
+      if (currentMsgElem.textContent) {
+        currentMsgElem.textContent += '\n\n[Ошибка: ' + errMsg + ']';
+      } else {
+        currentMsgElem.textContent = 'Ошибка: ' + errMsg;
+      }
       document.getElementById('status').textContent = 'Ошибка';
-      isStreaming = false;
-      currentMsgElem = null;
-      btn.disabled = false;
-      input.focus();
+      resetUI();
     }
   }
 }
