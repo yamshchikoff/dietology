@@ -317,7 +317,12 @@ async fn main() {
 
     let state = Arc::new(WebState {
         llm_client: Mutex::new(None),
-        session: Mutex::new(Some(ChatSession::new(String::new()))),
+        session: Mutex::new(Some(
+            std::env::var("SESSION_PATH")
+                .ok()
+                .and_then(|p| ChatSession::load_from_jsonl(&std::path::PathBuf::from(&p)).ok())
+                .unwrap_or_else(|| ChatSession::new(viewmodel::DEFAULT_SYSTEM_PROMPT.into())),
+        )),
         registry: Arc::new(registry),
     });
 
