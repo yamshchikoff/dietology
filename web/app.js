@@ -11,7 +11,8 @@ function getApiKey() {
 }
 
 function setApiKey(key) {
-  document.cookie = COOKIE_KEY + '=' + encodeURIComponent(key) + ';path=/;max-age=31536000;SameSite=Strict';
+  const secure = location.protocol === 'https:' ? ';Secure' : '';
+  document.cookie = COOKIE_KEY + '=' + encodeURIComponent(key) + ';path=/;max-age=31536000;SameSite=Strict' + secure;
 }
 
 function clearApiKey() {
@@ -31,6 +32,17 @@ function addMsg(role, text) {
 function scrollChat() {
   const c = document.getElementById('chat');
   c.scrollTop = c.scrollHeight;
+}
+
+function renderMessages(messages) {
+  for (const m of messages) {
+    if (!Array.isArray(m.content)) continue;
+    for (const b of m.content) {
+      if (b.type === 'text') addMsg(m.role, b.text);
+      else if (b.type === 'tool_use') addMsg('system', '[tool: ' + b.name + ']');
+      else if (b.type === 'tool_result') addMsg('system', '[tool result]');
+    }
+  }
 }
 
 function setStatus(text) {
@@ -87,10 +99,15 @@ async function initChat() {
       body: JSON.stringify({ system_prompt: null })
     });
     if (!resp.ok) throw new Error(await resp.text());
-    addMsg('system', 'Новая сессия. Задайте вопрос о питании.');
+    const info = await resp.json();
+    if (Array.isArray(info.messages) && info.messages.length > 0) {
+      renderMessages(info.messages);
+    } else {
+      addMsg('system', 'Новая сессия. Задайте вопрос о питании.');
+    }
     setStatus('Ready');
   } catch (e) {
-    addMsg('error', 'Init failed: ' + (e.message || String(e)));
+    addMsg('error', 'Ошибка инициализации: ' + (e.message || String(e)));
     setStatus('Init error');
   }
 }
@@ -123,9 +140,9 @@ function handleSSEvent(name, payload) {
     case 'error':
       if (currentMsgElem) {
         currentMsgElem.className = 'msg error';
-        currentMsgElem.textContent = 'Error: ' + payload.message;
+        currentMsgElem.textContent = 'Ошибка: ' + payload.message;
       } else {
-        addMsg('error', 'Error: ' + payload.message);
+        addMsg('error', 'Ошибка: ' + payload.message);
       }
       setStatus('Error');
       resetUI();
@@ -134,53 +151,73 @@ function handleSSEvent(name, payload) {
 }
 
 async function sendMessageSSE(text) {
-  const response = await fetch('/api/send_message', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text })
-  });
+  const controller = new AbortController();
+  let timeout = setTimeout(() => controller.abort(), 120_000);
 
-  if (!response.ok) {
-    const err = await response.text();
-    throw new Error(err);
-  }
+  const resetTimeout = () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => controller.abort(), 120_000);
+  };
 
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = '';
+  try {
+    const response = await fetch('/api/send_message', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+      signal: controller.signal
+    });
 
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(err);
+    }
 
-    buffer += decoder.decode(value, { stream: true });
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
 
-    let idx;
-    while ((idx = buffer.indexOf('\n\n')) !== -1) {
-      const eventText = buffer.slice(0, idx);
-      buffer = buffer.slice(idx + 2);
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
 
-      if (eventText.trim() === '') continue;
+      resetTimeout();
 
-      let eventName = '';
-      let data = '';
-      for (const line of eventText.split('\n')) {
-        if (line.startsWith('event: ')) {
-          eventName = line.slice(7).trim();
-        } else if (line.startsWith('data: ')) {
-          // Сервер шлёт single-line JSON — перезапись (а не конкатенация) корректна.
-          data = line.slice(6);
+      buffer += decoder.decode(value, { stream: true });
+
+      let idx;
+      while ((idx = buffer.indexOf('\n\n')) !== -1) {
+        const eventText = buffer.slice(0, idx);
+        buffer = buffer.slice(idx + 2);
+
+        if (eventText.trim() === '') continue;
+
+        let eventName = '';
+        let data = '';
+        for (const line of eventText.split('\n')) {
+          if (line.startsWith('event: ')) {
+            eventName = line.slice(7).trim();
+          } else if (line.startsWith('data: ')) {
+            // Сервер шлёт single-line JSON — перезапись (а не конкатенация) корректна.
+            data = line.slice(6);
+          }
         }
-      }
 
-      if (eventName && data) {
-        try {
-          handleSSEvent(eventName, JSON.parse(data));
-        } catch (_) {
-          // ignore parse errors (keepalive comments)
+        if (eventName && data) {
+          try {
+            handleSSEvent(eventName, JSON.parse(data));
+          } catch (_) {
+            // ignore parse errors (keepalive comments)
+          }
         }
       }
     }
+  } catch (e) {
+    if (e.name === 'AbortError') {
+      throw new Error('Таймаут запроса: сервер не отвечает');
+    }
+    throw e;
+  } finally {
+    clearTimeout(timeout);
   }
 }
 
@@ -210,7 +247,7 @@ async function send() {
     if (isStreaming) {
       const errMsg = e.message || String(e);
       currentMsgElem.className = 'msg error';
-      currentMsgElem.textContent = 'Error: ' + errMsg;
+      currentMsgElem.textContent = 'Ошибка: ' + errMsg;
       setStatus('Error');
       resetUI();
     }
@@ -231,7 +268,7 @@ async function saveSession() {
     if (!resp.ok) throw new Error(await resp.text());
     setStatus('Saved to ' + path);
   } catch (e) {
-    addMsg('error', 'Save failed: ' + (e.message || String(e)));
+    addMsg('error', 'Ошибка сохранения: ' + (e.message || String(e)));
   }
 }
 
@@ -247,16 +284,10 @@ async function loadSession() {
     if (!resp.ok) throw new Error(await resp.text());
     const info = await resp.json();
     document.getElementById('chat').innerHTML = '';
-    for (const m of info.messages) {
-      for (const b of m.content) {
-        if (b.type === 'text') addMsg(m.role, b.text);
-        else if (b.type === 'tool_use') addMsg('system', '[tool: ' + b.name + ']');
-        else if (b.type === 'tool_result') addMsg('system', '[tool result]');
-      }
-    }
+    renderMessages(info.messages);
     setStatus('Loaded ' + info.message_count + ' messages | ' + info.system_prompt.slice(0, 60) + '...');
   } catch (e) {
-    addMsg('error', 'Load failed: ' + (e.message || String(e)));
+    addMsg('error', 'Ошибка загрузки: ' + (e.message || String(e)));
   }
 }
 
@@ -265,10 +296,10 @@ async function clearSession() {
     const resp = await fetch('/api/clear_session', { method: 'POST' });
     if (!resp.ok) throw new Error(await resp.text());
     document.getElementById('chat').innerHTML = '';
-    addMsg('system', 'Session cleared.');
+    addMsg('system', 'Сессия очищена.');
     setStatus('Ready');
   } catch (e) {
-    addMsg('error', 'Clear failed: ' + (e.message || String(e)));
+    addMsg('error', 'Ошибка очистки: ' + (e.message || String(e)));
   }
 }
 

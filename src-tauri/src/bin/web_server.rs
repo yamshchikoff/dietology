@@ -163,7 +163,8 @@ async fn send_message_handler(
     State(state): State<SharedState>,
     Json(body): Json<SendMessageRequest>,
 ) -> Result<Sse<impl futures::stream::Stream<Item = Result<Event, Infallible>>>, (StatusCode, String)> {
-    if body.text.trim().is_empty() {
+    let text = body.text.trim().to_string();
+    if text.is_empty() {
         return Err((StatusCode::BAD_REQUEST, "message text is empty".into()));
     }
 
@@ -177,7 +178,7 @@ async fn send_message_handler(
     };
 
     let len_before = session.messages.len();
-    session.add_user_message(body.text);
+    session.add_user_message(text);
     let system_prompt = session.system_prompt.clone();
 
     let (tx, rx) = mpsc::unbounded_channel::<Event>();

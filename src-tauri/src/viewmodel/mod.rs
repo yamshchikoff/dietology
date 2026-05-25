@@ -98,7 +98,8 @@ pub async fn send_message(
     state: State<'_, AppState>,
     text: String,
 ) -> Result<ChatResponse, String> {
-    if text.trim().is_empty() {
+    let text = text.trim().to_string();
+    if text.is_empty() {
         return Err("message text is empty".into());
     }
 
