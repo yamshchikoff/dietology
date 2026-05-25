@@ -162,9 +162,32 @@ fn main() {
     std::env::set_var("DEEPSEEK_API_KEY", key);
 
     let rt = tokio::runtime::Runtime::new().expect("tokio runtime");
-    rt.block_on(test_full_roundtrip_calcium());
-    rt.block_on(test_roundtrip_vitamin_c());
-    rt.block_on(test_roundtrip_who_hb());
-    rt.block_on(test_roundtrip_usda_milk());
-    rt.block_on(test_roundtrip_lab_ranges());
+
+    let results = [
+        run_test("calcium", || rt.block_on(test_full_roundtrip_calcium())),
+        run_test("vitamin_c", || rt.block_on(test_roundtrip_vitamin_c())),
+        run_test("who_hb", || rt.block_on(test_roundtrip_who_hb())),
+        run_test("usda_milk", || rt.block_on(test_roundtrip_usda_milk())),
+        run_test("lab_ranges", || rt.block_on(test_roundtrip_lab_ranges())),
+    ];
+    let passed = results.iter().filter(|&&r| r).count();
+    let failed = results.len() - passed;
+    eprintln!("--- {passed} passed, {failed} failed ---");
+    if failed > 0 {
+        std::process::exit(1);
+    }
+}
+
+fn run_test<F: FnOnce()>(name: &str, f: F) -> bool {
+    use std::panic::{catch_unwind, AssertUnwindSafe};
+    match catch_unwind(AssertUnwindSafe(f)) {
+        Ok(()) => {
+            eprintln!("PASS: {name}");
+            true
+        }
+        Err(_) => {
+            eprintln!("FAIL: {name} (panic)");
+            false
+        }
+    }
 }

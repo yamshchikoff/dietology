@@ -140,6 +140,33 @@ fn main() {
     std::env::set_var("DEEPSEEK_API_KEY", key);
 
     let rt = tokio::runtime::Runtime::new().expect("tokio runtime");
-    rt.block_on(test_session_chat_roundtrip());
-    rt.block_on(test_session_save_load_after_chat());
+
+    let results = [
+        run_test("chat_roundtrip", || {
+            rt.block_on(test_session_chat_roundtrip())
+        }),
+        run_test("save_load", || {
+            rt.block_on(test_session_save_load_after_chat())
+        }),
+    ];
+    let passed = results.iter().filter(|&&r| r).count();
+    let failed = results.len() - passed;
+    eprintln!("--- {passed} passed, {failed} failed ---");
+    if failed > 0 {
+        std::process::exit(1);
+    }
+}
+
+fn run_test<F: FnOnce()>(name: &str, f: F) -> bool {
+    use std::panic::{catch_unwind, AssertUnwindSafe};
+    match catch_unwind(AssertUnwindSafe(f)) {
+        Ok(()) => {
+            eprintln!("PASS: {name}");
+            true
+        }
+        Err(_) => {
+            eprintln!("FAIL: {name} (panic)");
+            false
+        }
+    }
 }
