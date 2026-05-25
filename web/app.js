@@ -114,6 +114,7 @@ async function initChat() {
     });
     if (!resp.ok) throw new Error(await resp.text());
     const info = await resp.json();
+    document.getElementById('chat').innerHTML = '';
     if (Array.isArray(info.messages) && info.messages.length > 0) {
       renderMessages(info.messages);
     } else {
@@ -135,13 +136,13 @@ function handleSSEvent(name, payload) {
   switch (name) {
     case 'token':
       if (currentMsgElem) {
-        currentMsgElem.textContent += payload.delta;
+        currentMsgElem.textContent += payload.delta ?? '';
         scrollChat();
       }
       break;
     case 'tool_start':
       if (currentMsgElem) {
-        currentMsgElem.textContent += '\n[tool: ' + payload.name + '...]\n';
+        currentMsgElem.textContent += '\n[tool: ' + (payload.name ?? '?') + '...]\n';
         scrollChat();
       }
       break;
@@ -151,7 +152,7 @@ function handleSSEvent(name, payload) {
       if (currentMsgElem) {
         currentMsgElem.textContent = payload.final_text ?? currentMsgElem.textContent;
       }
-      setStatus('Токенов: ' + payload.usage.input_tokens + ' вх + ' + payload.usage.output_tokens + ' вых');
+      setStatus('Токенов: ' + (payload.usage?.input_tokens ?? '?') + ' вх + ' + (payload.usage?.output_tokens ?? '?') + ' вых');
       resetUI();
       break;
     case 'error':

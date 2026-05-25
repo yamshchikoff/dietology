@@ -119,14 +119,14 @@ function renderMessages(messages) {
 // Event listeners for streaming
 listen('chat:token', (event) => {
   if (currentMsgElem) {
-    currentMsgElem.textContent += event.payload.delta;
+    currentMsgElem.textContent += event.payload.delta ?? '';
     scrollChat();
   }
 });
 
 listen('chat:tool_start', (event) => {
   if (currentMsgElem) {
-    currentMsgElem.textContent += `\n[tool: ${event.payload.name}...]\n`;
+    currentMsgElem.textContent += `\n[tool: ${event.payload.name ?? '?'}...]\n`;
     scrollChat();
   }
 });
@@ -137,10 +137,10 @@ listen('chat:tool_done', (_event) => {
 
 listen('chat:done', (event) => {
   if (currentMsgElem) {
-    currentMsgElem.textContent = event.payload.final_text;
+    currentMsgElem.textContent = event.payload.final_text ?? currentMsgElem.textContent;
   }
   document.getElementById('status').textContent =
-    `Токенов: ${event.payload.usage.input_tokens} вх + ${event.payload.usage.output_tokens} вых`;
+    `Токенов: ${event.payload.usage?.input_tokens ?? '?'} вх + ${event.payload.usage?.output_tokens ?? '?'} вых`;
   isStreaming = false;
   currentMsgElem = null;
   document.getElementById('send-btn').disabled = false;
