@@ -101,19 +101,19 @@ listen('chat:token', (event) => {
 
 listen('chat:tool_start', (event) => {
   if (currentMsgElem) {
-    currentMsgElem.textContent = `[tool: ${event.payload.name}...]`;
+    currentMsgElem.textContent += `\n[tool: ${event.payload.name}...]\n`;
     scrollChat();
   }
 });
 
 listen('chat:tool_done', (_event) => {
-  if (currentMsgElem) {
-    currentMsgElem.textContent = '';
-    scrollChat();
-  }
+  // Keep accumulated text — chat:done writes the authoritative final_text.
 });
 
 listen('chat:done', (event) => {
+  if (currentMsgElem) {
+    currentMsgElem.textContent = event.payload.final_text;
+  }
   document.getElementById('status').textContent =
     `Tokens: ${event.payload.usage.input_tokens} in + ${event.payload.usage.output_tokens} out`;
   isStreaming = false;

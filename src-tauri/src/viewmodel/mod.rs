@@ -27,6 +27,9 @@ pub struct ChatResponse {
 
 pub struct AppState {
     pub llm_client: LlmClient,
+    /// Инвариант занятости: None = сессия занята (send_message забрал её через take()),
+    /// Some = сессия свободна для new_chat / load_session.
+    /// Мьютекс защищает от гонок, Option — от одновременного использования сессии.
     pub session: std::sync::Mutex<Option<ChatSession>>,
 }
 
@@ -146,11 +149,20 @@ pub fn get_messages(state: State<'_, AppState>) -> Result<Vec<Message>, String> 
     Ok(session.messages.clone())
 }
 
+fn validate_path(path: &str) -> Result<PathBuf, String> {
+    let p = PathBuf::from(path);
+    if p.components().any(|c| c == std::path::Component::ParentDir) {
+        return Err("path traversal rejected: '..' not allowed".into());
+    }
+    Ok(p)
+}
+
 #[tauri::command]
 pub fn save_session(state: State<'_, AppState>, path: String) -> Result<(), String> {
     let guard = state.session.lock().map_err(|e| e.to_string())?;
     let session = guard.as_ref().ok_or_else(|| "session is busy — another request is in progress".to_string())?;
-    session.save_to_jsonl(&PathBuf::from(path))
+    let safe_path = validate_path(&path)?;
+    session.save_to_jsonl(&safe_path)
 }
 
 #[tauri::command]
@@ -158,7 +170,8 @@ pub fn load_session(
     state: State<'_, AppState>,
     path: String,
 ) -> Result<SessionInfo, String> {
-    let loaded = ChatSession::load_from_jsonl(&PathBuf::from(path))?;
+    let safe_path = validate_path(&path)?;
+    let loaded = ChatSession::load_from_jsonl(&safe_path)?;
     let info = SessionInfo {
         system_prompt: loaded.system_prompt.clone(),
         message_count: loaded.message_count(),
