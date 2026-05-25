@@ -51,7 +51,6 @@ ToolResult.content (строка) напрямую идёт в ContentBlock::Too
 
 ## Что осталось за рамками MVP
 
-- Стриминг (SSE)
 - Файл конфигурации (только env vars)
 - UI для API ключа
 - Этический кодекс в system prompt (добавится при интеграции с ViewModel)
@@ -59,6 +58,5 @@ ToolResult.content (строка) напрямую идёт в ContentBlock::Too
 
 ## Следующие шаги
 
-1. **Интеграция с ViewModel** — вызов LlmClient::chat() из Tauri-команды
-2. **Стриминг** — SSE-поддержка в call_api()
-3. **Файл конфигурации** — замена env vars на конфиг-файл + UI
+1. **Визуализации** — ECharts-рендеринг nutrition data
+2. **Файл конфигурации** — замена env vars на конфиг-файл + UI

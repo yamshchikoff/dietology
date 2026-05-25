@@ -211,11 +211,7 @@ make fmt       # cd src-tauri && cargo fmt
 - 96 тестов, clippy clean
 
 **Ещё нет:**
-- Фронтенда (кроме placeholder `dist/index.html`)
-- MVVM-реализации
-- Интеграции LLM-клиента с ViewModel
-- Стриминга (SSE)
 - Git commit automation, user-map, investigation mode
 - Полноценного CI/CD
 
-**Следующий шаг:** интеграция LLM-клиента с ViewModel через Tauri-команды.
+**Следующий шаг:** визуализации (ECharts) — рендеринг nutrition data.

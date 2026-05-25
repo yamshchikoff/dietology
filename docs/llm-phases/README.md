@@ -17,5 +17,6 @@
 | 4 | **Session** | [phase-4-session.md](phase-4-session.md) | `feat(llm): add ChatSession with JSONL persistence` |
 | 5 | **Docs** | [phase-5-docs.md](phase-5-docs.md) | `docs(llm): finalize LLM client documentation` |
 | 6 | **ViewModel** | [phase-6-viewmodel.md](phase-6-viewmodel.md) | `feat(viewmodel): add Tauri IPC bridge and chat UI` |
+| 7 | **Streaming** | [phase-7-streaming.md](phase-7-streaming.md) | `feat(streaming): add SSE streaming responses` |
 
-**Зависимости:** фазы строго последовательны. Фаза N выполняется только после коммита фазы N−1.
+**Зависимости:** фазы строго последовательны. Фаза N выполняется только после коммита фазы N−1. Фаза 7 — сверх изначального плана.
