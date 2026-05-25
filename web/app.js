@@ -222,14 +222,15 @@ async function saveSession() {
   const path = prompt('File path to save:', '/tmp/dietology_session.jsonl');
   if (!path) return;
   try {
-    await fetch('/api/save_session', {
+    const resp = await fetch('/api/save_session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ path })
     });
+    if (!resp.ok) throw new Error(await resp.text());
     setStatus('Saved to ' + path);
   } catch (e) {
-    addMsg('error', 'Save failed: ' + e);
+    addMsg('error', 'Save failed: ' + (e.message || String(e)));
   }
 }
 
@@ -260,12 +261,13 @@ async function loadSession() {
 
 async function clearSession() {
   try {
-    await fetch('/api/clear_session', { method: 'POST' });
+    const resp = await fetch('/api/clear_session', { method: 'POST' });
+    if (!resp.ok) throw new Error(await resp.text());
     document.getElementById('chat').innerHTML = '';
     addMsg('system', 'Session cleared.');
     setStatus('Ready');
   } catch (e) {
-    addMsg('error', 'Clear failed: ' + e);
+    addMsg('error', 'Clear failed: ' + (e.message || String(e)));
   }
 }
 
