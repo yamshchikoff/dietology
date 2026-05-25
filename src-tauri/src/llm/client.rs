@@ -351,9 +351,7 @@ impl LlmClient {
                             if !text.is_empty() {
                                 on_token(&text);
                             }
-                            current_block = Some(BlockBuilder::Text {
-                                text: String::new(),
-                            });
+                            current_block = Some(BlockBuilder::Text { text });
                         }
                         SseContentBlock::ToolUse { id, name, input } => {
                             on_tool_start(&name);
