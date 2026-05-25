@@ -255,7 +255,7 @@ async function loadSession() {
     }
     setStatus('Loaded ' + info.message_count + ' messages | ' + info.system_prompt.slice(0, 60) + '...');
   } catch (e) {
-    addMsg('error', 'Load failed: ' + e);
+    addMsg('error', 'Load failed: ' + (e.message || String(e)));
   }
 }
 
