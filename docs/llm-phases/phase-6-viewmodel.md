@@ -42,21 +42,31 @@ ToolRegistry (src/tools/)            ← existing
 
 ```rust
 pub struct AppState {
-    pub loader: DataLoader,
     pub llm_client: LlmClient,
-    pub session: Mutex<ChatSession>,
+    pub session: Mutex<Option<ChatSession>>,
 }
 ```
 
-- `loader` — остаётся для будущих прямых запросов к данным (не через LLM)
 - `llm_client` — создаётся при старте, владеет `Arc<ToolRegistry>`, живёт всё время приложения
-- `session: Mutex<ChatSession>` — мутабельный доступ из Tauri команд. `std::sync::Mutex` (не tokio), поэтому guard сбрасывается перед `.await`
+- `session: Mutex<Option<ChatSession>>` — сессия под мьютексом с инвариантом занятости (см. ниже)
+
+### Инвариант занятости
+
+`send_message` забирает сессию через `Option::take()`, оставляя `None`. Остальные команды видят `None` = «сессия в процессе отправки» и отказывают.
+
+```
+send_message:         take() → None (busy)  …  restore → Some (free)
+new_chat/load_session:     Some → заменить    |  None → отказ
+save/clear/get:            Some → читать      |  None → отказ
+```
+
+Проверка вынесена в хелпер `ensure_free(&guard)` — читается как «убедись, что сессия свободна».
 
 При инициализации `run()`:
 1. `DataLoader::for_development()` — загрузка данных
-2. `ToolRegistry::new()` → регистрация 18 инструментов
+2. `ToolRegistry::new()` → регистрация инструментов
 3. `LlmClient::new(Arc::new(registry))` — создание HTTP-клиента
-4. `ChatSession::new(String::new())` — пустая сессия (View инициализирует через `new_chat`)
+4. `Mutex::new(Some(ChatSession::new(String::new())))` — пустая сессия (View инициализирует через `new_chat`)
 
 ---
 

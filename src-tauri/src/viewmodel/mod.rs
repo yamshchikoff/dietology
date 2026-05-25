@@ -27,15 +27,40 @@ pub struct ChatResponse {
 
 pub struct AppState {
     pub llm_client: LlmClient,
-    /// Инвариант занятости: None = сессия занята (send_message забрал её через take()),
-    /// Some = сессия свободна для new_chat / load_session.
-    /// Мьютекс защищает от гонок, Option — от одновременного использования сессии.
+
+    /// Сессия под мьютексом.
+    ///
+    /// # Инвариант «занятости»
+    ///
+    /// `send_message` забирает сессию через [`Option::take()`], оставляя `None`.
+    /// Остальные команды (`new_chat`, `load_session`, `save_session`, `clear_session`,
+    /// `get_messages`) видят `None` = «сессия в процессе отправки» и отказывают.
+    ///
+    /// ```text
+    /// send_message:         take() → None (busy)  …  restore → Some (free)
+    /// new_chat/load_session:     Some → заменить    |  None → отказ
+    /// save/clear/get:            Some → читать      |  None → отказ
+    /// ```
+    ///
+    /// Мьютекс защищает от гонок между Tauri-командами, Option — от попытки
+    /// использовать сессию, пока она мутирует внутри `send_message`.
     pub session: std::sync::Mutex<Option<ChatSession>>,
 }
 
 const DEFAULT_SYSTEM_PROMPT: &str = "\
 Ты — ассистент по питанию. Отвечай на русском языке.
 Для поиска данных используй инструменты: сначала describe для навигации, потом query для конкретных значений.";
+
+// ---- Invariant helpers ----
+
+/// Возвращает `Ok` если сессия свободна (не занята `send_message`), иначе ошибку.
+fn ensure_free(guard: &Option<ChatSession>) -> Result<(), String> {
+    if guard.is_some() {
+        Ok(())
+    } else {
+        Err("session is busy — another request is in progress".into())
+    }
+}
 
 // ---- Commands ----
 
@@ -53,9 +78,7 @@ pub fn new_chat(
     let messages = session.messages.clone();
 
     let mut guard = state.session.lock().map_err(|e| e.to_string())?;
-    if guard.is_none() {
-        return Err("session is busy — another request is in progress".into());
-    }
+    ensure_free(&guard)?;
     *guard = Some(session);
 
     Ok(SessionInfo {
@@ -145,8 +168,8 @@ pub async fn send_message(
 #[tauri::command]
 pub fn get_messages(state: State<'_, AppState>) -> Result<Vec<Message>, String> {
     let guard = state.session.lock().map_err(|e| e.to_string())?;
-    let session = guard.as_ref().ok_or_else(|| "session is busy — another request is in progress".to_string())?;
-    Ok(session.messages.clone())
+    ensure_free(&guard)?;
+    Ok(guard.as_ref().expect("session is free").messages.clone())
 }
 
 fn validate_path(path: &str) -> Result<PathBuf, String> {
@@ -160,9 +183,9 @@ fn validate_path(path: &str) -> Result<PathBuf, String> {
 #[tauri::command]
 pub fn save_session(state: State<'_, AppState>, path: String) -> Result<(), String> {
     let guard = state.session.lock().map_err(|e| e.to_string())?;
-    let session = guard.as_ref().ok_or_else(|| "session is busy — another request is in progress".to_string())?;
+    ensure_free(&guard)?;
     let safe_path = validate_path(&path)?;
-    session.save_to_jsonl(&safe_path)
+    guard.as_ref().expect("session is free").save_to_jsonl(&safe_path)
 }
 
 #[tauri::command]
@@ -179,9 +202,7 @@ pub fn load_session(
         usage: loaded.total_usage,
     };
     let mut guard = state.session.lock().map_err(|e| e.to_string())?;
-    if guard.is_none() {
-        return Err("session is busy — another request is in progress".into());
-    }
+    ensure_free(&guard)?;
     *guard = Some(loaded);
     Ok(info)
 }
@@ -189,7 +210,7 @@ pub fn load_session(
 #[tauri::command]
 pub fn clear_session(state: State<'_, AppState>) -> Result<(), String> {
     let mut guard = state.session.lock().map_err(|e| e.to_string())?;
-    let session = guard.as_mut().ok_or_else(|| "session is busy — another request is in progress".to_string())?;
-    session.clear();
+    ensure_free(&guard)?;
+    guard.as_mut().expect("session is free").clear();
     Ok(())
 }
