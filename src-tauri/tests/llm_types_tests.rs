@@ -222,6 +222,9 @@ fn test_llm_error_variants() {
     };
     let _e3 = LlmError::Parse("invalid json".into());
     let _e4 = LlmError::ToolDispatch("unknown tool".into());
-    let _e5 = LlmError::MaxToolRounds(10);
+    let _e5 = LlmError::MaxToolRounds {
+        rounds: 10,
+        messages: vec![],
+    };
     let _e6 = LlmError::MissingApiKey;
 }

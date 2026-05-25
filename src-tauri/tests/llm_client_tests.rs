@@ -1,4 +1,4 @@
-use dietology_lib::llm::client::LlmClient;
+use dietology_lib::llm::client::{extract_tool_uses, LlmClient};
 use dietology_lib::llm::types::*;
 use dietology_lib::tools::registry::ToolRegistry;
 use serde_json::json;
@@ -18,7 +18,7 @@ fn make_client() -> Result<LlmClient, LlmError> {
 
 #[test]
 fn test_extract_tool_uses_from_tool_use_response() {
-    let client = make_client().unwrap();
+    let _client = make_client().unwrap();
     let response = ApiResponse {
         id: "msg_001".into(),
         msg_type: "message".into(),
@@ -34,7 +34,7 @@ fn test_extract_tool_uses_from_tool_use_response() {
             output_tokens: 50,
         },
     };
-    let tool_uses = client.extract_tool_uses(&response);
+    let tool_uses = extract_tool_uses(&response.content);
     assert_eq!(tool_uses.len(), 1);
     match tool_uses[0] {
         ContentBlock::ToolUse { name, .. } => assert_eq!(name, "describe_dri_minerals"),
@@ -44,7 +44,7 @@ fn test_extract_tool_uses_from_tool_use_response() {
 
 #[test]
 fn test_extract_tool_uses_from_text_response() {
-    let client = make_client().unwrap();
+    let _client = make_client().unwrap();
     let response = ApiResponse {
         id: "msg_002".into(),
         msg_type: "message".into(),
@@ -58,13 +58,13 @@ fn test_extract_tool_uses_from_text_response() {
             output_tokens: 50,
         },
     };
-    let tool_uses = client.extract_tool_uses(&response);
+    let tool_uses = extract_tool_uses(&response.content);
     assert!(tool_uses.is_empty());
 }
 
 #[test]
 fn test_extract_tool_uses_from_mixed_response() {
-    let client = make_client().unwrap();
+    let _client = make_client().unwrap();
     let response = ApiResponse {
         id: "msg_003".into(),
         msg_type: "message".into(),
@@ -85,7 +85,7 @@ fn test_extract_tool_uses_from_mixed_response() {
             output_tokens: 60,
         },
     };
-    let tool_uses = client.extract_tool_uses(&response);
+    let tool_uses = extract_tool_uses(&response.content);
     assert_eq!(tool_uses.len(), 1);
 }
 
@@ -237,9 +237,9 @@ fn test_tool_loop_max_rounds_manual_simulation() {
             },
         };
 
-        let tool_uses = client.extract_tool_uses(&response);
+        let tool_uses = extract_tool_uses(&response.content);
         let mut tool_results = Vec::new();
-        for tu in &tool_uses {
+        for tu in tool_uses {
             if let ContentBlock::ToolUse { id, .. } = tu {
                 let result = client.dispatch_tool(tu).unwrap();
                 tool_results.push(ContentBlock::ToolResult {

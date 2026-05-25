@@ -4,9 +4,8 @@ use crate::tools::registry::{ToolCall, ToolRegistry};
 
 use super::types::{ApiRequest, ApiResponse, ContentBlock, LlmError, LlmResponse, Message, Usage};
 
-fn extract_text(response: &ApiResponse) -> String {
-    response
-        .content
+fn extract_text(blocks: &[ContentBlock]) -> String {
+    blocks
         .iter()
         .filter_map(|block| match block {
             ContentBlock::Text { text } => Some(text.clone()),
@@ -14,6 +13,13 @@ fn extract_text(response: &ApiResponse) -> String {
         })
         .collect::<Vec<_>>()
         .join("\n")
+}
+
+pub fn extract_tool_uses(blocks: &[ContentBlock]) -> Vec<&ContentBlock> {
+    blocks
+        .iter()
+        .filter(|block| matches!(block, ContentBlock::ToolUse { .. }))
+        .collect()
 }
 
 pub struct LlmClient {
@@ -96,14 +102,6 @@ impl LlmClient {
             .map_err(|e| LlmError::Parse(e.to_string()))
     }
 
-    pub fn extract_tool_uses<'a>(&self, response: &'a ApiResponse) -> Vec<&'a ContentBlock> {
-        response
-            .content
-            .iter()
-            .filter(|block| matches!(block, ContentBlock::ToolUse { .. }))
-            .collect()
-    }
-
     pub fn dispatch_tool(&self, tool_use: &ContentBlock) -> Result<String, LlmError> {
         match tool_use {
             ContentBlock::ToolUse { id, name, input } => {
@@ -144,14 +142,15 @@ impl LlmClient {
             total_usage.input_tokens += response.usage.input_tokens;
             total_usage.output_tokens += response.usage.output_tokens;
 
+            let stop_reason = response.stop_reason;
             messages.push(Message {
                 role: "assistant".into(),
-                content: response.content.clone(),
+                content: response.content,
             });
 
-            match response.stop_reason.as_str() {
+            match stop_reason.as_str() {
                 "end_turn" | "max_tokens" => {
-                    let final_text = extract_text(&response);
+                    let final_text = extract_text(&messages.last().unwrap().content);
                     if final_text.is_empty() {
                         return Err(LlmError::Parse("no text in response".into()));
                     }
@@ -162,34 +161,37 @@ impl LlmClient {
                     });
                 }
                 "tool_use" => {
-                    let tool_uses: Vec<_> = self
-                        .extract_tool_uses(&response)
-                        .into_iter()
-                        .cloned()
-                        .collect();
+                    let tool_results = {
+                        let tool_uses =
+                            extract_tool_uses(&messages.last().unwrap().content);
 
-                    if tool_uses.is_empty() {
-                        let final_text = extract_text(&response);
-                        if final_text.is_empty() {
-                            return Err(LlmError::Parse("no text in response".into()));
-                        }
-                        return Ok(LlmResponse {
-                            final_text,
-                            visualization_json: None,
-                            usage: total_usage,
-                        });
-                    }
-
-                    let mut tool_results = Vec::new();
-                    for tu in &tool_uses {
-                        if let ContentBlock::ToolUse { id, .. } = tu {
-                            let result = self.dispatch_tool(tu)?;
-                            tool_results.push(ContentBlock::ToolResult {
-                                tool_use_id: id.clone(),
-                                content: result,
+                        if tool_uses.is_empty() {
+                            let final_text =
+                                extract_text(&messages.last().unwrap().content);
+                            if final_text.is_empty() {
+                                return Err(LlmError::Parse(
+                                    "no text in response".into(),
+                                ));
+                            }
+                            return Ok(LlmResponse {
+                                final_text,
+                                visualization_json: None,
+                                usage: total_usage,
                             });
                         }
-                    }
+
+                        let mut results = Vec::new();
+                        for tu in tool_uses {
+                            if let ContentBlock::ToolUse { id, .. } = tu {
+                                let result = self.dispatch_tool(tu)?;
+                                results.push(ContentBlock::ToolResult {
+                                    tool_use_id: id.clone(),
+                                    content: result,
+                                });
+                            }
+                        }
+                        results
+                    };
 
                     messages.push(Message {
                         role: "user".into(),

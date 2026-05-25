@@ -83,3 +83,17 @@ pub fn resolve_api_key() -> Option<String> {
     }
     std::env::var("DEEPSEEK_API_KEY").ok()
 }
+
+pub fn run_test<F: FnOnce()>(name: &str, f: F) -> bool {
+    use std::panic::{catch_unwind, AssertUnwindSafe};
+    match catch_unwind(AssertUnwindSafe(f)) {
+        Ok(()) => {
+            eprintln!("PASS: {name}");
+            true
+        }
+        Err(_) => {
+            eprintln!("FAIL: {name} (panic)");
+            false
+        }
+    }
+}

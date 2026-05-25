@@ -34,7 +34,7 @@ impl ChatSession {
     }
 
     /// Аккумулировать usage после ответа модели.
-    pub fn add_usage(&mut self, usage: &Usage) {
+    pub fn add_usage(&mut self, usage: Usage) {
         self.total_usage.input_tokens += usage.input_tokens;
         self.total_usage.output_tokens += usage.output_tokens;
     }

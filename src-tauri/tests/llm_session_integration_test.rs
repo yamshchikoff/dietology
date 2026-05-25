@@ -27,7 +27,7 @@ async fn test_session_chat_roundtrip() {
     );
 
     // Аккумулируем usage
-    session.add_usage(&response.usage);
+    session.add_usage(response.usage);
     assert!(session.total_usage.input_tokens > 0);
     assert!(session.total_usage.output_tokens > 0);
 
@@ -126,19 +126,5 @@ fn main() {
     eprintln!("--- {passed} passed, {failed} failed ---");
     if failed > 0 {
         std::process::exit(1);
-    }
-}
-
-fn run_test<F: FnOnce()>(name: &str, f: F) -> bool {
-    use std::panic::{catch_unwind, AssertUnwindSafe};
-    match catch_unwind(AssertUnwindSafe(f)) {
-        Ok(()) => {
-            eprintln!("PASS: {name}");
-            true
-        }
-        Err(_) => {
-            eprintln!("FAIL: {name} (panic)");
-            false
-        }
     }
 }
