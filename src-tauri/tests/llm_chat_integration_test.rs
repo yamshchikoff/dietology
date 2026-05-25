@@ -157,7 +157,7 @@ fn main() {
     let Some(key) = resolve_api_key() else {
         eprintln!("Usage: cargo test --test llm_chat_integration -- --api-key <KEY>");
         eprintln!("   or: DEEPSEEK_API_KEY=sk-... cargo test --test llm_chat_integration");
-        return;
+        std::process::exit(1);
     };
     std::env::set_var("DEEPSEEK_API_KEY", key);
 
