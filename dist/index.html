@@ -118,8 +118,7 @@ async function loadSession() {
   try {
     const info = await invoke('load_session', { path });
     document.getElementById('chat').innerHTML = '';
-    const msgs = await invoke('get_messages');
-    for (const m of msgs) {
+    for (const m of info.messages) {
       for (const b of m.content) {
         if (b.type === 'text') addMsg(m.role, b.text);
         else if (b.type === 'tool_use') addMsg('system', '[tool: ' + b.name + ']');

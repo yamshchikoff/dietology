@@ -18,11 +18,10 @@ pub fn run() {
 
     let llm_client = llm::client::LlmClient::new(Arc::new(registry))
         .expect("failed to create LlmClient");
-    let session = Mutex::new(llm::session::ChatSession::new(String::new()));
+    let session = Mutex::new(Some(llm::session::ChatSession::new(String::new())));
 
     tauri::Builder::default()
         .manage(AppState {
-            loader,
             llm_client,
             session,
         })
