@@ -44,7 +44,7 @@ enum BlockBuilder {
     ToolUse {
         id: String,
         name: String,
-        input: serde_json::Value,
+        input_json: String,
     },
 }
 
@@ -55,10 +55,27 @@ impl BlockBuilder {
         }
     }
 
-    fn into_content_block(self) -> ContentBlock {
+    fn append_json(&mut self, delta: &str) {
+        if let BlockBuilder::ToolUse {
+            ref mut input_json, ..
+        } = self
+        {
+            input_json.push_str(delta);
+        }
+    }
+
+    fn into_content_block(self) -> Result<ContentBlock, LlmError> {
         match self {
-            BlockBuilder::Text { text } => ContentBlock::Text { text },
-            BlockBuilder::ToolUse { id, name, input } => ContentBlock::ToolUse { id, name, input },
+            BlockBuilder::Text { text } => Ok(ContentBlock::Text { text }),
+            BlockBuilder::ToolUse {
+                id,
+                name,
+                input_json,
+            } => {
+                let input: serde_json::Value = serde_json::from_str(&input_json)
+                    .map_err(|e| LlmError::Parse(format!("tool input JSON: {e}")))?;
+                Ok(ContentBlock::ToolUse { id, name, input })
+            }
         }
     }
 }
@@ -355,21 +372,33 @@ impl LlmClient {
                         }
                         SseContentBlock::ToolUse { id, name, input } => {
                             on_tool_start(&name);
-                            current_block = Some(BlockBuilder::ToolUse { id, name, input });
+                            let input_json =
+                                serde_json::to_string(&input).unwrap_or_default();
+                            current_block = Some(BlockBuilder::ToolUse {
+                                id,
+                                name,
+                                input_json,
+                            });
                         }
                         SseContentBlock::Other => {}
                     },
-                    SseMessage::ContentBlockDelta { delta, .. } => {
-                        if let SseDelta::Text { text } = delta {
+                    SseMessage::ContentBlockDelta { delta, .. } => match delta {
+                        SseDelta::Text { text } => {
                             on_token(&text);
                             if let Some(ref mut builder) = current_block {
                                 builder.append_text(&text);
                             }
                         }
-                    }
+                        SseDelta::InputJson { partial_json } => {
+                            if let Some(ref mut builder) = current_block {
+                                builder.append_json(&partial_json);
+                            }
+                        }
+                        SseDelta::Other => {}
+                    },
                     SseMessage::ContentBlockStop { .. } => {
                         if let Some(builder) = current_block.take() {
-                            blocks.push(builder.into_content_block());
+                            blocks.push(builder.into_content_block()?);
                         }
                     }
                     SseMessage::MessageDelta { delta, usage: u } => {
