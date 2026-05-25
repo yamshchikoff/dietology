@@ -1,37 +1,9 @@
-use dietology_lib::data::DataLoader;
-use dietology_lib::llm::client::LlmClient;
+mod common;
+use common::{resolve_api_key, setup_client};
+
 use dietology_lib::llm::session::ChatSession;
 use dietology_lib::llm::types::*;
-use dietology_lib::tools::registry::ToolRegistry;
 use std::path::PathBuf;
-use std::sync::Arc;
-
-// ---- Helpers ----
-
-fn setup_client() -> Result<(LlmClient, String), LlmError> {
-    let loader = DataLoader::for_development();
-    let mut registry = ToolRegistry::new();
-    dietology_lib::tools::describe::register_describe_tools(&mut registry, &loader);
-    dietology_lib::tools::query::register_query_tools(&mut registry, &loader);
-    let client = LlmClient::new(Arc::new(registry))?;
-    let system_prompt = "\
-Ты — ассистент по питанию. Отвечай на русском языке.
-Для поиска данных используй инструменты: сначала describe для навигации, потом query для конкретных значений."
-        .into();
-    Ok((client, system_prompt))
-}
-
-fn resolve_api_key() -> Option<String> {
-    let args: Vec<String> = std::env::args().collect();
-    if let Some(pos) = args.iter().position(|a| a == "--api-key") {
-        if let Some(val) = args.get(pos + 1) {
-            if !val.starts_with("--") {
-                return Some(val.clone());
-            }
-        }
-    }
-    std::env::var("DEEPSEEK_API_KEY").ok()
-}
 
 // ---- Tests ----
 
