@@ -89,13 +89,14 @@ async function connect() {
       const err = await resp.text();
       throw new Error(err);
     }
-    setApiKey(key);
-    if (baseUrl) setBaseUrl(baseUrl);
-    const ok = await initChat();
-    if (!ok) {
+    const result = await initChat();
+    if (!result.ok) {
+      errEl.textContent = result.error;
       document.getElementById('connect-btn').disabled = false;
       return;
     }
+    setApiKey(key);
+    if (baseUrl) setBaseUrl(baseUrl);
     document.getElementById('key-screen').style.display = 'none';
     document.getElementById('chat-screen').style.display = '';
   } catch (e) {
@@ -119,11 +120,12 @@ async function initChat() {
       addMsg('system', 'Новая сессия. Задайте вопрос о питании.');
     }
     setStatus('Готов');
-    return true;
+    return { ok: true };
   } catch (e) {
-    addMsg('error', 'Ошибка инициализации: ' + (e.message || String(e)));
+    const errMsg = 'Ошибка инициализации: ' + (e.message || String(e));
+    addMsg('error', errMsg);
     setStatus('Ошибка инициализации');
-    return false;
+    return { ok: false, error: errMsg };
   }
 }
 
@@ -338,7 +340,7 @@ async function clearSession() {
       const resp = await fetch('/api/set_key', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ api_key: savedKey })
+        body: JSON.stringify({ api_key: savedKey, api_base_url: savedBaseUrl || undefined })
       });
       if (resp.ok) {
         document.getElementById('key-screen').style.display = 'none';
