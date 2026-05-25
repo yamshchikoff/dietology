@@ -1,12 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dietology</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f172a; color: #e2e8f0;
+      display: flex; flex-direction: column; height: 100vh;
+    }
+    header {
+      padding: 12px 16px; border-bottom: 1px solid #1e293b;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    header h1 { font-size: 18px; font-weight: 600; }
+    .controls { display: flex; gap: 8px; }
+    .controls button {
+      background: #1e293b; color: #94a3b8; border: 1px solid #334155;
+      padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;
+    }
+    .controls button:hover { background: #334155; color: #e2e8f0; }
+    #chat {
+      flex: 1; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .msg {
+      max-width: 85%; padding: 10px 14px; border-radius: 10px;
+      line-height: 1.5; white-space: pre-wrap; word-break: break-word;
+    }
+    .msg.user { align-self: flex-end; background: #2563eb; color: #fff; }
+    .msg.assistant { align-self: flex-start; background: #1e293b; border: 1px solid #334155; }
+    .msg.system { align-self: center; background: #0f172a; color: #64748b; font-size: 12px; }
+    .msg.error { align-self: center; background: #450a0a; color: #fca5a5; border: 1px solid #7f1d1d; }
+    #input-area {
+      padding: 12px 16px; border-top: 1px solid #1e293b;
+      display: flex; gap: 8px;
+    }
+    #input-area input {
+      flex: 1; background: #1e293b; border: 1px solid #334155;
+      padding: 10px 14px; border-radius: 8px; color: #e2e8f0; font-size: 14px;
+      outline: none;
+    }
+    #input-area input:focus { border-color: #2563eb; }
+    #input-area button {
+      background: #2563eb; color: #fff; border: none;
+      padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 500;
+    }
+    #input-area button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .status { padding: 4px 16px 8px; font-size: 12px; color: #64748b; }
+  </style>
 </head>
 <body>
+<header>
   <h1>Dietology</h1>
-  <p>Personal nutrition assistant</p>
+  <div class="controls">
+    <button onclick="saveSession()">Save</button>
+    <button onclick="loadSession()">Load</button>
+    <button onclick="clearSession()">Clear</button>
+  </div>
+</header>
+
+<div id="chat"></div>
+
+<div class="status" id="status">Ready</div>
+
+<div id="input-area">
+  <input id="input" type="text" placeholder="Задайте вопрос о питании..." autofocus
+    onkeydown="if(event.key==='Enter') send()">
+  <button id="send-btn" onclick="send()">→</button>
+</div>
+
+<script>
+const invoke = window.__TAURI_INTERNALS__.invoke;
+
+function addMsg(role, text) {
+  const d = document.createElement('div');
+  d.className = 'msg ' + role;
+  d.textContent = text;
+  document.getElementById('chat').appendChild(d);
+  document.getElementById('chat').scrollTop = document.getElementById('chat').scrollHeight;
+}
+
+async function send() {
+  const input = document.getElementById('input');
+  const btn = document.getElementById('send-btn');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  btn.disabled = true;
+  document.getElementById('status').textContent = 'Thinking...';
+  addMsg('user', text);
+  try {
+    const resp = await invoke('send_message', { text });
+    addMsg('assistant', resp.final_text);
+    document.getElementById('status').textContent =
+      `Tokens: ${resp.usage.input_tokens} in + ${resp.usage.output_tokens} out`;
+  } catch (e) {
+    addMsg('error', 'Error: ' + (typeof e === 'string' ? e : e.message || JSON.stringify(e)));
+    document.getElementById('status').textContent = 'Error';
+  }
+  btn.disabled = false;
+  input.focus();
+}
+
+async function saveSession() {
+  const path = prompt('File path to save:', '/tmp/dietology_session.jsonl');
+  if (!path) return;
+  try { await invoke('save_session', { path }); document.getElementById('status').textContent = 'Saved to ' + path; }
+  catch (e) { addMsg('error', 'Save failed: ' + e); }
+}
+
+async function loadSession() {
+  const path = prompt('File path to load:', '/tmp/dietology_session.jsonl');
+  if (!path) return;
+  try {
+    const info = await invoke('load_session', { path });
+    document.getElementById('chat').innerHTML = '';
+    const msgs = await invoke('get_messages');
+    for (const m of msgs) {
+      for (const b of m.content) {
+        if (b.type === 'text') addMsg(m.role, b.text);
+        else if (b.type === 'tool_use') addMsg('system', '[tool: ' + b.name + ']');
+        else if (b.type === 'tool_result') addMsg('system', '[tool result]');
+      }
+    }
+    document.getElementById('status').textContent =
+      `Loaded ${info.message_count} messages | ${info.system_prompt.slice(0, 60)}...`;
+  } catch (e) { addMsg('error', 'Load failed: ' + e); }
+}
+
+async function clearSession() {
+  try {
+    await invoke('clear_session');
+    document.getElementById('chat').innerHTML = '';
+    addMsg('system', 'Session cleared.');
+    document.getElementById('status').textContent = 'Ready';
+  } catch (e) { addMsg('error', 'Clear failed: ' + e); }
+}
+
+// Init: start new chat
+(async () => {
+  try {
+    const info = await invoke('new_chat', { systemPrompt: null });
+    addMsg('system', 'Новая сессия. Задайте вопрос о питании.');
+    document.getElementById('status').textContent = 'Ready';
+  } catch (e) {
+    addMsg('error', 'Init failed: ' + JSON.stringify(e));
+    document.getElementById('status').textContent = 'Init error';
+  }
+})();
+</script>
 </body>
 </html>

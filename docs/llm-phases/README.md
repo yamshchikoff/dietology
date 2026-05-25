@@ -16,5 +16,6 @@
 | 3 | **chat() loop** | [phase-3-chat-loop.md](phase-3-chat-loop.md) | `feat(llm): add chat() loop with tool use resolution` |
 | 4 | **Session** | [phase-4-session.md](phase-4-session.md) | `feat(llm): add ChatSession with JSONL persistence` |
 | 5 | **Docs** | [phase-5-docs.md](phase-5-docs.md) | `docs(llm): finalize LLM client documentation` |
+| 6 | **ViewModel** | [phase-6-viewmodel.md](phase-6-viewmodel.md) | `feat(viewmodel): add Tauri IPC bridge and chat UI` |
 
 **Зависимости:** фазы строго последовательны. Фаза N выполняется только после коммита фазы N−1.

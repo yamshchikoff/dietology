@@ -1,5 +1,5 @@
 mod common;
-use common::{resolve_api_key, setup_client};
+use common::{resolve_api_key, run_test, setup_client};
 
 use dietology_lib::llm::session::ChatSession;
 use dietology_lib::llm::types::*;

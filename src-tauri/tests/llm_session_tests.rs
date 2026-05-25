@@ -23,11 +23,11 @@ fn test_add_user_message() {
 #[test]
 fn test_add_usage() {
     let mut session = ChatSession::new("system".into());
-    session.add_usage(&Usage {
+    session.add_usage(Usage {
         input_tokens: 100,
         output_tokens: 50,
     });
-    session.add_usage(&Usage {
+    session.add_usage(Usage {
         input_tokens: 200,
         output_tokens: 80,
     });
@@ -39,7 +39,7 @@ fn test_add_usage() {
 fn test_clear() {
     let mut session = ChatSession::new("system".into());
     session.add_user_message("Hello".into());
-    session.add_usage(&Usage {
+    session.add_usage(Usage {
         input_tokens: 100,
         output_tokens: 50,
     });

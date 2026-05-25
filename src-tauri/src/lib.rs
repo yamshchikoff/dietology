@@ -3,13 +3,11 @@ pub mod error;
 pub mod llm;
 pub mod models;
 pub mod tools;
+pub mod viewmodel;
 
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 
-pub struct AppState {
-    pub loader: data::DataLoader,
-    pub registry: Mutex<tools::registry::ToolRegistry>,
-}
+use viewmodel::AppState;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -18,11 +16,24 @@ pub fn run() {
     tools::describe::register_describe_tools(&mut registry, &loader);
     tools::query::register_query_tools(&mut registry, &loader);
 
+    let llm_client = llm::client::LlmClient::new(Arc::new(registry))
+        .expect("failed to create LlmClient");
+    let session = Mutex::new(llm::session::ChatSession::new(String::new()));
+
     tauri::Builder::default()
         .manage(AppState {
             loader,
-            registry: Mutex::new(registry),
+            llm_client,
+            session,
         })
+        .invoke_handler(tauri::generate_handler![
+            viewmodel::new_chat,
+            viewmodel::send_message,
+            viewmodel::get_messages,
+            viewmodel::save_session,
+            viewmodel::load_session,
+            viewmodel::clear_session,
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
