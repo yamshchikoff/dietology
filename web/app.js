@@ -168,6 +168,7 @@ async function sendMessageSSE(text) {
         if (line.startsWith('event: ')) {
           eventName = line.slice(7).trim();
         } else if (line.startsWith('data: ')) {
+          // Сервер шлёт single-line JSON — перезапись (а не конкатенация) корректна.
           data = line.slice(6);
         }
       }

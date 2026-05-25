@@ -27,6 +27,10 @@ use dietology_lib::viewmodel::{self, SessionInfo};
 // ---- App State ----
 
 /// Web-специфичное состояние. LlmClient создаётся, когда пользователь предоставляет ключ.
+///
+/// Все Mutex — `std::sync::Mutex`, не `tokio::sync::Mutex`.
+/// Инвариант: блокировка НИКОГДА не удерживается через `.await`.
+/// Нарушение = блокировка tokio worker thread.
 struct WebState {
     llm_client: Mutex<Option<Arc<LlmClient>>>,
     session: Mutex<Option<ChatSession>>,
@@ -209,8 +213,15 @@ async fn send_message_handler(
                         }
                     }),
                 ));
-                let mut guard = state_clone.session.lock().unwrap();
-                *guard = Some(session);
+                match state_clone.session.lock() {
+                    Ok(mut guard) => *guard = Some(session),
+                    Err(poison) => {
+                        let _ = tx.send(sse_event(
+                            "error",
+                            serde_json::json!({"message": format!("Internal lock error: {poison}")}),
+                        ));
+                    }
+                }
             }
             Err(e) => {
                 let error_msg = e.to_string();
@@ -219,8 +230,15 @@ async fn send_message_handler(
                     "error",
                     serde_json::json!({"message": error_msg}),
                 ));
-                let mut guard = state_clone.session.lock().unwrap();
-                *guard = Some(session);
+                match state_clone.session.lock() {
+                    Ok(mut guard) => *guard = Some(session),
+                    Err(poison) => {
+                        let _ = tx.send(sse_event(
+                            "error",
+                            serde_json::json!({"message": format!("Internal lock error: {poison}")}),
+                        ));
+                    }
+                }
             }
         }
     });
@@ -315,10 +333,12 @@ async fn main() {
         .layer(CorsLayer::permissive())
         .with_state(state);
 
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:8080")
+    let port = std::env::var("PORT").unwrap_or_else(|_| "8080".into());
+    let addr = format!("0.0.0.0:{port}");
+    let listener = tokio::net::TcpListener::bind(&addr)
         .await
-        .expect("failed to bind to 0.0.0.0:8080");
-    println!("Dietology web server listening on http://0.0.0.0:8080");
+        .expect("failed to bind");
+    println!("Dietology web server listening on http://{addr}");
     axum::serve(listener, app)
         .await
         .expect("web server failed");
