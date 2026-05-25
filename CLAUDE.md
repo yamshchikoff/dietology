@@ -20,6 +20,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **Сборка:** `make build`, тесты: `make test`, линтер: `make lint`
 - **Модули:** `data` (DataLoader, PRODUCTION_FILES), `models` (serde для 11 JSON), `tools` (ToolRegistry + describe/query)
 - **TDD:** каждый production-коммит проходит цикл Red → Green → Refactor
+- **Интеграционные тесты:** требуют API-ключ DeepSeek. Запуск:
+  `DEEPSEEK_API_BASE=https://api.deepseek.com/anthropic DEEPSEEK_API_KEY=sk-... cargo test --test llm_chat_integration -- --nocapture`
+  `DEEPSEEK_API_BASE=https://api.deepseek.com/anthropic DEEPSEEK_API_KEY=sk-... cargo test --test llm_session_integration -- --nocapture`
+  Ключ передаётся через `--api-key <KEY>` (CLI-параметр тестового бинарника) или `DEEPSEEK_API_KEY` (env var).
+  **При запуске интеграционных тестов — спросить у пользователя, где взять ключ.**
 - **Документация инфраструктуры:** [docs/rust-infrastructure.md](docs/rust-infrastructure.md)
 - **Describe-план:** [docs/plan-describe-implementation.md](docs/plan-describe-implementation.md)
 - **Query-план:** [docs/plan-query-implementation.md](docs/plan-query-implementation.md)
