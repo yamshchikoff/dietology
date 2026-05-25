@@ -82,7 +82,11 @@ async function connect() {
       throw new Error(err);
     }
     setApiKey(key);
-    await initChat();
+    const ok = await initChat();
+    if (!ok) {
+      document.getElementById('connect-btn').disabled = false;
+      return;
+    }
     document.getElementById('key-screen').style.display = 'none';
     document.getElementById('chat-screen').style.display = '';
   } catch (e) {
@@ -105,10 +109,12 @@ async function initChat() {
     } else {
       addMsg('system', 'Новая сессия. Задайте вопрос о питании.');
     }
-    setStatus('Ready');
+    setStatus('Готов');
+    return true;
   } catch (e) {
     addMsg('error', 'Ошибка инициализации: ' + (e.message || String(e)));
-    setStatus('Init error');
+    setStatus('Ошибка инициализации');
+    return false;
   }
 }
 
@@ -134,7 +140,7 @@ function handleSSEvent(name, payload) {
       if (currentMsgElem) {
         currentMsgElem.textContent = payload.final_text;
       }
-      setStatus('Tokens: ' + payload.usage.input_tokens + ' in + ' + payload.usage.output_tokens + ' out');
+      setStatus('Токенов: ' + payload.usage.input_tokens + ' вх + ' + payload.usage.output_tokens + ' вых');
       resetUI();
       break;
     case 'error':
@@ -144,7 +150,7 @@ function handleSSEvent(name, payload) {
       } else {
         addMsg('error', 'Ошибка: ' + payload.message);
       }
-      setStatus('Error');
+      setStatus('Ошибка');
       resetUI();
       break;
   }
@@ -232,7 +238,7 @@ async function send() {
   input.value = '';
   btn.disabled = true;
   isStreaming = true;
-  setStatus('Thinking...');
+  setStatus('Думаю...');
   addMsg('user', text);
 
   const d = document.createElement('div');
@@ -248,7 +254,7 @@ async function send() {
       const errMsg = e.message || String(e);
       currentMsgElem.className = 'msg error';
       currentMsgElem.textContent = 'Ошибка: ' + errMsg;
-      setStatus('Error');
+      setStatus('Ошибка');
       resetUI();
     }
   }
@@ -257,7 +263,7 @@ async function send() {
 // ---- Session commands ----
 
 async function saveSession() {
-  const path = prompt('File path to save:', '/tmp/dietology_session.jsonl');
+  const path = prompt('Путь для сохранения:', '/tmp/dietology_session.jsonl');
   if (!path) return;
   try {
     const resp = await fetch('/api/save_session', {
@@ -266,14 +272,14 @@ async function saveSession() {
       body: JSON.stringify({ path })
     });
     if (!resp.ok) throw new Error(await resp.text());
-    setStatus('Saved to ' + path);
+    setStatus('Сохранено в ' + path);
   } catch (e) {
     addMsg('error', 'Ошибка сохранения: ' + (e.message || String(e)));
   }
 }
 
 async function loadSession() {
-  const path = prompt('File path to load:', '/tmp/dietology_session.jsonl');
+  const path = prompt('Путь для загрузки:', '/tmp/dietology_session.jsonl');
   if (!path) return;
   try {
     const resp = await fetch('/api/load_session', {
@@ -285,7 +291,7 @@ async function loadSession() {
     const info = await resp.json();
     document.getElementById('chat').innerHTML = '';
     renderMessages(info.messages);
-    setStatus('Loaded ' + info.message_count + ' messages | ' + info.system_prompt.slice(0, 60) + '...');
+    setStatus('Загружено ' + info.message_count + ' сообщений | ' + info.system_prompt.slice(0, 60) + '...');
   } catch (e) {
     addMsg('error', 'Ошибка загрузки: ' + (e.message || String(e)));
   }
@@ -297,7 +303,7 @@ async function clearSession() {
     if (!resp.ok) throw new Error(await resp.text());
     document.getElementById('chat').innerHTML = '';
     addMsg('system', 'Сессия очищена.');
-    setStatus('Ready');
+    setStatus('Готов');
   } catch (e) {
     addMsg('error', 'Ошибка очистки: ' + (e.message || String(e)));
   }

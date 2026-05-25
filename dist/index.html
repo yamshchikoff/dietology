@@ -59,15 +59,15 @@
 <header>
   <h1>Dietology</h1>
   <div class="controls">
-    <button onclick="saveSession()">Save</button>
-    <button onclick="loadSession()">Load</button>
-    <button onclick="clearSession()">Clear</button>
+    <button onclick="saveSession()">Сохранить</button>
+    <button onclick="loadSession()">Загрузить</button>
+    <button onclick="clearSession()">Очистить</button>
   </div>
 </header>
 
 <div id="chat"></div>
 
-<div class="status" id="status">Ready</div>
+<div class="status" id="status">Готов</div>
 
 <div id="input-area">
   <input id="input" type="text" placeholder="Задайте вопрос о питании..." autofocus
@@ -129,7 +129,7 @@ listen('chat:done', (event) => {
     currentMsgElem.textContent = event.payload.final_text;
   }
   document.getElementById('status').textContent =
-    `Tokens: ${event.payload.usage.input_tokens} in + ${event.payload.usage.output_tokens} out`;
+    `Токенов: ${event.payload.usage.input_tokens} вх + ${event.payload.usage.output_tokens} вых`;
   isStreaming = false;
   currentMsgElem = null;
   document.getElementById('send-btn').disabled = false;
@@ -143,7 +143,7 @@ listen('chat:error', (event) => {
   } else {
     addMsg('error', 'Ошибка: ' + event.payload.message);
   }
-  document.getElementById('status').textContent = 'Error';
+  document.getElementById('status').textContent = 'Ошибка';
   isStreaming = false;
   currentMsgElem = null;
   document.getElementById('send-btn').disabled = false;
@@ -158,7 +158,7 @@ async function send() {
   input.value = '';
   btn.disabled = true;
   isStreaming = true;
-  document.getElementById('status').textContent = 'Thinking...';
+  document.getElementById('status').textContent = 'Думаю...';
   addMsg('user', text);
 
   // Create placeholder for streaming text
@@ -175,7 +175,7 @@ async function send() {
       const errMsg = typeof e === 'string' ? e : e.message || JSON.stringify(e);
       currentMsgElem.className = 'msg error';
       currentMsgElem.textContent = 'Ошибка: ' + errMsg;
-      document.getElementById('status').textContent = 'Error';
+      document.getElementById('status').textContent = 'Ошибка';
       isStreaming = false;
       currentMsgElem = null;
       btn.disabled = false;
@@ -185,21 +185,21 @@ async function send() {
 }
 
 async function saveSession() {
-  const path = prompt('File path to save:', '/tmp/dietology_session.jsonl');
+  const path = prompt('Путь для сохранения:', '/tmp/dietology_session.jsonl');
   if (!path) return;
-  try { await invoke('save_session', { path }); document.getElementById('status').textContent = 'Saved to ' + path; }
+  try { await invoke('save_session', { path }); document.getElementById('status').textContent = 'Сохранено в ' + path; }
   catch (e) { addMsg('error', 'Ошибка сохранения: ' + e); }
 }
 
 async function loadSession() {
-  const path = prompt('File path to load:', '/tmp/dietology_session.jsonl');
+  const path = prompt('Путь для загрузки:', '/tmp/dietology_session.jsonl');
   if (!path) return;
   try {
     const info = await invoke('load_session', { path });
     document.getElementById('chat').innerHTML = '';
     renderMessages(info.messages);
     document.getElementById('status').textContent =
-      `Loaded ${info.message_count} messages | ${info.system_prompt.slice(0, 60)}...`;
+      `Загружено ${info.message_count} сообщений | ${info.system_prompt.slice(0, 60)}...`;
   } catch (e) { addMsg('error', 'Ошибка загрузки: ' + e); }
 }
 
@@ -208,7 +208,7 @@ async function clearSession() {
     await invoke('clear_session');
     document.getElementById('chat').innerHTML = '';
     addMsg('system', 'Сессия очищена.');
-    document.getElementById('status').textContent = 'Ready';
+    document.getElementById('status').textContent = 'Готов';
   } catch (e) { addMsg('error', 'Ошибка очистки: ' + e); }
 }
 
@@ -221,10 +221,10 @@ async function clearSession() {
     } else {
       addMsg('system', 'Новая сессия. Задайте вопрос о питании.');
     }
-    document.getElementById('status').textContent = 'Ready';
+    document.getElementById('status').textContent = 'Готов';
   } catch (e) {
     addMsg('error', 'Ошибка инициализации: ' + JSON.stringify(e));
-    document.getElementById('status').textContent = 'Init error';
+    document.getElementById('status').textContent = 'Ошибка инициализации';
   }
 })();
 </script>
