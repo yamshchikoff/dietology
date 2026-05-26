@@ -93,6 +93,7 @@ let currentMsgElem = null;
 let isStreaming = false;
 let pendingTokens = '';
 let tokenRafId = null;
+let isSelecting = false;
 
 function flushTokens() {
   if (currentMsgElem && pendingTokens) {
@@ -142,7 +143,7 @@ function renderMessages(messages) {
 listen('chat:token', (event) => {
   if (currentMsgElem) {
     pendingTokens += event.payload.delta ?? '';
-    if (!tokenRafId) {
+    if (!isSelecting && !tokenRafId) {
       tokenRafId = requestAnimationFrame(flushTokens);
     }
   }
@@ -263,6 +264,19 @@ async function clearSession() {
     addMsg('error', 'Ошибка инициализации: ' + (e.message || String(e)));
     document.getElementById('status').textContent = 'Ошибка инициализации';
   }
+
+  // Pause DOM mutations while user is selecting text
+  const chat = document.getElementById('chat');
+  chat.addEventListener('mousedown', () => {
+    isSelecting = true;
+    if (tokenRafId) { cancelAnimationFrame(tokenRafId); tokenRafId = null; }
+  });
+  document.addEventListener('mouseup', () => {
+    if (isSelecting) {
+      isSelecting = false;
+      flushTokens();
+    }
+  });
 })();
 </script>
 </body>

@@ -331,6 +331,8 @@ async fn main() {
         registry: Arc::new(registry),
     });
 
+    let web_dir = std::env::var("WEB_DIR").unwrap_or_else(|_| "web".into());
+
     let app = Router::new()
         .route("/api/set_key", post(set_key_handler))
         .route("/api/new_chat", post(new_chat_handler))
@@ -339,7 +341,7 @@ async fn main() {
         .route("/api/save_session", post(save_session_handler))
         .route("/api/load_session", post(load_session_handler))
         .route("/api/clear_session", post(clear_session_handler))
-        .fallback_service(ServeDir::new("web"))
+        .fallback_service(ServeDir::new(&web_dir))
         .layer(CorsLayer::permissive())
         .with_state(state);
 

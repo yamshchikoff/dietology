@@ -2,6 +2,7 @@ let currentMsgElem = null;
 let isStreaming = false;
 let pendingTokens = '';
 let tokenRafId = null;
+let isSelecting = false;
 
 function flushTokens() {
   if (currentMsgElem && pendingTokens) {
@@ -152,7 +153,7 @@ function handleSSEvent(name, payload) {
     case 'token':
       if (currentMsgElem) {
         pendingTokens += payload.delta ?? '';
-        if (!tokenRafId) {
+        if (!isSelecting && !tokenRafId) {
           tokenRafId = requestAnimationFrame(flushTokens);
         }
       }
@@ -413,4 +414,17 @@ async function clearSession() {
   }
   // Show key screen
   document.getElementById('key-input').focus();
+
+  // Pause DOM mutations while user is selecting text
+  const chat = document.getElementById('chat');
+  chat.addEventListener('mousedown', () => {
+    isSelecting = true;
+    if (tokenRafId) { cancelAnimationFrame(tokenRafId); tokenRafId = null; }
+  });
+  document.addEventListener('mouseup', () => {
+    if (isSelecting) {
+      isSelecting = false;
+      flushTokens();
+    }
+  });
 })();
