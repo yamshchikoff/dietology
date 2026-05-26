@@ -10,7 +10,7 @@ function hasSelection() {
 }
 
 function flushTokens() {
-  if (currentMsgElem && pendingTokens) {
+  if (currentMsgElem && pendingTokens && !frozenUntilClear && !hasSelection()) {
     currentMsgElem.textContent += pendingTokens;
     pendingTokens = '';
     scrollChat();
@@ -166,15 +166,20 @@ function handleSSEvent(name, payload) {
     case 'tool_start':
       if (currentMsgElem) {
         if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
-        currentMsgElem.textContent += '\n[tool: ' + (payload.name ?? '?') + '...]\n';
-        scrollChat();
+        const annotation = '\n[tool: ' + (payload.name ?? '?') + '...]\n';
+        if (frozenUntilClear || hasSelection()) {
+          pendingTokens += annotation;
+        } else {
+          currentMsgElem.textContent += annotation;
+          scrollChat();
+        }
       }
       break;
     case 'tool_done':
       break;
     case 'done':
       if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
-      if (currentMsgElem) {
+      if (currentMsgElem && !frozenUntilClear && !hasSelection()) {
         currentMsgElem.textContent = payload.final_text ?? currentMsgElem.textContent;
       }
       setStatus('Токенов: ' + (payload.usage?.input_tokens ?? '?') + ' вх + ' + (payload.usage?.output_tokens ?? '?') + ' вых');
@@ -183,7 +188,9 @@ function handleSSEvent(name, payload) {
     case 'error':
       if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
       if (currentMsgElem) {
-        if (currentMsgElem.textContent) {
+        if (frozenUntilClear || hasSelection()) {
+          pendingTokens += '\n\n[Ошибка: ' + (payload.message ?? 'неизвестная ошибка') + ']';
+        } else if (currentMsgElem.textContent) {
           currentMsgElem.textContent += '\n\n[Ошибка: ' + (payload.message ?? 'неизвестная ошибка') + ']';
         } else {
           currentMsgElem.textContent = 'Ошибка: ' + (payload.message ?? 'неизвестная ошибка');

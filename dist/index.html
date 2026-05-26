@@ -101,7 +101,7 @@ function hasSelection() {
 }
 
 function flushTokens() {
-  if (currentMsgElem && pendingTokens) {
+  if (currentMsgElem && pendingTokens && !frozenUntilClear && !hasSelection()) {
     currentMsgElem.textContent += pendingTokens;
     pendingTokens = '';
     scrollChat();
@@ -157,8 +157,13 @@ listen('chat:token', (event) => {
 listen('chat:tool_start', (event) => {
   if (currentMsgElem) {
     if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
-    currentMsgElem.textContent += `\n[tool: ${event.payload.name ?? '?'}...]\n`;
-    scrollChat();
+    const annotation = `\n[tool: ${event.payload.name ?? '?'}...]\n`;
+    if (frozenUntilClear || hasSelection()) {
+      pendingTokens += annotation;
+    } else {
+      currentMsgElem.textContent += annotation;
+      scrollChat();
+    }
   }
 });
 
@@ -168,7 +173,7 @@ listen('chat:tool_done', (_event) => {
 
 listen('chat:done', (event) => {
   if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
-  if (currentMsgElem) {
+  if (currentMsgElem && !frozenUntilClear && !hasSelection()) {
     currentMsgElem.textContent = event.payload.final_text ?? currentMsgElem.textContent;
   }
   document.getElementById('status').textContent =
@@ -179,7 +184,9 @@ listen('chat:done', (event) => {
 listen('chat:error', (event) => {
   if (tokenRafId) { cancelAnimationFrame(tokenRafId); flushTokens(); }
   if (currentMsgElem) {
-    if (currentMsgElem.textContent) {
+    if (frozenUntilClear || hasSelection()) {
+      pendingTokens += '\n\n[Ошибка: ' + (event.payload.message ?? 'неизвестная ошибка') + ']';
+    } else if (currentMsgElem.textContent) {
       currentMsgElem.textContent += '\n\n[Ошибка: ' + (event.payload.message ?? 'неизвестная ошибка') + ']';
     } else {
       currentMsgElem.textContent = 'Ошибка: ' + (event.payload.message ?? 'неизвестная ошибка');
