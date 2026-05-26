@@ -2,7 +2,12 @@ let currentMsgElem = null;
 let isStreaming = false;
 let pendingTokens = '';
 let tokenRafId = null;
-let isSelecting = false;
+let frozenUntilClear = false;
+
+function hasSelection() {
+  const sel = window.getSelection();
+  return sel && sel.toString().length > 0;
+}
 
 function flushTokens() {
   if (currentMsgElem && pendingTokens) {
@@ -153,7 +158,7 @@ function handleSSEvent(name, payload) {
     case 'token':
       if (currentMsgElem) {
         pendingTokens += payload.delta ?? '';
-        if (!isSelecting && !tokenRafId) {
+        if (!frozenUntilClear && !hasSelection() && !tokenRafId) {
           tokenRafId = requestAnimationFrame(flushTokens);
         }
       }
@@ -415,15 +420,15 @@ async function clearSession() {
   // Show key screen
   document.getElementById('key-input').focus();
 
-  // Pause DOM mutations while user is selecting text
+  // Freeze DOM on LMB press, unfreeze when selection is cleared.
   const chat = document.getElementById('chat');
   chat.addEventListener('mousedown', () => {
-    isSelecting = true;
+    frozenUntilClear = true;
     if (tokenRafId) { cancelAnimationFrame(tokenRafId); tokenRafId = null; }
   });
-  document.addEventListener('mouseup', () => {
-    if (isSelecting) {
-      isSelecting = false;
+  document.addEventListener('selectionchange', () => {
+    if (frozenUntilClear && !hasSelection()) {
+      frozenUntilClear = false;
       flushTokens();
     }
   });
