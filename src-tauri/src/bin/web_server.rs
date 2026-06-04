@@ -23,7 +23,7 @@ use dietology_lib::llm::types::{Message, Usage};
 use dietology_lib::memory::conversational_preferences::PreferencesStore;
 use dietology_lib::memory::facts::FactStore;
 use dietology_lib::memory::findings::FindingStore;
-use dietology_lib::memory::macro_conclusion::{LlmCredentials, MacroConclusionStore};
+use dietology_lib::memory::master_description::{LlmCredentials, MasterDescriptionStore};
 use dietology_lib::memory::storage::MemoryStorage;
 use dietology_lib::memory::tools;
 use dietology_lib::tools::registry::ToolRegistry;
@@ -333,14 +333,14 @@ async fn main() {
     let storage = Arc::new(MemoryStorage::for_development());
     let fact_store = Arc::new(FactStore::new(storage.clone()));
     let finding_store = Arc::new(FindingStore::new(storage.clone(), fact_store.clone()));
-    let macro_store = Arc::new(MacroConclusionStore::new(storage.clone()));
+    let master_store = Arc::new(MasterDescriptionStore::new(storage.clone()));
     let prefs_store = Arc::new(PreferencesStore::new(storage.clone()));
 
     tools::register_memory_read_tools(
         &mut registry,
         fact_store.clone(),
         finding_store.clone(),
-        macro_store.clone(),
+        master_store.clone(),
         prefs_store.clone(),
     );
 
@@ -349,7 +349,7 @@ async fn main() {
         &mut registry,
         fact_store,
         finding_store,
-        macro_store,
+        master_store,
         prefs_store,
         llm_creds.clone(),
     );

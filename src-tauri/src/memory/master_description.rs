@@ -4,9 +4,9 @@ use crate::error::{AppError, AppResult};
 
 use super::git::auto_commit;
 use super::storage::MemoryStorage;
-use super::types::{ActiveMacroConclusion, MacroConclusion};
+use super::types::{ActiveMasterDescription, MasterDescription};
 
-const MAX_MACRO_TOKENS: usize = 50_000;
+const MAX_MASTER_TOKENS: usize = 50_000;
 
 pub struct LlmCredentials {
     pub api_key: String,
@@ -14,26 +14,26 @@ pub struct LlmCredentials {
     pub model: String,
 }
 
-pub struct MacroConclusionStore {
+pub struct MasterDescriptionStore {
     storage: Arc<MemoryStorage>,
 }
 
-impl MacroConclusionStore {
+impl MasterDescriptionStore {
     pub fn new(storage: Arc<MemoryStorage>) -> Self {
         Self { storage }
     }
 
-    pub fn read(&self) -> AppResult<(MacroConclusion, bool)> {
-        let active: ActiveMacroConclusion =
+    pub fn read(&self) -> AppResult<(MasterDescription, bool)> {
+        let active: ActiveMasterDescription =
             self.storage
-                .read_json("macro-conclusion/active.json")?;
-        let doc: MacroConclusion = self
+                .read_json("master-description/active.json")?;
+        let doc: MasterDescription = self
             .storage
-            .read_json(&format!("macro-conclusion/{}", active.active_file))?;
+            .read_json(&format!("master-description/{}", active.active_file))?;
         Ok((doc, active.foundation_changed))
     }
 
-    pub fn read_optional(&self) -> AppResult<Option<(MacroConclusion, bool)>> {
+    pub fn read_optional(&self) -> AppResult<Option<(MasterDescription, bool)>> {
         if !self.exists() {
             return Ok(None);
         }
@@ -47,23 +47,23 @@ impl MacroConclusionStore {
         based_on_findings: Vec<String>,
     ) -> AppResult<u64> {
         let tokens = MemoryStorage::estimate_tokens(content);
-        if tokens > MAX_MACRO_TOKENS {
+        if tokens > MAX_MASTER_TOKENS {
             return Err(AppError::Validation(format!(
-                "macro-conclusion exceeds token limit: {tokens}/{MAX_MACRO_TOKENS} tokens"
+                "master description exceeds token limit: {tokens}/{MAX_MASTER_TOKENS} tokens"
             )));
         }
 
         let new_version = if self.exists() {
-            let active: ActiveMacroConclusion = self
+            let active: ActiveMasterDescription = self
                 .storage
-                .read_json("macro-conclusion/active.json")?;
+                .read_json("master-description/active.json")?;
             active.active_version + 1
         } else {
             1
         };
 
         let now = MemoryStorage::now_iso();
-        let doc = MacroConclusion {
+        let doc = MasterDescription {
             version: new_version,
             created_at: now,
             content: content.to_string(),
@@ -73,26 +73,26 @@ impl MacroConclusionStore {
 
         let file_name = format!("v{new_version}.json");
         self.storage.atomic_write(
-            &format!("macro-conclusion/{file_name}"),
+            &format!("master-description/{file_name}"),
             &serde_json::to_string_pretty(&doc)?,
         )?;
 
-        let active = ActiveMacroConclusion {
+        let active = ActiveMasterDescription {
             active_version: new_version,
             active_file: file_name.clone(),
             foundation_changed: false,
         };
         self.storage.atomic_write(
-            "macro-conclusion/active.json",
+            "master-description/active.json",
             &serde_json::to_string_pretty(&active)?,
         )?;
 
         let _ = auto_commit(
             &self.storage,
-            &format!("memory: rewrite macro-conclusion v{new_version}"),
+            &format!("memory: rewrite master description v{new_version}"),
             &[
-                &format!("macro-conclusion/{file_name}"),
-                "macro-conclusion/active.json",
+                &format!("master-description/{file_name}"),
+                "master-description/active.json",
             ],
         );
 
@@ -103,25 +103,25 @@ impl MacroConclusionStore {
         if !self.exists() {
             return Ok(());
         }
-        let mut active: ActiveMacroConclusion =
+        let mut active: ActiveMasterDescription =
             self.storage
-                .read_json("macro-conclusion/active.json")?;
+                .read_json("master-description/active.json")?;
         active.foundation_changed = true;
         self.storage.atomic_write(
-            "macro-conclusion/active.json",
+            "master-description/active.json",
             &serde_json::to_string_pretty(&active)?,
         )?;
         let _ = auto_commit(
             &self.storage,
-            "memory: mark macro-conclusion foundation_changed",
-            &["macro-conclusion/active.json"],
+            "memory: mark master description foundation_changed",
+            &["master-description/active.json"],
         );
         Ok(())
     }
 
     pub fn exists(&self) -> bool {
         self.storage
-            .exists("macro-conclusion/active.json")
+            .exists("master-description/active.json")
     }
 }
 
@@ -134,12 +134,12 @@ mod tests {
 
     static TEST_N: AtomicU32 = AtomicU32::new(0);
 
-    fn test_store() -> MacroConclusionStore {
+    fn test_store() -> MasterDescriptionStore {
         let n = TEST_N.fetch_add(1, Ordering::SeqCst);
         let dir =
-            std::env::temp_dir().join(format!("dietology_macro_test_{}_{}", std::process::id(), n));
+            std::env::temp_dir().join(format!("dietology_master_test_{}_{}", std::process::id(), n));
         std::fs::create_dir_all(&dir).unwrap();
-        MacroConclusionStore::new(Arc::new(MemoryStorage::new(dir)))
+        MasterDescriptionStore::new(Arc::new(MemoryStorage::new(dir)))
     }
 
     #[test]

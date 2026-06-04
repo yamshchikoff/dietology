@@ -229,6 +229,7 @@ make fmt       # cd src-tauri && cargo fmt
 
 **Ещё нет:**
 - Git commit automation, user-map, investigation mode
+- Подсистема памяти (facts, findings, master description) — [план реализации](./plan-memory-subsystem.md)
 - Полноценного CI/CD
 
 **Следующий шаг:** визуализации (ECharts) — рендеринг nutrition data.

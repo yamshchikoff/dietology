@@ -11,7 +11,7 @@ use std::sync::{Arc, Mutex};
 use memory::conversational_preferences::PreferencesStore;
 use memory::facts::FactStore;
 use memory::findings::FindingStore;
-use memory::macro_conclusion::{LlmCredentials, MacroConclusionStore};
+use memory::master_description::{LlmCredentials, MasterDescriptionStore};
 use memory::storage::MemoryStorage;
 use viewmodel::AppState;
 
@@ -25,14 +25,14 @@ pub fn run() {
     let storage = Arc::new(MemoryStorage::for_development());
     let fact_store = Arc::new(FactStore::new(storage.clone()));
     let finding_store = Arc::new(FindingStore::new(storage.clone(), fact_store.clone()));
-    let macro_store = Arc::new(MacroConclusionStore::new(storage.clone()));
+    let master_store = Arc::new(MasterDescriptionStore::new(storage.clone()));
     let prefs_store = Arc::new(PreferencesStore::new(storage.clone()));
 
     memory::tools::register_memory_read_tools(
         &mut registry,
         fact_store.clone(),
         finding_store.clone(),
-        macro_store.clone(),
+        master_store.clone(),
         prefs_store.clone(),
     );
 
@@ -46,7 +46,7 @@ pub fn run() {
         &mut registry,
         fact_store,
         finding_store,
-        macro_store,
+        master_store,
         prefs_store,
         Arc::new(Mutex::new(Some(llm_creds))),
     );

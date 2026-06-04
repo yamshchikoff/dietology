@@ -7,14 +7,14 @@ use crate::tools::registry::ToolRegistry;
 use super::conversational_preferences::PreferencesStore;
 use super::facts::FactStore;
 use super::findings::FindingStore;
-use super::macro_conclusion::{LlmCredentials, MacroConclusionStore};
+use super::master_description::{LlmCredentials, MasterDescriptionStore};
 use super::types::{FactType, FindingStatus};
 
 pub fn register_memory_read_tools(
     registry: &mut ToolRegistry,
     fact_store: Arc<FactStore>,
     finding_store: Arc<FindingStore>,
-    macro_store: Arc<MacroConclusionStore>,
+    master_store: Arc<MasterDescriptionStore>,
     prefs_store: Arc<PreferencesStore>,
 ) {
     let fs = fact_store.clone();
@@ -100,10 +100,10 @@ pub fn register_memory_read_tools(
         }),
     );
 
-    let ms = macro_store.clone();
+    let ms = master_store.clone();
     registry.register(
-        "read_macro_conclusion",
-        "Read the current macro-conclusion (master description). Returns the full document plus foundation_changed flag. Macro-conclusion is the model's holistic narrative about the user, synthesizing all facts and findings.",
+        "read_master_description",
+        "Read the current master description. Returns the full document plus foundation_changed flag. Master description is the model's holistic narrative about the user, synthesizing all facts and findings.",
         json!({
             "type": "object",
             "properties": {},
@@ -112,7 +112,7 @@ pub fn register_memory_read_tools(
         Box::new(move |_args: &serde_json::Value| -> Result<String, String> {
             let (doc, fc) = ms.read().map_err(|e| e.to_string())?;
             serde_json::to_string(&json!({
-                "macro_conclusion": doc,
+                "master_description": doc,
                 "foundation_changed": fc
             }))
             .map_err(|e| e.to_string())
@@ -139,7 +139,7 @@ pub fn register_memory_write_tools(
     registry: &mut ToolRegistry,
     fact_store: Arc<FactStore>,
     finding_store: Arc<FindingStore>,
-    macro_store: Arc<MacroConclusionStore>,
+    master_store: Arc<MasterDescriptionStore>,
     prefs_store: Arc<PreferencesStore>,
     llm_creds: Arc<std::sync::Mutex<Option<LlmCredentials>>>,
 ) {
@@ -166,10 +166,10 @@ pub fn register_memory_write_tools(
 
     let fs2 = fact_store.clone();
     let fstore2 = finding_store.clone();
-    let ms = macro_store.clone();
+    let ms = master_store.clone();
     registry.register(
         "correct_user_reported_fact",
-        "Correct a previously recorded user-reported fact. Saves old version, creates new version. Sets foundation_changed=true on all dependent findings and macro-conclusion. Requires fact_id, new content, and reason for correction.",
+        "Correct a previously recorded user-reported fact. Saves old version, creates new version. Sets foundation_changed=true on all dependent findings and master description. Requires fact_id, new content, and reason for correction.",
         json!({
             "type": "object",
             "properties": {
@@ -257,14 +257,14 @@ pub fn register_memory_write_tools(
         }),
     );
 
-    let ms2 = macro_store.clone();
+    let ms2 = master_store.clone();
     registry.register(
-        "rewrite_macro_conclusion",
-        "Directly rewrite the macro-conclusion (master description). Max 50000 tokens. Old version is preserved, new version becomes active. Use this for quick updates. For a full review against all facts/findings, use update_macro_conclusion instead.",
+        "rewrite_master_description",
+        "Directly rewrite the master description. Max 50000 tokens. Old version is preserved, new version becomes active. Use this for quick updates. For a full review against all facts/findings, use update_master_description instead.",
         json!({
             "type": "object",
             "properties": {
-                "content": { "type": "string", "description": "Full text of the new macro-conclusion" },
+                "content": { "type": "string", "description": "Full text of the new master description" },
                 "based_on_facts": { "type": "array", "items": { "type": "string" }, "description": "All fact IDs this conclusion is based on" },
                 "based_on_findings": { "type": "array", "items": { "type": "string" }, "description": "All finding IDs this conclusion is based on" }
             },
@@ -286,13 +286,13 @@ pub fn register_memory_write_tools(
         }),
     );
 
-    let ms3 = macro_store.clone();
+    let ms3 = master_store.clone();
     let fs3 = fact_store.clone();
     let fstore4 = finding_store.clone();
     let creds = llm_creds.clone();
     registry.register(
-        "update_macro_conclusion",
-        "Update macro-conclusion via subagent. The subagent loads current macro-conclusion, all facts, all findings, checks consistency, and rewrites. Call this during housekeeping. No parameters needed — subagent traverses all data automatically.",
+        "update_master_description",
+        "Update master description via subagent. The subagent loads current master description, all facts, all findings, checks consistency, and rewrites. Call this during housekeeping. No parameters needed — subagent traverses all data automatically.",
         json!({
             "type": "object",
             "properties": {},
@@ -342,7 +342,7 @@ pub fn register_memory_write_tools(
 fn run_subagent(
     fact_store: Arc<FactStore>,
     finding_store: Arc<FindingStore>,
-    macro_store: Arc<MacroConclusionStore>,
+    master_store: Arc<MasterDescriptionStore>,
     llm_creds: &LlmCredentials,
 ) -> Result<String, String> {
     use crate::llm::client::LlmClient;
@@ -351,7 +351,7 @@ fn run_subagent(
     let subagent_registry = build_subagent_registry(
         fact_store.clone(),
         finding_store.clone(),
-        macro_store.clone(),
+        master_store.clone(),
     );
     let subagent_client = LlmClient::with_credentials(
         Arc::new(subagent_registry),
@@ -362,24 +362,24 @@ fn run_subagent(
     .map_err(|e| format!("failed to create subagent client: {e}"))?;
 
     let subagent_prompt = "\
-Ты — вспомогательный агент. Твоя задача: переписать macro-conclusion (мастер-описание пользователя).
+Ты — вспомогательный агент. Твоя задача: переписать master description (мастер-описание пользователя).
 
 Выполни СТРОГО ПОСЛЕДОВАТЕЛЬНО:
-1. Вызови read_macro_conclusion чтобы получить текущую версию (может отсутствовать — тогда начни с нуля).
+1. Вызови read_master_description чтобы получить текущую версию (может отсутствовать — тогда начни с нуля).
 2. Вызови list_facts и пагинируй через все факты (list + read каждый). БЕЗ ИСКЛЮЧЕНИЙ — все user-reported и все imported факты.
 3. Вызови list_findings и пагинируй через все findings (list + read каждый). БЕЗ ИСКЛЮЧЕНИЙ.
 4. Проверь консистентность:
    - Есть ли факты без связанных findings? Если да — отметь это.
    - Есть ли findings с foundation_changed=true без разрешения? Если да — отметь.
-   - Есть ли расхождения между фактами и macro-conclusion?
-5. Вызови rewrite_macro_conclusion(content) с ПОЛНЫМ текстом нового macro-conclusion (≤50000 токенов). Заполни поля based_on_facts (ВСЕ факты) и based_on_findings (ВСЕ findings).
+   - Есть ли расхождения между фактами и master description?
+5. Вызови rewrite_master_description(content) с ПОЛНЫМ текстом нового master description (≤50000 токенов). Заполни поля based_on_facts (ВСЕ факты) и based_on_findings (ВСЕ findings).
 
-Macro-conclusion — это целостный рассказ о пользователе: что известно, ключевые выводы, критические данные (аллергии, противопоказания), текущая картина здоровья и питания. Это НЕ таблица и НЕ список — это связный текст, синтезирующий все данные.
+Master description — это целостный рассказ о пользователе: что известно, ключевые выводы, критические данные (аллергии, противопоказания), текущая картина здоровья и питания. Это НЕ таблица и НЕ список — это связный текст, синтезирующий все данные.
 
-НЕ вызывай create_finding, correct_user_reported_fact и другие write-тулы. ТОЛЬКО rewrite_macro_conclusion.";
+НЕ вызывай create_finding, correct_user_reported_fact и другие write-тулы. ТОЛЬКО rewrite_master_description.";
 
     let handle = tokio::runtime::Handle::current();
-    let version_before = macro_store
+    let version_before = master_store
         .read_optional()
         .ok()
         .flatten()
@@ -390,7 +390,7 @@ Macro-conclusion — это целостный рассказ о пользов�
         let mut messages = vec![Message {
             role: "user".into(),
             content: vec![ContentBlock::Text {
-                text: "Перепиши macro-conclusion на основе всех фактов и находок.".into(),
+                text: "Перепиши master description на основе всех фактов и находок.".into(),
             }],
         }];
         subagent_client.chat(&mut messages, subagent_prompt).await
@@ -398,7 +398,7 @@ Macro-conclusion — это целостный рассказ о пользов�
 
     match result {
         Ok(response) => {
-            let version_after = macro_store
+            let version_after = master_store
                 .read_optional()
                 .map_err(|e| e.to_string())?
                 .map(|(doc, _)| doc.version)
@@ -406,11 +406,11 @@ Macro-conclusion — это целостный рассказ о пользов�
 
             if version_after <= version_before {
                 return Err(
-                    "subagent did not call rewrite_macro_conclusion (version unchanged)".into()
+                    "subagent did not call rewrite_master_description (version unchanged)".into()
                 );
             }
 
-            let (doc, _) = macro_store.read().map_err(|e| e.to_string())?;
+            let (doc, _) = master_store.read().map_err(|e| e.to_string())?;
             if doc.based_on_facts.is_empty() {
                 return Err("subagent wrote empty based_on_facts".into());
             }
@@ -431,7 +431,7 @@ Macro-conclusion — это целостный рассказ о пользов�
 fn build_subagent_registry(
     fact_store: Arc<FactStore>,
     finding_store: Arc<FindingStore>,
-    macro_store: Arc<MacroConclusionStore>,
+    master_store: Arc<MasterDescriptionStore>,
 ) -> ToolRegistry {
     let mut registry = ToolRegistry::new();
 
@@ -439,10 +439,10 @@ fn build_subagent_registry(
     let fs2 = fact_store.clone();
     let fstore = finding_store.clone();
     let fstore2 = finding_store.clone();
-    let ms = macro_store.clone();
-    let ms2 = macro_store.clone();
+    let ms = master_store.clone();
+    let ms2 = master_store.clone();
 
-    // The subagent gets only 6 tools: read tools + rewrite_macro_conclusion.
+    // The subagent gets only 6 tools: read tools + rewrite_master_description.
 
     // list_facts
     {
@@ -538,27 +538,27 @@ fn build_subagent_registry(
         );
     }
 
-    // read_macro_conclusion
+    // read_master_description
     {
         let ms = ms;
         registry.register(
-            "read_macro_conclusion",
-            "Read the current macro-conclusion.",
+            "read_master_description",
+            "Read the current master description.",
             json!({ "type": "object", "properties": {}, "required": [] }),
             Box::new(move |_args: &serde_json::Value| -> Result<String, String> {
                 let (doc, fc) = ms.read().map_err(|e| e.to_string())?;
-                serde_json::to_string(&json!({"macro_conclusion": doc, "foundation_changed": fc}))
+                serde_json::to_string(&json!({"master_description": doc, "foundation_changed": fc}))
                     .map_err(|e| e.to_string())
             }),
         );
     }
 
-    // rewrite_macro_conclusion
+    // rewrite_master_description
     {
         let ms = ms2;
         registry.register(
-            "rewrite_macro_conclusion",
-            "Rewrite macro-conclusion with full text. Max 50000 tokens. Must provide all based_on_facts and based_on_findings IDs.",
+            "rewrite_master_description",
+            "Rewrite master description with full text. Max 50000 tokens. Must provide all based_on_facts and based_on_findings IDs.",
             json!({
                 "type": "object",
                 "properties": {

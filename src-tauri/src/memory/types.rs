@@ -64,7 +64,7 @@ pub struct Finding {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct MacroConclusion {
+pub struct MasterDescription {
     pub version: u64,
     pub created_at: String,
     pub content: String,
@@ -73,7 +73,7 @@ pub struct MacroConclusion {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ActiveMacroConclusion {
+pub struct ActiveMasterDescription {
     pub active_version: u64,
     pub active_file: String,
     pub foundation_changed: bool,
