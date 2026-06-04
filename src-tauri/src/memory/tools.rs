@@ -190,10 +190,9 @@ pub fn register_memory_write_tools(
             let affected = fstore2.mark_foundation_changed(fact_id)
                 .map_err(|e| e.to_string())?;
             if ms.exists() {
-                if let Ok((doc, _)) = ms.read() {
-                    if doc.based_on_facts.contains(&fact_id.to_string()) {
-                        let _ = ms.mark_foundation_changed();
-                    }
+                let (doc, _) = ms.read().map_err(|e| e.to_string())?;
+                if doc.based_on_facts.contains(&fact_id.to_string()) {
+                    let _ = ms.mark_foundation_changed();
                 }
             }
             serde_json::to_string(&json!({
@@ -573,12 +572,16 @@ fn build_subagent_registry(
                 let content = args.get("content").and_then(|v| v.as_str()).ok_or("missing content")?;
                 let based_on_facts: Vec<String> = args.get("based_on_facts")
                     .and_then(|v| v.as_array())
-                    .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect())
-                    .unwrap_or_default();
+                    .ok_or("missing required param: based_on_facts")?
+                    .iter()
+                    .map(|v| v.as_str().map(String::from).ok_or("based_on_facts element is not a string"))
+                    .collect::<Result<_, _>>()?;
                 let based_on_findings: Vec<String> = args.get("based_on_findings")
                     .and_then(|v| v.as_array())
-                    .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect())
-                    .unwrap_or_default();
+                    .ok_or("missing required param: based_on_findings")?
+                    .iter()
+                    .map(|v| v.as_str().map(String::from).ok_or("based_on_findings element is not a string"))
+                    .collect::<Result<_, _>>()?;
                 ms.rewrite(content, based_on_facts, based_on_findings)
                     .map(|v| json!({"version": v}).to_string())
                     .map_err(|e| e.to_string())

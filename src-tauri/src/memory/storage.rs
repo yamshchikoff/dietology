@@ -112,11 +112,9 @@ impl MemoryStorage {
         text.len() / 4
     }
 
-    pub fn path_for(&self, relative: &str) -> PathBuf {
-        // path_for is used by internal code that has already validated inputs;
-        // validation here would be redundant but we do it for defense in depth.
-        let _ = Self::validate_path(relative);
-        self.base_path.join(relative)
+    pub fn path_for(&self, relative: &str) -> AppResult<PathBuf> {
+        Self::validate_path(relative)?;
+        Ok(self.base_path.join(relative))
     }
 
     pub fn exists(&self, relative_path: &str) -> bool {
@@ -180,7 +178,7 @@ mod tests {
         storage.atomic_write(path, "v1").unwrap();
         storage.atomic_write(path, "v2").unwrap();
 
-        let result = std::fs::read_to_string(storage.path_for(path)).unwrap();
+        let result = std::fs::read_to_string(storage.path_for(path).unwrap()).unwrap();
         assert_eq!(result, "v2");
     }
 

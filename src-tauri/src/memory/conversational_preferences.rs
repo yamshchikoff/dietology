@@ -38,13 +38,17 @@ impl PreferencesStore {
         let backup_path = "conversational-preferences/backup.json";
         let current_path = "conversational-preferences/current.json";
 
-        if self.storage.exists(current_path) {
-            let current_data =
-                std::fs::read_to_string(self.storage.path_for(current_path)).map_err(|e| {
-                    AppError::Io(format!("read current prefs: {e}"))
-                })?;
-            self.storage.atomic_write(backup_path, &current_data)?;
-        }
+        // Snapshot old content before writing — but write new data FIRST,
+        // then update backup only on success, so a failed write doesn't destroy the backup.
+        let had_current = self.storage.exists(current_path);
+        let old_data = if had_current {
+            Some(
+                std::fs::read_to_string(self.storage.path_for(current_path)?)
+                    .map_err(|e| AppError::Io(format!("read current prefs: {e}")))?,
+            )
+        } else {
+            None
+        };
 
         let now = MemoryStorage::now_iso();
         let prefs = ConversationalPreferences {
@@ -54,6 +58,11 @@ impl PreferencesStore {
 
         self.storage
             .atomic_write(current_path, &serde_json::to_string_pretty(&prefs)?)?;
+
+        // Only overwrite backup after current write succeeds.
+        if let Some(data) = old_data {
+            self.storage.atomic_write(backup_path, &data)?;
+        }
 
         let _ = auto_commit(
             &self.storage,
@@ -75,12 +84,12 @@ impl PreferencesStore {
         }
 
         let backup_data =
-            std::fs::read_to_string(self.storage.path_for(backup_path)).map_err(|e| {
+            std::fs::read_to_string(self.storage.path_for(backup_path)?).map_err(|e| {
                 AppError::Io(format!("read backup: {e}"))
             })?;
 
         let current_data = if self.storage.exists(current_path) {
-            Some(std::fs::read_to_string(self.storage.path_for(current_path)).map_err(|e| {
+            Some(std::fs::read_to_string(self.storage.path_for(current_path)?).map_err(|e| {
                 AppError::Io(format!("read current: {e}"))
             })?)
         } else {

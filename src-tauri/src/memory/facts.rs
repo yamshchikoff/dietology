@@ -272,7 +272,7 @@ impl FactStore {
         presumed_date: Option<&str>,
     ) -> AppResult<UserReportedFact> {
         if !fact_id.starts_with("urfact-") {
-            return Err(AppError::DataFileNotFound(format!(
+            return Err(AppError::Validation(format!(
                 "cannot correct non-user-reported fact: {fact_id}"
             )));
         }
