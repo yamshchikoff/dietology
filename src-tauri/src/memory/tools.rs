@@ -31,11 +31,12 @@ pub fn register_memory_read_tools(
             "required": ["offset", "limit"]
         }),
         Box::new(move |args: &serde_json::Value| -> Result<String, String> {
-            let fact_type = args.get("type").and_then(|v| v.as_str()).map(|s| match s {
-                "imported" => FactType::Imported,
-                "user_reported" => FactType::UserReported,
-                _ => FactType::UserReported,
-            });
+            let fact_type = match args.get("type").and_then(|v| v.as_str()) {
+                Some("imported") => Some(FactType::Imported),
+                Some("user_reported") => Some(FactType::UserReported),
+                Some(other) => return Err(format!("invalid fact type: {other}")),
+                None => None,
+            };
             let offset = args.get("offset").and_then(|v| v.as_u64()).unwrap_or(0) as u32;
             let limit = args.get("limit").and_then(|v| v.as_u64()).unwrap_or(50) as u32;
             let result = fs.list(fact_type, offset, limit)
@@ -189,10 +190,9 @@ pub fn register_memory_write_tools(
                 .map_err(|e| e.to_string())?;
             let affected = fstore2.mark_foundation_changed(fact_id)
                 .map_err(|e| e.to_string())?;
-            if ms.exists() {
-                let (doc, _) = ms.read().map_err(|e| e.to_string())?;
+            if let Some((doc, _)) = ms.read_optional().map_err(|e| e.to_string())? {
                 if doc.based_on_facts.contains(&fact_id.to_string()) {
-                    let _ = ms.mark_foundation_changed();
+                    ms.mark_foundation_changed().map_err(|e| e.to_string())?;
                 }
             }
             serde_json::to_string(&json!({
@@ -460,11 +460,12 @@ fn build_subagent_registry(
                 "required": ["offset", "limit"]
             }),
             Box::new(move |args: &serde_json::Value| -> Result<String, String> {
-                let fact_type = args.get("type").and_then(|v| v.as_str()).map(|s| match s {
-                    "imported" => FactType::Imported,
-                    "user_reported" => FactType::UserReported,
-                    _ => FactType::UserReported,
-                });
+                let fact_type = match args.get("type").and_then(|v| v.as_str()) {
+                    Some("imported") => Some(FactType::Imported),
+                    Some("user_reported") => Some(FactType::UserReported),
+                    Some(other) => return Err(format!("invalid fact type: {other}")),
+                    None => None,
+                };
                 let offset = args.get("offset").and_then(|v| v.as_u64()).unwrap_or(0) as u32;
                 let limit = args.get("limit").and_then(|v| v.as_u64()).unwrap_or(50) as u32;
                 fs.list(fact_type, offset, limit)

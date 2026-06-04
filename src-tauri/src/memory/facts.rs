@@ -35,7 +35,15 @@ fn generate_id_impl(prefix: &str) -> String {
 
 fn build_disclaimer() -> String {
     let date = MemoryStorage::now_iso();
-    DISCLAIMER_TEMPLATE.replace("<ДАТА ФИКСАЦИИ>", &date)
+    let disclaimer = DISCLAIMER_TEMPLATE.replace("<ДАТА ФИКСАЦИИ>", &date);
+    debug_assert!(
+        disclaimer != DISCLAIMER_TEMPLATE,
+        "DISCLAIMER_TEMPLATE is missing the <ДАТА ФИКСАЦИИ> placeholder"
+    );
+    if disclaimer == DISCLAIMER_TEMPLATE {
+        return format!("[{date}] {DISCLAIMER_TEMPLATE}");
+    }
+    disclaimer
 }
 
 pub struct FactStore {
