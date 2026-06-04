@@ -20,6 +20,12 @@ use dietology_lib::data::DataLoader;
 use dietology_lib::llm::client::LlmClient;
 use dietology_lib::llm::session::ChatSession;
 use dietology_lib::llm::types::{Message, Usage};
+use dietology_lib::memory::conversational_preferences::PreferencesStore;
+use dietology_lib::memory::facts::FactStore;
+use dietology_lib::memory::findings::FindingStore;
+use dietology_lib::memory::macro_conclusion::{LlmCredentials, MacroConclusionStore};
+use dietology_lib::memory::storage::MemoryStorage;
+use dietology_lib::memory::tools;
 use dietology_lib::tools::registry::ToolRegistry;
 use dietology_lib::tools::{describe, query};
 use dietology_lib::viewmodel::{self, SessionInfo};
@@ -35,6 +41,7 @@ struct WebState {
     llm_client: Mutex<Option<Arc<LlmClient>>>,
     session: Mutex<Option<ChatSession>>,
     registry: Arc<ToolRegistry>,
+    llm_creds: Arc<Mutex<Option<LlmCredentials>>>,
 }
 
 type SharedState = Arc<WebState>;
@@ -119,13 +126,20 @@ async fn set_key_handler(
     let llm_client = LlmClient::with_credentials(
         state.registry.clone(),
         body.api_key.clone(),
-        body.api_base_url,
-        body.model,
+        body.api_base_url.clone(),
+        body.model.clone(),
     )
     .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
 
     let mut guard = state.llm_client.lock().map_err(map_lock_err)?;
     *guard = Some(Arc::new(llm_client));
+
+    let mut creds_guard = state.llm_creds.lock().map_err(map_lock_err)?;
+    *creds_guard = Some(LlmCredentials {
+        api_key: body.api_key,
+        api_base_url: body.api_base_url,
+        model: body.model,
+    });
 
     Ok(ok())
 }
@@ -316,6 +330,30 @@ async fn main() {
     describe::register_describe_tools(&mut registry, &loader);
     query::register_query_tools(&mut registry, &loader);
 
+    let storage = Arc::new(MemoryStorage::for_development());
+    let fact_store = Arc::new(FactStore::new(storage.clone()));
+    let finding_store = Arc::new(FindingStore::new(storage.clone(), fact_store.clone()));
+    let macro_store = Arc::new(MacroConclusionStore::new(storage.clone()));
+    let prefs_store = Arc::new(PreferencesStore::new(storage.clone()));
+
+    tools::register_memory_read_tools(
+        &mut registry,
+        fact_store.clone(),
+        finding_store.clone(),
+        macro_store.clone(),
+        prefs_store.clone(),
+    );
+
+    let llm_creds: Arc<Mutex<Option<LlmCredentials>>> = Arc::new(Mutex::new(None));
+    tools::register_memory_write_tools(
+        &mut registry,
+        fact_store,
+        finding_store,
+        macro_store,
+        prefs_store,
+        llm_creds.clone(),
+    );
+
     let state = Arc::new(WebState {
         llm_client: Mutex::new(None),
         session: Mutex::new(Some(
@@ -329,6 +367,7 @@ async fn main() {
                 .unwrap_or_else(|| ChatSession::new(viewmodel::DEFAULT_SYSTEM_PROMPT.into())),
         )),
         registry: Arc::new(registry),
+        llm_creds,
     });
 
     let web_dir = std::env::var("WEB_DIR").unwrap_or_else(|_| "web".into());
