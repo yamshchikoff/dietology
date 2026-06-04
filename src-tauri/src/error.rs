@@ -10,6 +10,8 @@ pub enum AppError {
     Io(String),
     #[serde(rename = "json_parse_error")]
     JsonParse(String),
+    #[serde(rename = "validation_error")]
+    Validation(String),
 }
 
 impl fmt::Display for AppError {
@@ -18,6 +20,7 @@ impl fmt::Display for AppError {
             Self::DataFileNotFound(path) => write!(f, "data file not found: {path}"),
             Self::Io(e) => write!(f, "IO error: {e}"),
             Self::JsonParse(e) => write!(f, "JSON parse error: {e}"),
+            Self::Validation(e) => write!(f, "validation error: {e}"),
         }
     }
 }

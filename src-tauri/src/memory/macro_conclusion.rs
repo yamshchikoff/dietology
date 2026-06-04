@@ -48,7 +48,7 @@ impl MacroConclusionStore {
     ) -> AppResult<u64> {
         let tokens = MemoryStorage::estimate_tokens(content);
         if tokens > MAX_MACRO_TOKENS {
-            return Err(AppError::Io(format!(
+            return Err(AppError::Validation(format!(
                 "macro-conclusion exceeds token limit: {tokens}/{MAX_MACRO_TOKENS} tokens"
             )));
         }

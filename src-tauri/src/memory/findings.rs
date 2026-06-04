@@ -31,7 +31,7 @@ impl FindingStore {
     ) -> AppResult<Finding> {
         let tokens = MemoryStorage::estimate_tokens(content);
         if tokens > MAX_FINDING_TOKENS {
-            return Err(AppError::Io(format!(
+            return Err(AppError::Validation(format!(
                 "finding content exceeds token limit: {tokens}/{MAX_FINDING_TOKENS} tokens"
             )));
         }
@@ -154,13 +154,13 @@ impl FindingStore {
         match status {
             FindingStatus::Superseded => {
                 if finding.status == FindingStatus::Superseded {
-                    return Err(AppError::Io("finding is already superseded".into()));
+                    return Err(AppError::Validation("finding is already superseded".into()));
                 }
                 finding.status = FindingStatus::Superseded;
             }
             FindingStatus::Active => {
                 if !finding.foundation_changed {
-                    return Err(AppError::Io(
+                    return Err(AppError::Validation(
                         "cannot reaffirm: finding foundation_changed is not set".into(),
                     ));
                 }
@@ -187,6 +187,7 @@ impl FindingStore {
             .unwrap_or_default();
 
         let mut affected = Vec::new();
+        let mut affected_paths: Vec<String> = Vec::new();
         for entry in &entries {
             let path = format!("findings/{entry}/finding.json");
             if let Ok(mut finding) = self
@@ -201,16 +202,18 @@ impl FindingStore {
                             &serde_json::to_string_pretty(f)?,
                         )?;
                         affected.push(f.id.clone());
+                        affected_paths.push(path);
                     }
                 }
             }
         }
 
         if !affected.is_empty() {
+            let path_refs: Vec<&str> = affected_paths.iter().map(|s| s.as_str()).collect();
             let _ = auto_commit(
                 &self.storage,
                 &format!("memory: mark foundation_changed for fact {fact_id} — {} findings affected", affected.len()),
-                &[],
+                &path_refs,
             );
         }
 

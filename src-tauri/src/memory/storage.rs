@@ -24,7 +24,25 @@ impl MemoryStorage {
         &self.base_path
     }
 
+    fn validate_path(relative_path: &str) -> AppResult<()> {
+        if relative_path.is_empty() {
+            return Err(AppError::Validation("path is empty".into()));
+        }
+        if relative_path.contains('\0') {
+            return Err(AppError::Validation("path contains null byte".into()));
+        }
+        let p = Path::new(relative_path);
+        if p.is_absolute() {
+            return Err(AppError::Validation("absolute paths not allowed".into()));
+        }
+        if p.components().any(|c| c == std::path::Component::ParentDir) {
+            return Err(AppError::Validation("'..' not allowed in path".into()));
+        }
+        Ok(())
+    }
+
     pub fn read_json<T: DeserializeOwned>(&self, relative_path: &str) -> AppResult<T> {
+        Self::validate_path(relative_path)?;
         let full_path = self.base_path.join(relative_path);
         let data = fs::read_to_string(&full_path).map_err(|e| {
             AppError::DataFileNotFound(format!("{}: {e}", full_path.display()))
@@ -44,6 +62,7 @@ impl MemoryStorage {
     }
 
     pub fn read_dir_entries(&self, relative_path: &str) -> AppResult<Vec<String>> {
+        Self::validate_path(relative_path)?;
         let full_path = self.base_path.join(relative_path);
         if !full_path.exists() {
             return Ok(Vec::new());
@@ -66,6 +85,7 @@ impl MemoryStorage {
     }
 
     pub fn atomic_write(&self, relative_path: &str, data: &str) -> AppResult<()> {
+        Self::validate_path(relative_path)?;
         let full_path = self.base_path.join(relative_path);
         let tmp_path = full_path.with_extension("tmp");
 
@@ -93,11 +113,14 @@ impl MemoryStorage {
     }
 
     pub fn path_for(&self, relative: &str) -> PathBuf {
+        // path_for is used by internal code that has already validated inputs;
+        // validation here would be redundant but we do it for defense in depth.
+        let _ = Self::validate_path(relative);
         self.base_path.join(relative)
     }
 
     pub fn exists(&self, relative_path: &str) -> bool {
-        self.base_path.join(relative_path).exists()
+        Self::validate_path(relative_path).is_ok() && self.base_path.join(relative_path).exists()
     }
 
     pub fn now_iso() -> String {

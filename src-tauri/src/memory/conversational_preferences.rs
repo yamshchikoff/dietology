@@ -30,7 +30,7 @@ impl PreferencesStore {
     pub fn rewrite(&self, content: &str) -> AppResult<()> {
         let tokens = MemoryStorage::estimate_tokens(content);
         if tokens > MAX_PREFS_TOKENS {
-            return Err(AppError::Io(format!(
+            return Err(AppError::Validation(format!(
                 "preferences exceed token limit: {tokens}/{MAX_PREFS_TOKENS} tokens"
             )));
         }

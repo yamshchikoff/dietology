@@ -189,7 +189,13 @@ pub fn register_memory_write_tools(
                 .map_err(|e| e.to_string())?;
             let affected = fstore2.mark_foundation_changed(fact_id)
                 .map_err(|e| e.to_string())?;
-            let _ = ms.mark_foundation_changed();
+            if ms.exists() {
+                if let Ok((doc, _)) = ms.read() {
+                    if doc.based_on_facts.contains(&fact_id.to_string()) {
+                        let _ = ms.mark_foundation_changed();
+                    }
+                }
+            }
             serde_json::to_string(&json!({
                 "fact": corrected,
                 "affected_findings": affected
@@ -259,13 +265,23 @@ pub fn register_memory_write_tools(
         json!({
             "type": "object",
             "properties": {
-                "content": { "type": "string", "description": "Full text of the new macro-conclusion" }
+                "content": { "type": "string", "description": "Full text of the new macro-conclusion" },
+                "based_on_facts": { "type": "array", "items": { "type": "string" }, "description": "All fact IDs this conclusion is based on" },
+                "based_on_findings": { "type": "array", "items": { "type": "string" }, "description": "All finding IDs this conclusion is based on" }
             },
-            "required": ["content"]
+            "required": ["content", "based_on_facts", "based_on_findings"]
         }),
         Box::new(move |args: &serde_json::Value| -> Result<String, String> {
             let content = args.get("content").and_then(|v| v.as_str()).ok_or("missing content")?;
-            let v = ms2.rewrite(content, vec![], vec![])
+            let based_on_facts: Vec<String> = args.get("based_on_facts")
+                .and_then(|v| v.as_array())
+                .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+                .unwrap_or_default();
+            let based_on_findings: Vec<String> = args.get("based_on_findings")
+                .and_then(|v| v.as_array())
+                .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+                .unwrap_or_default();
+            let v = ms2.rewrite(content, based_on_facts, based_on_findings)
                 .map_err(|e| e.to_string())?;
             serde_json::to_string(&json!({"version": v})).map_err(|e| e.to_string())
         }),
@@ -368,7 +384,7 @@ Macro-conclusion — это целостный рассказ о пользов�
         .read_optional()
         .ok()
         .flatten()
-        .map(|(_, _fc)| 0u64)
+        .map(|(doc, _fc)| doc.version)
         .unwrap_or(0);
 
     let result = handle.block_on(async {
@@ -452,8 +468,9 @@ fn build_subagent_registry(
                 });
                 let offset = args.get("offset").and_then(|v| v.as_u64()).unwrap_or(0) as u32;
                 let limit = args.get("limit").and_then(|v| v.as_u64()).unwrap_or(50) as u32;
-                fs.list(fact_type, offset, limit).map(|r| serde_json::to_string(&r).unwrap())
+                fs.list(fact_type, offset, limit)
                     .map_err(|e| e.to_string())
+                    .and_then(|r| serde_json::to_string(&r).map_err(|e| e.to_string()))
             }),
         );
     }
@@ -471,8 +488,9 @@ fn build_subagent_registry(
             }),
             Box::new(move |args: &serde_json::Value| -> Result<String, String> {
                 let fact_id = args.get("fact_id").and_then(|v| v.as_str()).ok_or("missing fact_id")?;
-                fs.read(fact_id).map(|r| serde_json::to_string(&r).unwrap())
+                fs.read(fact_id)
                     .map_err(|e| e.to_string())
+                    .and_then(|r| serde_json::to_string(&r).map_err(|e| e.to_string()))
             }),
         );
     }
@@ -494,8 +512,9 @@ fn build_subagent_registry(
             Box::new(move |args: &serde_json::Value| -> Result<String, String> {
                 let offset = args.get("offset").and_then(|v| v.as_u64()).unwrap_or(0) as u32;
                 let limit = args.get("limit").and_then(|v| v.as_u64()).unwrap_or(50) as u32;
-                fstore.list(offset, limit).map(|r| serde_json::to_string(&r).unwrap())
+                fstore.list(offset, limit)
                     .map_err(|e| e.to_string())
+                    .and_then(|r| serde_json::to_string(&r).map_err(|e| e.to_string()))
             }),
         );
     }
@@ -513,8 +532,9 @@ fn build_subagent_registry(
             }),
             Box::new(move |args: &serde_json::Value| -> Result<String, String> {
                 let finding_id = args.get("finding_id").and_then(|v| v.as_str()).ok_or("missing finding_id")?;
-                fstore.read(finding_id).map(|r| serde_json::to_string(&r).unwrap())
+                fstore.read(finding_id)
                     .map_err(|e| e.to_string())
+                    .and_then(|r| serde_json::to_string(&r).map_err(|e| e.to_string()))
             }),
         );
     }
@@ -539,15 +559,27 @@ fn build_subagent_registry(
         let ms = ms2;
         registry.register(
             "rewrite_macro_conclusion",
-            "Rewrite macro-conclusion with full text. Max 50000 tokens.",
+            "Rewrite macro-conclusion with full text. Max 50000 tokens. Must provide all based_on_facts and based_on_findings IDs.",
             json!({
                 "type": "object",
-                "properties": { "content": { "type": "string" } },
-                "required": ["content"]
+                "properties": {
+                    "content": { "type": "string" },
+                    "based_on_facts": { "type": "array", "items": { "type": "string" } },
+                    "based_on_findings": { "type": "array", "items": { "type": "string" } }
+                },
+                "required": ["content", "based_on_facts", "based_on_findings"]
             }),
             Box::new(move |args: &serde_json::Value| -> Result<String, String> {
                 let content = args.get("content").and_then(|v| v.as_str()).ok_or("missing content")?;
-                ms.rewrite(content, vec![], vec![])
+                let based_on_facts: Vec<String> = args.get("based_on_facts")
+                    .and_then(|v| v.as_array())
+                    .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+                    .unwrap_or_default();
+                let based_on_findings: Vec<String> = args.get("based_on_findings")
+                    .and_then(|v| v.as_array())
+                    .map(|a| a.iter().filter_map(|v| v.as_str().map(String::from)).collect())
+                    .unwrap_or_default();
+                ms.rewrite(content, based_on_facts, based_on_findings)
                     .map(|v| json!({"version": v}).to_string())
                     .map_err(|e| e.to_string())
             }),

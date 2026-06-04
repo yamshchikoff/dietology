@@ -16,6 +16,10 @@ pub(crate) fn generate_id(prefix: &str) -> String {
     generate_id_impl(prefix)
 }
 
+use std::sync::atomic::{AtomicU64, Ordering};
+
+static ID_COUNTER: AtomicU64 = AtomicU64::new(0);
+
 pub(crate) fn generate_finding_id() -> String {
     generate_id_impl("finding")
 }
@@ -25,8 +29,8 @@ fn generate_id_impl(prefix: &str) -> String {
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap_or_default();
     let ts = dur.as_nanos() as u64;
-    let random: u32 = (ts as u32).wrapping_mul(1103515245).wrapping_add(12345);
-    format!("{prefix}-{ts:x}-{random:x}")
+    let counter = ID_COUNTER.fetch_add(1, Ordering::Relaxed);
+    format!("{prefix}-{ts:x}-{counter:x}")
 }
 
 fn build_disclaimer() -> String {
@@ -53,7 +57,7 @@ impl FactStore {
         let tokens = MemoryStorage::estimate_tokens(&combined);
 
         if tokens > MAX_USER_REPORTED_TOKENS {
-            return Err(AppError::Io(format!(
+            return Err(AppError::Validation(format!(
                 "content exceeds token limit: {tokens}/{MAX_USER_REPORTED_TOKENS} tokens"
             )));
         }
@@ -294,7 +298,7 @@ impl FactStore {
         let tokens = MemoryStorage::estimate_tokens(&combined);
 
         if tokens > MAX_USER_REPORTED_TOKENS {
-            return Err(AppError::Io(format!(
+            return Err(AppError::Validation(format!(
                 "content exceeds token limit: {tokens}/{MAX_USER_REPORTED_TOKENS} tokens"
             )));
         }
@@ -399,9 +403,7 @@ impl FactStore {
             let fact: UserReportedFact = self
                 .storage
                 .read_json_optional(&format!("{dir}/v{current_version}.json"))?
-                .unwrap_or_else(|| {
-                    panic!("fact not found: {fact_id}")
-                });
+                .ok_or_else(|| AppError::DataFileNotFound(format!("fact not found: {fact_id}")))?;
             Ok(fact.findings)
         } else {
             let dir = format!("facts/imported/{fact_id}");
@@ -413,9 +415,7 @@ impl FactStore {
             let fact: ImportedFact = self
                 .storage
                 .read_json_optional(&format!("{dir}/v{current_version}.json"))?
-                .unwrap_or_else(|| {
-                    panic!("fact not found: {fact_id}")
-                });
+                .ok_or_else(|| AppError::DataFileNotFound(format!("fact not found: {fact_id}")))?;
             Ok(fact.findings)
         }
     }
