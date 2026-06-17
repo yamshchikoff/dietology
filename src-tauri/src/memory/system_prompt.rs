@@ -1,13 +1,11 @@
 use super::conversational_preferences::PreferencesStore;
 use super::master_description::MasterDescriptionStore;
-use super::storage::MemoryStorage;
 
 /// Собирает полный системный промпт из статических секций и данных из memory-подсистемы.
 ///
 /// Порядок секций фиксирован. Секции 2 и 3 опциональны — если данных нет, модель получает
 /// инструкцию собрать информацию.
 pub fn assemble_system_prompt(
-    _storage: &MemoryStorage,
     master_store: &MasterDescriptionStore,
     prefs_store: &PreferencesStore,
 ) -> String {
@@ -68,12 +66,12 @@ fn preferences_section(store: &PreferencesStore) -> String {
     match store.read_optional() {
         Ok(Some(prefs)) => {
             format!(
-                "## Предпочтения пользователя\n\n{}\n\n---\n\nОбновлены: {}.\n\nСледуй этим предпочтениям в диалоге. Если пользователь корректирует твой стиль — обнови через `update_conversational_preferences`.",
+                "## Предпочтения пользователя\n\n{}\n\n---\n\nОбновлены: {}.\n\nСледуй этим предпочтениям в диалоге. Если пользователь корректирует твой стиль — обнови через `rewrite_conversational_preferences`.",
                 prefs.content, prefs.updated_at
             )
         }
         Ok(None) => {
-            "## Предпочтения пользователя\n\nПредпочтения пока не заданы. По умолчанию: отвечай на русском языке, стиль — экспертный, но доступный. Если пользователь высказывает предпочтения по стилю общения — зафиксируй через `update_conversational_preferences`."
+            "## Предпочтения пользователя\n\nПредпочтения пока не заданы. По умолчанию: отвечай на русском языке, стиль — экспертный, но доступный. Если пользователь высказывает предпочтения по стилю общения — зафиксируй через `rewrite_conversational_preferences`."
                 .to_string()
         }
         Err(e) => {
@@ -108,7 +106,7 @@ const MEMORY_PURPOSE: &str = "\
 2. **Findings (находки)** — выводы, связывающие несколько фактов. Глубина от факта до вывода = 1 (zero indirection). Finding не может ссылаться на другой finding.
 3. **Master Description** — целостный профиль пользователя, собираемый из фактов и находок. Всегда в контексте. Навигационное оглавление.
 
-Все изменения в памяти — через тулы. Чтение: `list_facts`, `read_fact`, `list_findings`, `read_finding`, `read_master_description`, `read_conversational_preferences`. Запись: `create_user_reported_fact`, `create_imported_fact`, `correct_user_reported_fact`, `create_finding`, `resolve_finding`, `update_master_description`, `update_conversational_preferences`, `cleanup_finding`.";
+Все изменения в памяти — через тулы. Чтение: `list_facts`, `read_fact`, `list_findings`, `read_finding`, `read_master_description`, `read_conversational_preferences`. Запись: `create_user_reported_fact`, `create_imported_fact`, `correct_user_reported_fact`, `create_finding`, `resolve_finding_status`, `update_master_description`, `rewrite_conversational_preferences`.";
 
 const EPISTEMIC_STATUS: &str = "\
 ## Эпистемический статус фактов
@@ -137,7 +135,7 @@ const FOUNDATION_CHANGED: &str = "\
 2. Выставляет `foundation_changed: true` на всех finding, ссылающихся на этот факт.
 3. Выставляет `foundation_changed: true` на Master Description, если он ссылается на этот факт.
 
-**Твоя обязанность:** когда видишь finding или master description с `foundation_changed: true`, ты должен разрешить эту ситуацию при первой возможности (в рамках housekeeping или раньше). Пересмотри finding: если он всё ещё валиден — вызови `resolve_finding` со статусом `reaffirmed`. Если более не валиден — `resolve_finding` со статусом `superseded`. Затем обнови Master Description через `update_master_description`.
+**Твоя обязанность:** когда видишь finding или master description с `foundation_changed: true`, ты должен разрешить эту ситуацию при первой возможности (в рамках housekeeping или раньше). Пересмотри finding: если он всё ещё валиден — вызови `resolve_finding_status` со статусом `reaffirmed`. Если более не валиден — `resolve_finding_status` со статусом `superseded`. Затем обнови Master Description через `update_master_description`.
 
 Не игнорируй `foundation_changed`. Это блокирующий флаг.";
 
@@ -161,10 +159,10 @@ Master Description — это целостный профиль пользова
 const REWRITE_SEMANTICS: &str = "\
 ## Семантика rewrite-тулов
 
-Тулы `update_master_description` и `update_conversational_preferences` работают по принципу **полной замены** (rewrite), а не частичного обновления.
+Тулы `update_master_description` и `rewrite_conversational_preferences` работают по принципу **полной замены** (rewrite), а не частичного обновления.
 
 - **update_master_description:** ты передаёшь полный новый текст Master Description. Система создаёт новую версию (vN+1), сохраняет старую и атомарно подменяет указатель active.json. Бэкап — старые версии в `master-description/v*.json`.
-- **update_conversational_preferences:** ты передаёшь полный новый текст предпочтений. Система создаёт `current.json`, предыдущая версия сохраняется в `backup.json`. Доступен `restore` для отката.
+- **rewrite_conversational_preferences:** ты передаёшь полный новый текст предпочтений. Система создаёт `current.json`, предыдущая версия сохраняется в `backup.json`. Доступен `restore` для отката.
 
 **Важно:** не используй эти тулы для частичных правок. Каждый вызов — полная замена содержимого. Если нужно добавить один пункт — передай весь документ с добавленным пунктом.";
 
@@ -199,18 +197,19 @@ Housekeeping — это процедура обслуживания памяти
 ### Процедура
 
 1. **Основной шаг — `update_master_description`:**
-   - Просмотри все активные факты пользователя: `list_facts` (type=user_reported, потом type=imported).
-   - Просмотри все активные находки: `list_findings` (status=active).
-   - Собери целостный профиль пользователя в формате Master Description (см. секцию «Семантика Master Description»).
-   - Вызови `update_master_description` с полным текстом, списками `based_on_facts` и `based_on_findings`.
-   - Если `update_master_description` дорого (много данных) — используй subagent. Система сама запустит изолированного агента с урезанным набором тулов (только чтение фактов/находок + `update_master_description`).
+   Вызови `update_master_description` (без параметров). Subagent прочитает все факты и находки,
+   проверит консистентность и вызовет `rewrite_master_description` с полным текстом.
+   Это рекомендуемый путь для housekeeping — subagent делает всю работу.
+
+   Для быстрых обновлений (например, добавить один новый факт) можно вызвать
+   `rewrite_master_description` напрямую, передав content, based_on_facts и based_on_findings.
 
 2. **Опционально — обновление предпочтений:**
-   - Если пользователь высказывал новые предпочтения по стилю общения — вызови `update_conversational_preferences`.
+   - Если пользователь высказывал новые предпочтения по стилю общения — вызови `rewrite_conversational_preferences`.
 
 3. **Разрешение foundation_changed:**
-   - Проверь finding с `foundation_changed: true`: `list_findings` с фильтром.
-   - Для каждого: пересмотри валидность с учётом исправленного факта. Вызови `resolve_finding` (reaffirmed или superseded).
+   - Просмотри все finding через `list_findings` и найди те, у которых `foundation_changed: true`.
+   - Для каждого: пересмотри валидность с учётом исправленного факта. Вызови `resolve_finding_status` (reaffirmed или superseded).
    - После разрешения всех finding — пересобери Master Description.
 
 ### Антипаттерны

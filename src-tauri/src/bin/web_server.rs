@@ -159,7 +159,6 @@ async fn new_chat_handler(
         .filter(|s| !s.trim().is_empty())
         .unwrap_or_else(|| {
             system_prompt::assemble_system_prompt(
-                &state.storage,
                 &state.master_store,
                 &state.prefs_store,
             )
@@ -377,7 +376,7 @@ async fn main() {
     );
 
     let default_prompt =
-        system_prompt::assemble_system_prompt(&app_storage, &app_master_store, &app_prefs_store);
+        system_prompt::assemble_system_prompt(&app_master_store, &app_prefs_store);
 
     let state = Arc::new(WebState {
         llm_client: Mutex::new(None),

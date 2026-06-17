@@ -61,10 +61,6 @@ pub struct AppState {
     pub prefs_store: Arc<PreferencesStore>,
 }
 
-pub const DEFAULT_SYSTEM_PROMPT: &str = "\
-Ты — ассистент по питанию. Отвечай на русском языке.
-Для поиска данных используй инструменты: сначала describe для навигации, потом query для конкретных значений.";
-
 // ---- Invariant helpers ----
 
 /// Возвращает `Ok` если сессия свободна (не занята `send_message`), иначе ошибку.
@@ -78,7 +74,7 @@ pub fn ensure_free(guard: &Option<ChatSession>) -> Result<(), String> {
 
 /// Автосохранение сессии в `data/history/<YYYY-MM-DD>.jsonl`.
 ///
-/// Не создаёт директорию если её нет — молча пропускает (логирует в eprintln).
+/// Создаёт директорию `history/` если её нет. Ошибки логирует в stderr, не фейлит запрос.
 pub fn auto_save_session(storage: &MemoryStorage, session: &ChatSession) -> Result<(), String> {
     let now = MemoryStorage::now_iso();
     let date = &now[..10]; // "2026-06-17"
@@ -107,7 +103,6 @@ pub fn new_chat(
         .filter(|s| !s.trim().is_empty())
         .unwrap_or_else(|| {
             system_prompt::assemble_system_prompt(
-                &state.storage,
                 &state.master_store,
                 &state.prefs_store,
             )
