@@ -387,6 +387,11 @@ data/
 
 ### 2026-05-19 — Модель пользователя и карта доступа
 
+> **Эволюция архитектуры:** данная секция описывает первоначальную модель user-map как самобалансирующегося дерева (май 2025).
+> В текущей реализации user-map = memory-подсистема: Master Description (навигационный слой) + Facts + Findings + Conversational Preferences.
+> Детали реализации: [plan-memory-subsystem.md](./plan-memory-subsystem.md).
+> Инструменты `read_user_map`, `read_user_map_field`, `update_user_map` заменены на тулы memory-подсистемы (`list_facts`, `read_fact`, `list_findings`, `read_finding`, `read_master_description`, `create_user_reported_fact`, `create_finding`, `rewrite_master_description`, `update_master_description` и др.).
+
 Диалог + находки + исследования не могут быть «моделью пользователя» напрямую — при первой же очистке контекста модель теряет к ним доступ. Нужна **карта доступа** — компактное представление, которое всегда помещается в контекст и указывает модели, что важно и куда смотреть.
 
 **Три слоя работы с данными:**

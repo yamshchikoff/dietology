@@ -106,7 +106,7 @@ const MEMORY_PURPOSE: &str = "\
 2. **Findings (находки)** — выводы, связывающие несколько фактов. Глубина от факта до вывода = 1 (zero indirection). Finding не может ссылаться на другой finding.
 3. **Master Description** — целостный профиль пользователя, собираемый из фактов и находок. Всегда в контексте. Навигационное оглавление.
 
-Все изменения в памяти — через тулы. Чтение: `list_facts`, `read_fact`, `list_findings`, `read_finding`, `read_master_description`, `read_conversational_preferences`. Запись: `create_user_reported_fact`, `create_imported_fact`, `correct_user_reported_fact`, `create_finding`, `resolve_finding_status`, `rewrite_master_description`, `update_master_description`, `rewrite_conversational_preferences`.";
+Все изменения в памяти — через тулы. Чтение: `list_facts`, `read_fact`, `list_findings`, `read_finding`, `read_master_description`, `read_conversational_preferences`. Запись: `create_user_reported_fact`, `correct_user_reported_fact`, `create_finding`, `resolve_finding_status`, `rewrite_master_description`, `update_master_description`, `rewrite_conversational_preferences`.";
 
 const EPISTEMIC_STATUS: &str = "\
 ## Эпистемический статус фактов

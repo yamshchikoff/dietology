@@ -42,7 +42,7 @@
 - Query-инструменты
 - Фронтенд (только placeholder `dist/index.html`)
 - MVVM-реализация
-- Git commit automation, user-map, investigation mode
+- Investigation mode
 - Полноценный CI/CD (placeholder)
 
 ## Ссылки

@@ -228,8 +228,7 @@ make fmt       # cd src-tauri && cargo fmt
 - 96 тестов, clippy clean
 
 **Ещё нет:**
-- Git commit automation, user-map, investigation mode
-- Подсистема памяти (facts, findings, master description) — [план реализации](./plan-memory-subsystem.md)
+- Investigation mode
 - Полноценного CI/CD
 
 **Следующий шаг:** визуализации (ECharts) — рендеринг nutrition data.
