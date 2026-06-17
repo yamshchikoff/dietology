@@ -42,6 +42,14 @@ pub fn run() {
             .unwrap_or_else(|_| "https://api.deepseek.com/anthropic".into()),
         model: std::env::var("DEEPSEEK_MODEL").unwrap_or_else(|_| "deepseek-chat".into()),
     };
+
+    // Clone for AppState before stores are moved into write tools.
+    let app_storage = storage.clone();
+    let app_fact_store = fact_store.clone();
+    let app_finding_store = finding_store.clone();
+    let app_master_store = master_store.clone();
+    let app_prefs_store = prefs_store.clone();
+
     memory::tools::register_memory_write_tools(
         &mut registry,
         fact_store,
@@ -59,6 +67,11 @@ pub fn run() {
         .manage(AppState {
             llm_client,
             session,
+            storage: app_storage,
+            fact_store: app_fact_store,
+            finding_store: app_finding_store,
+            master_store: app_master_store,
+            prefs_store: app_prefs_store,
         })
         .invoke_handler(tauri::generate_handler![
             viewmodel::new_chat,

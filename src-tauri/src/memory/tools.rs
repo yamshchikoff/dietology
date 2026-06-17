@@ -497,7 +497,6 @@ fn build_subagent_registry(
 
     // list_findings
     {
-        let fstore = fstore;
         registry.register(
             "list_findings",
             "List findings with pagination.",
@@ -541,7 +540,6 @@ fn build_subagent_registry(
 
     // read_master_description
     {
-        let ms = ms;
         registry.register(
             "read_master_description",
             "Read the current master description.",

@@ -1,10 +1,17 @@
 use serde::Serialize;
 use std::path::PathBuf;
+use std::sync::Arc;
 use tauri::{Emitter, State};
 
 use crate::llm::client::LlmClient;
 use crate::llm::session::ChatSession;
 use crate::llm::types::{Message, Usage};
+use crate::memory::conversational_preferences::PreferencesStore;
+use crate::memory::facts::FactStore;
+use crate::memory::findings::FindingStore;
+use crate::memory::master_description::MasterDescriptionStore;
+use crate::memory::storage::MemoryStorage;
+use crate::memory::system_prompt;
 
 // ---- DTOs ----
 
@@ -45,6 +52,13 @@ pub struct AppState {
     /// Мьютекс защищает от гонок между Tauri-командами, Option — от попытки
     /// использовать сессию, пока она мутирует внутри `send_message`.
     pub session: std::sync::Mutex<Option<ChatSession>>,
+
+    // Memory stores — доступны всем Tauri-командам.
+    pub storage: Arc<MemoryStorage>,
+    pub fact_store: Arc<FactStore>,
+    pub finding_store: Arc<FindingStore>,
+    pub master_store: Arc<MasterDescriptionStore>,
+    pub prefs_store: Arc<PreferencesStore>,
 }
 
 pub const DEFAULT_SYSTEM_PROMPT: &str = "\
@@ -62,6 +76,26 @@ pub fn ensure_free(guard: &Option<ChatSession>) -> Result<(), String> {
     }
 }
 
+/// Автосохранение сессии в `data/history/<YYYY-MM-DD>.jsonl`.
+///
+/// Не создаёт директорию если её нет — молча пропускает (логирует в eprintln).
+pub fn auto_save_session(storage: &MemoryStorage, session: &ChatSession) -> Result<(), String> {
+    let now = MemoryStorage::now_iso();
+    let date = &now[..10]; // "2026-06-17"
+    let history_dir = "history".to_string();
+    let file_name = format!("{date}.jsonl");
+
+    // Если директория истории не существует — создаём.
+    let dir_path = storage.path_for(&history_dir).map_err(|e| e.to_string())?;
+    if !dir_path.exists() {
+        std::fs::create_dir_all(&dir_path).map_err(|e| format!("create history dir: {e}"))?;
+    }
+
+    let file_path = dir_path.join(&file_name);
+    session.save_to_jsonl(&file_path)?;
+    Ok(())
+}
+
 // ---- Commands ----
 
 #[tauri::command]
@@ -71,7 +105,13 @@ pub fn new_chat(
 ) -> Result<SessionInfo, String> {
     let prompt = system_prompt
         .filter(|s| !s.trim().is_empty())
-        .unwrap_or_else(|| DEFAULT_SYSTEM_PROMPT.into());
+        .unwrap_or_else(|| {
+            system_prompt::assemble_system_prompt(
+                &state.storage,
+                &state.master_store,
+                &state.prefs_store,
+            )
+        });
 
     let session = ChatSession::new(prompt.clone());
     let msg_count = session.message_count();
@@ -151,6 +191,13 @@ pub async fn send_message(
                     }
                 }),
             );
+
+            // Автосохранение диалога в data/history/<YYYY-MM-DD>.jsonl.
+            // Не фейлим запрос если сохранение упало.
+            if let Err(e) = auto_save_session(&state.storage, &session) {
+                eprintln!("[dietology] auto-save session failed: {e}");
+            }
+
             let mut guard = state.session.lock().map_err(|e| e.to_string())?;
             *guard = Some(session);
             Ok(resp)

@@ -190,20 +190,18 @@ impl FindingStore {
         let mut affected_paths: Vec<String> = Vec::new();
         for entry in &entries {
             let path = format!("findings/{entry}/finding.json");
-            if let Ok(mut finding) = self
+            if let Ok(Some(ref mut f)) = self
                 .storage
                 .read_json_optional::<Finding>(&path)
             {
-                if let Some(f) = &mut finding {
-                    if f.based_on.contains(&fact_id.to_string()) {
-                        f.foundation_changed = true;
-                        self.storage.atomic_write(
-                            &path,
-                            &serde_json::to_string_pretty(f)?,
-                        )?;
-                        affected.push(f.id.clone());
-                        affected_paths.push(path);
-                    }
+                if f.based_on.contains(&fact_id.to_string()) {
+                    f.foundation_changed = true;
+                    self.storage.atomic_write(
+                        &path,
+                        &serde_json::to_string_pretty(f)?,
+                    )?;
+                    affected.push(f.id.clone());
+                    affected_paths.push(path);
                 }
             }
         }

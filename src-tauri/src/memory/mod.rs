@@ -4,5 +4,6 @@ pub mod findings;
 pub mod git;
 pub mod master_description;
 pub mod storage;
+pub mod system_prompt;
 pub mod tools;
 pub mod types;

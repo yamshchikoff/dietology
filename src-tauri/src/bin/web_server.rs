@@ -25,6 +25,7 @@ use dietology_lib::memory::facts::FactStore;
 use dietology_lib::memory::findings::FindingStore;
 use dietology_lib::memory::master_description::{LlmCredentials, MasterDescriptionStore};
 use dietology_lib::memory::storage::MemoryStorage;
+use dietology_lib::memory::system_prompt;
 use dietology_lib::memory::tools;
 use dietology_lib::tools::registry::ToolRegistry;
 use dietology_lib::tools::{describe, query};
@@ -42,6 +43,9 @@ struct WebState {
     session: Mutex<Option<ChatSession>>,
     registry: Arc<ToolRegistry>,
     llm_creds: Arc<Mutex<Option<LlmCredentials>>>,
+    storage: Arc<MemoryStorage>,
+    master_store: Arc<MasterDescriptionStore>,
+    prefs_store: Arc<PreferencesStore>,
 }
 
 type SharedState = Arc<WebState>;
@@ -153,7 +157,13 @@ async fn new_chat_handler(
     let prompt = body
         .system_prompt
         .filter(|s| !s.trim().is_empty())
-        .unwrap_or_else(|| viewmodel::DEFAULT_SYSTEM_PROMPT.into());
+        .unwrap_or_else(|| {
+            system_prompt::assemble_system_prompt(
+                &state.storage,
+                &state.master_store,
+                &state.prefs_store,
+            )
+        });
 
     let session = ChatSession::new(prompt.clone());
     let info = SessionInfo {
@@ -228,6 +238,12 @@ async fn send_message_handler(
                         }
                     }),
                 ));
+
+                // Автосохранение — не фейлим запрос если упало.
+                if let Err(e) = viewmodel::auto_save_session(&state_clone.storage, &session) {
+                    eprintln!("[dietology] auto-save session failed: {e}");
+                }
+
                 match state_clone.session.lock() {
                     Ok(mut guard) => *guard = Some(session),
                     Err(poison) => {
@@ -345,6 +361,12 @@ async fn main() {
     );
 
     let llm_creds: Arc<Mutex<Option<LlmCredentials>>> = Arc::new(Mutex::new(None));
+
+    // Clone for WebState before stores are moved into write tools.
+    let app_storage = storage.clone();
+    let app_master_store = master_store.clone();
+    let app_prefs_store = prefs_store.clone();
+
     tools::register_memory_write_tools(
         &mut registry,
         fact_store,
@@ -353,6 +375,9 @@ async fn main() {
         prefs_store,
         llm_creds.clone(),
     );
+
+    let default_prompt =
+        system_prompt::assemble_system_prompt(&app_storage, &app_master_store, &app_prefs_store);
 
     let state = Arc::new(WebState {
         llm_client: Mutex::new(None),
@@ -364,10 +389,13 @@ async fn main() {
                         .ok()
                         .and_then(|safe_path| ChatSession::load_from_jsonl(&safe_path).ok())
                 })
-                .unwrap_or_else(|| ChatSession::new(viewmodel::DEFAULT_SYSTEM_PROMPT.into())),
+                .unwrap_or_else(|| ChatSession::new(default_prompt)),
         )),
         registry: Arc::new(registry),
         llm_creds,
+        storage: app_storage,
+        master_store: app_master_store,
+        prefs_store: app_prefs_store,
     });
 
     let web_dir = std::env::var("WEB_DIR").unwrap_or_else(|_| "web".into());
