@@ -106,7 +106,7 @@ const MEMORY_PURPOSE: &str = "\
 2. **Findings (находки)** — выводы, связывающие несколько фактов. Глубина от факта до вывода = 1 (zero indirection). Finding не может ссылаться на другой finding.
 3. **Master Description** — целостный профиль пользователя, собираемый из фактов и находок. Всегда в контексте. Навигационное оглавление.
 
-Все изменения в памяти — через тулы. Чтение: `list_facts`, `read_fact`, `list_findings`, `read_finding`, `read_master_description`, `read_conversational_preferences`. Запись: `create_user_reported_fact`, `create_imported_fact`, `correct_user_reported_fact`, `create_finding`, `resolve_finding_status`, `update_master_description`, `rewrite_conversational_preferences`.";
+Все изменения в памяти — через тулы. Чтение: `list_facts`, `read_fact`, `list_findings`, `read_finding`, `read_master_description`, `read_conversational_preferences`. Запись: `create_user_reported_fact`, `create_imported_fact`, `correct_user_reported_fact`, `create_finding`, `resolve_finding_status`, `rewrite_master_description`, `update_master_description`, `rewrite_conversational_preferences`.";
 
 const EPISTEMIC_STATUS: &str = "\
 ## Эпистемический статус фактов
@@ -152,16 +152,17 @@ Master Description — это целостный профиль пользова
 - Ограничения: диетические предпочтения, исключённые продукты.
 - Ключевые находки: основные выводы из анализа питания.
 
-**Обновление:** только через `update_master_description` (вручную или через subagent в housekeeping). Ты передаёшь полный новый текст — система создаёт новую версию и атомарно подменяет active.json.
+**Обновление:** через `update_master_description` (subagent, без параметров — читает всё сам и вызывает `rewrite_master_description`) или `rewrite_master_description` (прямой вызов, ты передаёшь полный новый текст). Система создаёт новую версию и атомарно подменяет active.json.
 
 **Не дублируй:** Master Description — сводка, не дублируй в него каждый факт. Он должен быть достаточно компактен чтобы всегда помещаться в контекст (лимит: 50 000 токенов).";
 
 const REWRITE_SEMANTICS: &str = "\
 ## Семантика rewrite-тулов
 
-Тулы `update_master_description` и `rewrite_conversational_preferences` работают по принципу **полной замены** (rewrite), а не частичного обновления.
+Тулы `rewrite_master_description` и `rewrite_conversational_preferences` работают по принципу **полной замены** (rewrite), а не частичного обновления.
 
-- **update_master_description:** ты передаёшь полный новый текст Master Description. Система создаёт новую версию (vN+1), сохраняет старую и атомарно подменяет указатель active.json. Бэкап — старые версии в `master-description/v*.json`.
+- **rewrite_master_description:** ты передаёшь полный новый текст Master Description. Система создаёт новую версию (vN+1), сохраняет старую и атомарно подменяет указатель active.json. Бэкап — старые версии в `master-description/v*.json`.
+- **update_master_description:** subagent-версия обновления. Вызывается без параметров, subagent сам читает все факты/находки и вызывает `rewrite_master_description`.
 - **rewrite_conversational_preferences:** ты передаёшь полный новый текст предпочтений. Система создаёт `current.json`, предыдущая версия сохраняется в `backup.json`. Доступен `restore` для отката.
 
 **Важно:** не используй эти тулы для частичных правок. Каждый вызов — полная замена содержимого. Если нужно добавить один пункт — передай весь документ с добавленным пунктом.";
