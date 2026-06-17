@@ -354,7 +354,7 @@ impl FactStore {
         Ok(corrected)
     }
 
-    pub fn add_finding_to_fact(&self, fact_id: &str, finding_id: &str) -> AppResult<()> {
+    pub fn add_finding_to_fact(&self, fact_id: &str, finding_id: &str) -> AppResult<String> {
         if fact_id.starts_with("urfact-") {
             self.append_finding_to_user_reported(fact_id, finding_id)
         } else if fact_id.starts_with("ifact-") {
@@ -366,7 +366,7 @@ impl FactStore {
         }
     }
 
-    fn append_finding_to_user_reported(&self, fact_id: &str, finding_id: &str) -> AppResult<()> {
+    fn append_finding_to_user_reported(&self, fact_id: &str, finding_id: &str) -> AppResult<String> {
         let dir = format!("facts/user-reported/{fact_id}");
         let versions: Vec<FactVersion> = self
             .storage
@@ -380,10 +380,10 @@ impl FactStore {
             self.storage
                 .atomic_write(&v_path, &serde_json::to_string_pretty(&fact)?)?;
         }
-        Ok(())
+        Ok(v_path)
     }
 
-    fn append_finding_to_imported(&self, fact_id: &str, finding_id: &str) -> AppResult<()> {
+    fn append_finding_to_imported(&self, fact_id: &str, finding_id: &str) -> AppResult<String> {
         let dir = format!("facts/imported/{fact_id}");
         let versions: Vec<FactVersion> = self
             .storage
@@ -397,7 +397,7 @@ impl FactStore {
             self.storage
                 .atomic_write(&v_path, &serde_json::to_string_pretty(&fact)?)?;
         }
-        Ok(())
+        Ok(v_path)
     }
 
     pub fn get_backlinked_finding_ids(&self, fact_id: &str) -> AppResult<Vec<String>> {
@@ -498,7 +498,7 @@ mod tests {
     #[test]
     fn test_create_fact_oversized_content() {
         let store = test_store();
-        let long_content = "x".repeat(5000);
+        let long_content = "x".repeat(10000);
         let result = store.create_user_reported(&long_content, None);
         assert!(result.is_err());
         let err = result.unwrap_err().to_string();

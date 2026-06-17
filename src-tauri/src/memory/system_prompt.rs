@@ -217,3 +217,70 @@ Housekeeping — это процедура обслуживания памяти
 - Не вызывай `update_master_description` на каждое сообщение пользователя. Master Description обновляется по мере накопления существенных изменений.
 - Не создавай finding на каждый факт. Finding — нетривиальная находка, связывающая несколько фактов.
 - Не дублируй факты в Master Description. Он — сводка, а не лог.";
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::memory::storage::MemoryStorage;
+    use std::sync::Arc;
+    use std::sync::atomic::{AtomicU32, Ordering};
+
+    static TEST_N: AtomicU32 = AtomicU32::new(0);
+
+    fn make_stores() -> (MasterDescriptionStore, PreferencesStore) {
+        let n = TEST_N.fetch_add(1, Ordering::SeqCst);
+        let dir = std::env::temp_dir()
+            .join(format!("dietology_sp_test_{}_{}", std::process::id(), n));
+        std::fs::create_dir_all(&dir).unwrap();
+        let storage = Arc::new(MemoryStorage::new(dir));
+        (
+            MasterDescriptionStore::new(storage.clone()),
+            PreferencesStore::new(storage),
+        )
+    }
+
+    #[test]
+    fn test_assemble_empty() {
+        let (ms, ps) = make_stores();
+        let prompt = assemble_system_prompt(&ms, &ps);
+        // Must contain all 11 static sections
+        assert!(prompt.contains("Этический кодекс"));
+        assert!(prompt.contains("Memory-подсистема"));
+        assert!(prompt.contains("Эпистемический статус фактов"));
+        assert!(prompt.contains("Семантика foundation_changed"));
+        assert!(prompt.contains("Семантика Master Description"));
+        assert!(prompt.contains("Семантика rewrite-тулов"));
+        assert!(prompt.contains("Мониторинг контекста"));
+        assert!(prompt.contains("Немедленная фиксация findings"));
+        assert!(prompt.contains("Housekeeping-процедура"));
+        // Missing master → instruction message
+        assert!(prompt.contains("Профиль пользователя ещё не собран"));
+        // Missing prefs → default instruction
+        assert!(prompt.contains("Предпочтения пока не заданы"));
+    }
+
+    #[test]
+    fn test_assemble_with_master_and_prefs() {
+        let (ms, ps) = make_stores();
+        ms.rewrite("Тестовый профиль пользователя", vec![], vec![])
+            .unwrap();
+        ps.rewrite("Отвечай кратко").unwrap();
+
+        let prompt = assemble_system_prompt(&ms, &ps);
+        assert!(prompt.contains("Тестовый профиль пользователя"));
+        assert!(prompt.contains("Отвечай кратко"));
+        assert!(!prompt.contains("Профиль пользователя ещё не собран"));
+        assert!(!prompt.contains("Предпочтения пока не заданы"));
+    }
+
+    #[test]
+    fn test_foundation_changed_flag_in_prompt() {
+        let (ms, ps) = make_stores();
+        ms.rewrite("Профиль v1", vec!["urfact-1".into()], vec![])
+            .unwrap();
+        ms.mark_foundation_changed().unwrap();
+
+        let prompt = assemble_system_prompt(&ms, &ps);
+        assert!(prompt.contains("foundation_changed = true"));
+    }
+}

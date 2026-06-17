@@ -58,14 +58,24 @@ impl FindingStore {
             &serde_json::to_string_pretty(&finding)?,
         )?;
 
+        let mut commit_paths: Vec<String> = Vec::new();
         for fact_id in based_on {
-            let _ = self.fact_store.add_finding_to_fact(fact_id, &finding_id);
+            match self.fact_store.add_finding_to_fact(fact_id, &finding_id) {
+                Ok(modified_path) => commit_paths.push(modified_path),
+                Err(_) => { /* non-fatal: backlink commit is best-effort */ }
+            }
         }
+
+        // Collect all paths (finding + affected facts) for commit
+        commit_paths.push(format!("{dir}/finding.json"));
+        // Sort for stable commit ordering
+        commit_paths.sort();
+        let commit_refs: Vec<&str> = commit_paths.iter().map(|s| s.as_str()).collect();
 
         let _ = auto_commit(
             &self.storage,
             &format!("memory: create finding {finding_id}"),
-            &[&format!("{dir}/finding.json")],
+            &commit_refs,
         );
 
         Ok(finding)
@@ -269,7 +279,7 @@ mod tests {
     fn test_create_finding_oversized() {
         let (store, fact_store) = test_stores();
         let fact = fact_store.create_user_reported("X", None).unwrap();
-        let long = "x".repeat(5000);
+        let long = "x".repeat(10000);
         let result = store.create(&long, &[fact.id], "reason");
         assert!(result.is_err());
     }

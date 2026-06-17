@@ -339,7 +339,7 @@ pub fn register_memory_write_tools(
     );
 }
 
-fn run_subagent(
+pub fn run_subagent(
     fact_store: Arc<FactStore>,
     finding_store: Arc<FindingStore>,
     master_store: Arc<MasterDescriptionStore>,
@@ -378,7 +378,6 @@ Master description — это целостный рассказ о пользо�
 
 НЕ вызывай create_finding, correct_user_reported_fact и другие write-тулы. ТОЛЬКО rewrite_master_description.";
 
-    let handle = tokio::runtime::Handle::current();
     let version_before = master_store
         .read_optional()
         .ok()
@@ -386,15 +385,28 @@ Master description — это целостный рассказ о пользо�
         .map(|(doc, _fc)| doc.version)
         .unwrap_or(0);
 
-    let result = handle.block_on(async {
-        let mut messages = vec![Message {
-            role: "user".into(),
-            content: vec![ContentBlock::Text {
-                text: "Перепиши master description на основе всех фактов и находок.".into(),
-            }],
-        }];
-        subagent_client.chat(&mut messages, subagent_prompt).await
-    });
+    let client = Arc::new(subagent_client);
+    let async_work = {
+        let c = client.clone();
+        async move {
+            let mut messages = vec![Message {
+                role: "user".into(),
+                content: vec![ContentBlock::Text {
+                    text: "Перепиши master description на основе всех фактов и находок.".into(),
+                }],
+            }];
+            c.chat(&mut messages, subagent_prompt).await
+        }
+    };
+
+    let result = match tokio::runtime::Handle::try_current() {
+        Ok(handle) => tokio::task::block_in_place(move || handle.block_on(async_work)),
+        Err(_) => {
+            let rt = tokio::runtime::Runtime::new()
+                .map_err(|e| format!("failed to create runtime: {e}"))?;
+            rt.block_on(async_work)
+        }
+    };
 
     match result {
         Ok(response) => {
@@ -545,9 +557,11 @@ fn build_subagent_registry(
             "Read the current master description.",
             json!({ "type": "object", "properties": {}, "required": [] }),
             Box::new(move |_args: &serde_json::Value| -> Result<String, String> {
-                let (doc, fc) = ms.read().map_err(|e| e.to_string())?;
-                serde_json::to_string(&json!({"master_description": doc, "foundation_changed": fc}))
-                    .map_err(|e| e.to_string())
+                match ms.read_optional().map_err(|e| e.to_string())? {
+                    Some((doc, fc)) => serde_json::to_string(&json!({"master_description": doc, "foundation_changed": fc}))
+                        .map_err(|e| e.to_string()),
+                    None => Ok(json!({"master_description": null, "foundation_changed": false}).to_string()),
+                }
             }),
         );
     }

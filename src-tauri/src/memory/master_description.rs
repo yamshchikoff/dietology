@@ -191,7 +191,7 @@ mod tests {
     #[test]
     fn test_oversized_content() {
         let store = test_store();
-        let long = "x".repeat(250_000);
+        let long = "x".repeat(500000);
         let result = store.rewrite(&long, vec![], vec![]);
         assert!(result.is_err());
     }

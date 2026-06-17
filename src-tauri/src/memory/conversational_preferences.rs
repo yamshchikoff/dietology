@@ -162,7 +162,7 @@ mod tests {
     #[test]
     fn test_oversized_content() {
         let store = test_store();
-        let long = "x".repeat(5000);
+        let long = "x".repeat(10000);
         let result = store.rewrite(&long);
         assert!(result.is_err());
     }

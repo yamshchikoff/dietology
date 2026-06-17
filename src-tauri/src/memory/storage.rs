@@ -109,7 +109,9 @@ impl MemoryStorage {
     }
 
     pub fn estimate_tokens(text: &str) -> usize {
-        text.len() / 4
+        tiktoken::get_encoding("cl100k_base")
+            .expect("cl100k_base encoding not found")
+            .count(text)
     }
 
     pub fn path_for(&self, relative: &str) -> AppResult<PathBuf> {
@@ -215,10 +217,10 @@ mod tests {
 
     #[test]
     fn test_estimate_tokens() {
-        // 4 bytes = ~1 token
+        // cl100k_base tokenizer
         assert_eq!(MemoryStorage::estimate_tokens("hello"), 1);
         assert_eq!(MemoryStorage::estimate_tokens(""), 0);
-        assert_eq!(MemoryStorage::estimate_tokens(&"x".repeat(400)), 100);
+        assert_eq!(MemoryStorage::estimate_tokens("Привет, мир!"), 7);
     }
 
     #[test]
